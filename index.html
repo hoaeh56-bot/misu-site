@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>misugrader</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="profile-info">
+      <img id="userAvatar" src="https://via.placeholder.com/40" class="avatar">
+      <div class="user-details">
+        <span class="brand">misugrader</span>
+        <span id="userName" class="username">Гость</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="balance" id="openDepositBtn">Баланс: <span id="balance">1000</span> ⭐ <span class="plus">+</span></div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="cases">Кейсы</button>
+    <button class="tab" data-tab="upgrader">Апгрейдер</button>
+  </nav>
+
+  <main class="container">
+    <section class="tab-content active" id="tab-cases">
+      <h2>Кейсы</h2>
+      <div class="cases-grid" id="casesGrid"></div>
+      <h2 class="inventory-title">Инвентарь</h2>
+      <div class="inventory" id="inventory"><p class="empty">Пока пусто.</p></div>
+    </section>
+
+    <section class="tab-content" id="tab-upgrader">
+      <h2>Апгрейдер</h2>
+      <div class="upgrade-view">
+        <div class="upgrade-side"><div class="side-item" id="selectedItemBox"><div class="side-emoji" id="selectedEmoji">—</div><div class="side-name" id="selectedName">Выбери</div><div class="side-price" id="selectedPrice">—</div></div></div>
+        <div class="upgrade-arrow">➜</div>
+        <div class="upgrade-side"><div class="side-item next"><div class="side-emoji" id="nextEmoji">—</div><div class="side-name" id="nextName">Цель</div><div class="side-price" id="nextPrice">—</div></div></div>
+      </div>
+      <div class="wheel-wrap">
+        <div class="wheel-container">
+          <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#2a2a2a" /><path id="wheelPath" fill="#facc15" /><circle cx="100" cy="100" r="96" fill="none" stroke="#facc15" stroke-width="8" /></svg>
+          <div class="needle" id="needle"><svg viewBox="0 0 40 40" width="40" height="40"><path d="M20 38 L8 12 L20 18 L32 12 Z" fill="#000" stroke="#facc15" stroke-width="3" stroke-linejoin="round"/></svg></div>
+          <div class="wheel-center"><div class="center-chance" id="centerChance">0%</div></div>
+        </div>
+      </div>
+      <button class="btn-upgrade" id="upgradeBtn" disabled>КРУТИТЬ</button>
+      <p class="hint" id="hint">Выбери два подарка.</p>
+      <h2 class="inventory-title">Твой инвентарь</h2>
+      <div class="inventory" id="upgradeInventory"></div>
+      <h2 class="inventory-title">Все подарки (цель)</h2>
+      <div class="inventory" id="targetInventory"></div>
+    </section>
+  </main>
+
+  <div class="modal-overlay" id="depositModal">
+    <div class="modal-content">
+      <h3>Пополнение</h3>
+      <input type="number" id="depositAmount" class="deposit-input" placeholder="Сумма">
+      <div class="choice-buttons" style="margin-top: 15px;"><button class="btn-fast" id="btnPayDeposit">Оплатить</button></div>
+      <button class="btn-cancel" id="btnCancelDeposit">Отмена</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="previewModal">
+    <div class="modal-content">
+      <div class="preview-header"><img id="previewImg" src=""><h3 id="previewTitle"></h3></div>
+      <div class="preview-grid" id="previewGrid"></div>
+      <div class="choice-buttons" style="margin-top: 20px;">
+        <button class="btn-fast" id="btnFastOpen">Быстро</button>
+        <button class="btn-normal" id="btnNormalOpen">С анимацией</button>
+      </div>
+      <button class="btn-cancel" id="btnCancelPreview">Закрыть</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="caseModal">
+    <div class="modal-content">
+      <h3 id="modalTitle"></h3>
+      <div class="roulette-container" id="rouletteContainer"><div class="roulette-pointer"></div><div class="roulette-track" id="rouletteTrack"></div></div>
+      <div class="result-screen" id="resultScreen">
+        <div class="result-item" id="resultItem"></div>
+        <p class="result-name" id="resultName"></p>
+        <div class="result-actions">
+          <button class="btn-sell" id="btnSell">Продать за <span id="sellPrice">0</span> ⭐</button>
+          <button class="btn-keep" id="btnKeep">В инвентарь</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+                                    </html>

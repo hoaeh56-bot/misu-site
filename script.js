@@ -15,7 +15,8 @@ const CASES_DATA = [
 
 // ===== ПЕРЕМЕННЫЕ =====
 let userId = "guest";
-let balance = 0; // <--- ИЗМЕНЕНО НА 0
+let userName = "Гость";
+let balance = 0; // Старт с 0
 let inventory = [];
 let nextId = 1;
 
@@ -69,6 +70,16 @@ const btnKeep = document.getElementById("btnKeep");
 const btnFastOpen = document.getElementById("btnFastOpen");
 const btnNormalOpen = document.getElementById("btnNormalOpen");
 
+// Новые элементы для инвентаря
+const itemActionModal = document.getElementById("itemActionModal");
+const actionItemImg = document.getElementById("actionItemImg");
+const actionItemName = document.getElementById("actionItemName");
+const actionBtnSell = document.getElementById("actionBtnSell");
+const actionBtnWithdraw = document.getElementById("actionBtnWithdraw");
+const btnCancelAction = document.getElementById("btnCancelAction");
+
+let selectedInventoryId = null;
+
 function getItemImageHTML(item) {
   if (item && item.image) {
     return `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
@@ -101,7 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
       userId = tg.initDataUnsafe.user.id.toString();
-      document.getElementById("userName").textContent = tg.initDataUnsafe.user.first_name || "Игрок";
+      userName = tg.initDataUnsafe.user.username ? `@${tg.initDataUnsafe.user.username}` : tg.initDataUnsafe.user.first_name;
+      document.getElementById("userName").textContent = userName;
       if (tg.initDataUnsafe.user.photo_url) {
         document.getElementById("userAvatar").src = tg.initDataUnsafe.user.photo_url;
       }
@@ -113,7 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem("misuGuestId", guestId);
     }
     userId = guestId;
-    document.getElementById("userName").textContent = "Тестовый Игрок";
+    userName = "Тестовый Игрок";
+    document.getElementById("userName").textContent = userName;
   }
 
   loadSave();
@@ -298,10 +311,10 @@ btnNormalOpen.addEventListener("click", () => {
   rouletteTrack.style.transform = "translateX(0)";
 
   setTimeout(() => {
-    const itemWidth = 76; // 70px картинка + 6px отступы
+    const itemWidth = 76; 
     const containerWidth = rouletteContainer.offsetWidth;
     const centerOffset = containerWidth / 2; 
-    const stopPosition = -(winningIndex * itemWidth) + centerOffset - 35; // 35 - половина картинки
+    const stopPosition = -(winningIndex * itemWidth) + centerOffset - 35; 
     rouletteTrack.style.transition = "transform 4s cubic-bezier(0.15, 1, 0.15, 1)";
     rouletteTrack.style.transform = `translateX(${stopPosition}px)`;
   }, 50);
@@ -316,7 +329,7 @@ btnNormalOpen.addEventListener("click", () => {
   selectedCaseToOpen = null;
 });
 
-// ===== ЗАБРАТЬ / ПРОДАТЬ =====
+// ===== ЗАБРАТЬ / ПРОДАТЬ ИЗ КЕЙСА =====
 btnSell.addEventListener("click", () => {
   if (!tempGift) return;
   balance += tempGift.price;
@@ -338,7 +351,7 @@ btnKeep.addEventListener("click", () => {
   tempGift = null;
 });
 
-// ===== ИНВЕНТАРЬ =====
+// ===== ИНВЕНТАРЬ (ВЫВОД И ПРОДАЖА) =====
 function renderInventory() {
   if (!inventoryEl) return;
   if (inventory.length === 0) { inventoryEl.innerHTML = `<p class="empty" style="font-size:0.7rem;">Пока пусто. Открой кейс.</p>`; return; }
@@ -347,10 +360,81 @@ function renderInventory() {
     const div = document.createElement("div");
     div.className = "inv-item";
     div.innerHTML = `<div class="item-img-box">${getItemImageHTML(g)}</div><div class="name">${g.name}</div><div class="price">${g.price} ⭐</div>`;
+    
+    // Клик по подарку в инвентаре открывает окно действий
+    div.addEventListener("click", () => {
+      selectedInventoryId = g.id;
+      actionItemImg.src = g.image;
+      actionItemName.textContent = g.name;
+      itemActionModal.classList.add("active");
+    });
+    
     inventoryEl.appendChild(div);
   });
 }
 
+// Действия в окне инвентаря
+btnCancelAction.addEventListener("click", () => {
+  itemActionModal.classList.remove("active");
+  selectedInventoryId = null;
+});
+
+// Продажа из инвентаря
+actionBtnSell.addEventListener("click", () => {
+  if (!selectedInventoryId) return;
+  const g = inventory.find(x => x.id === selectedInventoryId);
+  if (!g) return;
+  
+  balance += g.price;
+  inventory = inventory.filter(x => x.id !== selectedInventoryId);
+  
+  updateBalance();
+  saveData();
+  renderInventory();
+  renderUpgradeInventory();
+  
+  itemActionModal.classList.remove("active");
+  hintEl.innerHTML = `Вы продали <b>${g.name}</b> за <b>${g.price} ⭐</b>!`;
+  selectedInventoryId = null;
+});
+
+// ВЫВОД (отправка заявки админу)
+actionBtnWithdraw.addEventListener("click", () => {
+  if (!selectedInventoryId) return;
+  const g = inventory.find(x => x.id === selectedInventoryId);
+  if (!g) return;
+  
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    if (tg.sendData) {
+      // Отправляем заявку боту
+      tg.sendData(JSON.stringify({ 
+        action: "withdraw", 
+        itemName: g.name, 
+        itemPrice: g.price,
+        userName: userName
+      }));
+      
+      // Удаляем из инвентаря (списываем)
+      inventory = inventory.filter(x => x.id !== selectedInventoryId);
+      saveData();
+      renderInventory();
+      renderUpgradeInventory();
+      
+      itemActionModal.classList.remove("active");
+      alert("Заявка обрабатывается. Ожидайте сообщения от администратора.");
+      selectedInventoryId = null;
+      tg.close();
+    } else {
+      alert("Ошибка: метод отправки не поддерживается.");
+    }
+  } else {
+    alert("Заявка на вывод создана (тестовый режим).");
+    itemActionModal.classList.remove("active");
+  }
+});
+
+// ===== АПГРЕЙДЕР =====
 function renderUpgradeInventory() {
   if (!upgradeInventoryEl) return;
   if (inventory.length === 0) { upgradeInventoryEl.innerHTML = `<p class="empty" style="font-size:0.7rem;">Инвентарь пуст.</p>`; return; }
@@ -506,4 +590,4 @@ upgradeBtn.addEventListener("click", () => {
 
 function updateBalance() {
   if (balanceEl) balanceEl.textContent = balance;
-}
+  }

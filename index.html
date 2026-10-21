@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>misugrader</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="header-right">
-      <div class="balance" id="openDepositBtn">Баланс: <span id="balance">1000</span> ⭐ <span class="plus">+</span></div>
+      <div class="balance" id="openDepositBtn">Баланс: <span id="balance">0</span> ⭐ <span class="plus">+</span></div>
     </div>
   </header>
 
@@ -44,7 +44,7 @@
       <div class="wheel-wrap">
         <div class="wheel-container">
           <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#2a2a2a" /><path id="wheelPath" fill="#facc15" /><circle cx="100" cy="100" r="96" fill="none" stroke="#facc15" stroke-width="8" /></svg>
-          <div class="needle" id="needle"><svg viewBox="0 0 40 40" width="40" height="40"><path d="M20 38 L8 12 L20 18 L32 12 Z" fill="#000" stroke="#facc15" stroke-width="3" stroke-linejoin="round"/></svg></div>
+          <div class="needle" id="needle"><svg viewBox="0 0 40 40" width="30" height="30"><path d="M20 38 L8 12 L20 18 L32 12 Z" fill="#000" stroke="#facc15" stroke-width="3" stroke-linejoin="round"/></svg></div>
           <div class="wheel-center"><div class="center-chance" id="centerChance">0%</div></div>
         </div>
       </div>
@@ -57,6 +57,7 @@
     </section>
   </main>
 
+  <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ -->
   <div class="modal-overlay" id="depositModal">
     <div class="modal-content">
       <h3>Пополнение</h3>
@@ -66,6 +67,22 @@
     </div>
   </div>
 
+  <!-- МОДАЛЬНОЕ ОКНО ДЕЙСТВИЙ С ПОДАРКОМ (ПРОДАТЬ/ВЫВЕСТИ) -->
+  <div class="modal-overlay" id="itemActionModal">
+    <div class="modal-content">
+      <img id="actionItemImg" src="" style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px;">
+      <h3 id="actionItemName" style="margin-bottom: 15px;">Подарок</h3>
+      
+      <div class="choice-buttons">
+        <button class="btn-normal" id="actionBtnWithdraw" style="background: #facc15; color: #111;">Вывести</button>
+        <button class="btn-fast" id="actionBtnSell" style="background: #22c55e; color: #fff;">Продать</button>
+      </div>
+      
+      <button class="btn-cancel" id="btnCancelAction">Отмена</button>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО ПРОСМОТРА КЕЙСА -->
   <div class="modal-overlay" id="previewModal">
     <div class="modal-content">
       <div class="preview-header"><img id="previewImg" src=""><h3 id="previewTitle"></h3></div>
@@ -78,6 +95,7 @@
     </div>
   </div>
 
+  <!-- МОДАЛЬНОЕ ОКНО РУЛЕТКИ -->
   <div class="modal-overlay" id="caseModal">
     <div class="modal-content">
       <h3 id="modalTitle"></h3>
@@ -92,6 +110,7 @@
       </div>
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
-                                    </html>
+</html>

@@ -16,7 +16,7 @@ const CASES_DATA = [
 // ===== ПЕРЕМЕННЫЕ =====
 let userId = "guest";
 let userName = "Гость";
-let balance = 0; // Старт с 0
+let balance = 0;
 let inventory = [];
 let nextId = 1;
 
@@ -26,6 +26,7 @@ let currentChance = 0;
 let isSpinning = false;
 let selectedCaseToOpen = null;
 let tempGift = null;
+let selectedInventoryId = null;
 
 const balanceEl = document.getElementById("balance");
 const casesGrid = document.getElementById("casesGrid");
@@ -51,6 +52,13 @@ const btnCancelDeposit = document.getElementById("btnCancelDeposit");
 const depositAmountInput = document.getElementById("depositAmount");
 const btnPayDeposit = document.getElementById("btnPayDeposit");
 
+const itemActionModal = document.getElementById("itemActionModal");
+const actionItemImg = document.getElementById("actionItemImg");
+const actionItemName = document.getElementById("actionItemName");
+const actionBtnSell = document.getElementById("actionBtnSell");
+const actionBtnWithdraw = document.getElementById("actionBtnWithdraw");
+const btnCancelAction = document.getElementById("btnCancelAction");
+
 const previewModal = document.getElementById("previewModal");
 const previewImg = document.getElementById("previewImg");
 const previewTitle = document.getElementById("previewTitle");
@@ -70,16 +78,6 @@ const btnKeep = document.getElementById("btnKeep");
 const btnFastOpen = document.getElementById("btnFastOpen");
 const btnNormalOpen = document.getElementById("btnNormalOpen");
 
-// Новые элементы для инвентаря
-const itemActionModal = document.getElementById("itemActionModal");
-const actionItemImg = document.getElementById("actionItemImg");
-const actionItemName = document.getElementById("actionItemName");
-const actionBtnSell = document.getElementById("actionBtnSell");
-const actionBtnWithdraw = document.getElementById("actionBtnWithdraw");
-const btnCancelAction = document.getElementById("btnCancelAction");
-
-let selectedInventoryId = null;
-
 function getItemImageHTML(item) {
   if (item && item.image) {
     return `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
@@ -87,7 +85,7 @@ function getItemImageHTML(item) {
   return `<span style="font-size: 20px;">${item.emoji || '🎁'}</span>`;
 }
 
-// ===== СОХРАНЕНИЯ =====
+// ===== ПРОФИЛЬ И СОХРАНЕНИЯ =====
 function loadSave() {
   const saved = localStorage.getItem(`misuSave_${userId}`);
   if (saved) {
@@ -105,28 +103,37 @@ function saveData() {
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 document.addEventListener('DOMContentLoaded', () => {
+  // Проверяем, запущено ли внутри Мисуграма/Телеграма
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
     
+    // Берем данные игрока
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      userId = tg.initDataUnsafe.user.id.toString();
-      userName = tg.initDataUnsafe.user.username ? `@${tg.initDataUnsafe.user.username}` : tg.initDataUnsafe.user.first_name;
+      const u = tg.initDataUnsafe.user;
+      userId = u.id.toString();
+      // Приоритет: username (@ник), если нет - имя
+      userName = u.username ? `@${u.username}` : (u.first_name || "Игрок");
+      
       document.getElementById("userName").textContent = userName;
-      if (tg.initDataUnsafe.user.photo_url) {
-        document.getElementById("userAvatar").src = tg.initDataUnsafe.user.photo_url;
+      if (u.photo_url) {
+        document.getElementById("userAvatar").src = u.photo_url;
       }
+    } else {
+      // Если данных нет, ставим заглушку с уникальным ID
+      userId = "tg_" + Date.now();
+      document.getElementById("userName").textContent = "Игрок";
     }
   } else {
+    // Для теста в браузере
     let guestId = localStorage.getItem("misuGuestId");
     if (!guestId) {
       guestId = "guest_" + Math.floor(Math.random() * 100000);
       localStorage.setItem("misuGuestId", guestId);
     }
     userId = guestId;
-    userName = "Тестовый Игрок";
-    document.getElementById("userName").textContent = userName;
+    document.getElementById("userName").textContent = "Тестовый Игрок";
   }
 
   loadSave();
@@ -148,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWheelSector();
 });
 
-// ===== ПОПОЛНЕНИЕ =====
+// ===== ПОПОЛНЕНИЕ (ОТПРАВКА БОТУ) =====
 openDepositBtn.addEventListener("click", () => depositModal.classList.add("active"));
 btnCancelDeposit.addEventListener("click", () => depositModal.classList.remove("active"));
 
@@ -161,11 +168,12 @@ btnPayDeposit.addEventListener("click", () => {
   
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
+    // Отправляем боту сигнал "создай счет"
     if (tg.sendData) {
       tg.sendData(JSON.stringify({ action: "deposit", amount: amount }));
-      tg.close();
+      tg.close(); // Закрываем окно, чтобы бот написал в чат
     } else {
-      alert("Ошибка: метод отправки не поддерживается.");
+      alert("Ваш мессенджер не поддерживает отправку данных. Обновите приложение.");
     }
   } else {
     balance += amount;
@@ -361,7 +369,6 @@ function renderInventory() {
     div.className = "inv-item";
     div.innerHTML = `<div class="item-img-box">${getItemImageHTML(g)}</div><div class="name">${g.name}</div><div class="price">${g.price} ⭐</div>`;
     
-    // Клик по подарку в инвентаре открывает окно действий
     div.addEventListener("click", () => {
       selectedInventoryId = g.id;
       actionItemImg.src = g.image;
@@ -373,13 +380,11 @@ function renderInventory() {
   });
 }
 
-// Действия в окне инвентаря
 btnCancelAction.addEventListener("click", () => {
   itemActionModal.classList.remove("active");
   selectedInventoryId = null;
 });
 
-// Продажа из инвентаря
 actionBtnSell.addEventListener("click", () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
@@ -398,7 +403,7 @@ actionBtnSell.addEventListener("click", () => {
   selectedInventoryId = null;
 });
 
-// ВЫВОД (отправка заявки админу)
+// ВЫВОД
 actionBtnWithdraw.addEventListener("click", () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
@@ -407,7 +412,6 @@ actionBtnWithdraw.addEventListener("click", () => {
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     if (tg.sendData) {
-      // Отправляем заявку боту
       tg.sendData(JSON.stringify({ 
         action: "withdraw", 
         itemName: g.name, 
@@ -415,7 +419,6 @@ actionBtnWithdraw.addEventListener("click", () => {
         userName: userName
       }));
       
-      // Удаляем из инвентаря (списываем)
       inventory = inventory.filter(x => x.id !== selectedInventoryId);
       saveData();
       renderInventory();
@@ -590,4 +593,4 @@ upgradeBtn.addEventListener("click", () => {
 
 function updateBalance() {
   if (balanceEl) balanceEl.textContent = balance;
-  }
+                                                }

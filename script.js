@@ -15,7 +15,7 @@ const CASES_DATA = [
 
 // ===== ПЕРЕМЕННЫЕ =====
 let userId = "guest";
-let balance = 1000;
+let balance = 0; // <--- ИЗМЕНЕНО НА 0
 let inventory = [];
 let nextId = 1;
 
@@ -73,7 +73,7 @@ function getItemImageHTML(item) {
   if (item && item.image) {
     return `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
   }
-  return `<span style="font-size: 30px;">${item.emoji || '🎁'}</span>`;
+  return `<span style="font-size: 20px;">${item.emoji || '🎁'}</span>`;
 }
 
 // ===== СОХРАНЕНИЯ =====
@@ -81,8 +81,8 @@ function loadSave() {
   const saved = localStorage.getItem(`misuSave_${userId}`);
   if (saved) {
     const data = JSON.parse(saved);
-    balance = data.balance;
-    inventory = data.inventory;
+    balance = data.balance !== undefined ? data.balance : 0;
+    inventory = data.inventory || [];
     nextId = data.nextId || 1;
   }
 }
@@ -152,7 +152,7 @@ btnPayDeposit.addEventListener("click", () => {
       tg.sendData(JSON.stringify({ action: "deposit", amount: amount }));
       tg.close();
     } else {
-      alert("Ошибка: метод отправки не поддерживается мессенджером.");
+      alert("Ошибка: метод отправки не поддерживается.");
     }
   } else {
     balance += amount;
@@ -174,8 +174,8 @@ function renderCases() {
     const bgImage = c.image 
       ? `<img src="${c.image}" class="case-bg" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
          <div class="case-overlay"></div>
-         <span class="case-fallback" style="display:none; font-size: 50px;">${c.emoji}</span>`
-      : `<span class="case-fallback" style="font-size: 50px;">${c.emoji}</span>`;
+         <span class="case-fallback" style="display:none; font-size: 40px;">${c.emoji}</span>`
+      : `<span class="case-fallback" style="font-size: 40px;">${c.emoji}</span>`;
 
     div.innerHTML = `
       ${bgImage}
@@ -247,7 +247,7 @@ btnFastOpen.addEventListener("click", () => {
   const randomGift = getRandomGiftByWeight(availableGifts);
   tempGift = { id: nextId++, emoji: randomGift.emoji, image: randomGift.image, name: randomGift.name, price: randomGift.price };
 
-  modalTitle.innerHTML = `<div class="case-open-header"><img src="${c.image}"><h3>${c.name}</h3></div>`;
+  modalTitle.innerHTML = `<div class="case-open-header"><img src="${c.image}" style="width:30px; height:30px; border-radius:5px; vertical-align:middle; margin-right:5px;"><span style="vertical-align:middle;">${c.name}</span></div>`;
   caseModal.classList.add("active");
   rouletteContainer.style.display = "none";
   resultScreen.classList.add("active");
@@ -275,7 +275,7 @@ btnNormalOpen.addEventListener("click", () => {
   const randomGift = getRandomGiftByWeight(availableGifts);
   tempGift = { id: nextId++, emoji: randomGift.emoji, image: randomGift.image, name: randomGift.name, price: randomGift.price };
 
-  modalTitle.innerHTML = `<div class="case-open-header"><img src="${c.image}"><h3>${c.name}</h3></div>`;
+  modalTitle.innerHTML = `<div class="case-open-header"><img src="${c.image}" style="width:30px; height:30px; border-radius:5px; vertical-align:middle; margin-right:5px;"><span style="vertical-align:middle;">${c.name}</span></div>`;
   caseModal.classList.add("active");
   rouletteContainer.style.display = "block";
   resultScreen.classList.remove("active");
@@ -290,7 +290,7 @@ btnNormalOpen.addEventListener("click", () => {
 
   rouletteTrack.innerHTML = trackItems.map(gift => `
     <div class="roulette-item">
-      ${gift.image ? `<img src="${gift.image}">` : `<span style="font-size:30px;">${gift.emoji}</span>`}
+      ${gift.image ? `<img src="${gift.image}">` : `<span style="font-size:20px;">${gift.emoji}</span>`}
     </div>
   `).join("");
 
@@ -298,9 +298,10 @@ btnNormalOpen.addEventListener("click", () => {
   rouletteTrack.style.transform = "translateX(0)";
 
   setTimeout(() => {
-    const itemWidth = 110;
-    const centerOffset = window.innerWidth > 500 ? 250 : window.innerWidth / 2; 
-    const stopPosition = -(winningIndex * itemWidth) + centerOffset - 50;
+    const itemWidth = 76; // 70px картинка + 6px отступы
+    const containerWidth = rouletteContainer.offsetWidth;
+    const centerOffset = containerWidth / 2; 
+    const stopPosition = -(winningIndex * itemWidth) + centerOffset - 35; // 35 - половина картинки
     rouletteTrack.style.transition = "transform 4s cubic-bezier(0.15, 1, 0.15, 1)";
     rouletteTrack.style.transform = `translateX(${stopPosition}px)`;
   }, 50);
@@ -340,7 +341,7 @@ btnKeep.addEventListener("click", () => {
 // ===== ИНВЕНТАРЬ =====
 function renderInventory() {
   if (!inventoryEl) return;
-  if (inventory.length === 0) { inventoryEl.innerHTML = `<p class="empty">Пока пусто. Открой кейс, чтобы получить подарок.</p>`; return; }
+  if (inventory.length === 0) { inventoryEl.innerHTML = `<p class="empty" style="font-size:0.7rem;">Пока пусто. Открой кейс.</p>`; return; }
   inventoryEl.innerHTML = "";
   inventory.forEach(g => {
     const div = document.createElement("div");
@@ -352,7 +353,7 @@ function renderInventory() {
 
 function renderUpgradeInventory() {
   if (!upgradeInventoryEl) return;
-  if (inventory.length === 0) { upgradeInventoryEl.innerHTML = `<p class="empty">Инвентарь пуст.</p>`; return; }
+  if (inventory.length === 0) { upgradeInventoryEl.innerHTML = `<p class="empty" style="font-size:0.7rem;">Инвентарь пуст.</p>`; return; }
   upgradeInventoryEl.innerHTML = "";
   inventory.forEach(g => {
     const div = document.createElement("div");
@@ -393,7 +394,7 @@ function selectTarget(id) {
   const currentItem = inventory.find(x => x.id === selectedItemId);
   const targetItem = GIFTS_DATA.find(x => x.id === id);
   if (currentItem && targetItem && targetItem.price <= currentItem.price) {
-    hintEl.textContent = "Цель должна быть дороже твоего подарка!";
+    hintEl.textContent = "Цель должна быть дороже!";
     return;
   }
   selectedTargetId = id;
@@ -505,4 +506,4 @@ upgradeBtn.addEventListener("click", () => {
 
 function updateBalance() {
   if (balanceEl) balanceEl.textContent = balance;
-                                          }
+}

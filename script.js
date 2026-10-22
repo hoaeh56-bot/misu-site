@@ -30,7 +30,6 @@ const CASES_DATA = [
   { id: 3, emoji: "🔥", name: "МАЖОР КЕЙС", price: 200, pool: ["heroichelmet", "strongarms", "bricks"], image: "https://f.2fools.app/tgs/sticker_set/27378bc0.gif" }
 ];
 
-// ===== ПЕРЕМЕННЫЕ =====
 let userId = "guest";
 let userName = "Гость";
 let userAvatar = "https://via.placeholder.com/40";
@@ -45,8 +44,8 @@ let selectedCaseToOpen = null;
 let tempGift = null;
 let selectedInventoryId = null;
 
-// ССЫЛКА НА ТВОЙ RENDER (без слэша на конце)
-const SERVER_URL = 'https://misu-bot-9.onrender.com';
+// ПРАВИЛЬНАЯ ССЫЛКА НА RENDER
+const SERVER_URL = 'https://misu-bot-bjna.onrender.com';
 
 const balanceEl = document.getElementById("balance");
 const casesGrid = document.getElementById("casesGrid");
@@ -98,7 +97,6 @@ const btnKeep = document.getElementById("btnKeep");
 const btnFastOpen = document.getElementById("btnFastOpen");
 const btnNormalOpen = document.getElementById("btnNormalOpen");
 
-// ===== ФУНКЦИИ =====
 function getItemImageHTML(item) {
   if (item && item.image) return `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
   return `<span style="font-size: 20px;">${item.emoji || '🎁'}</span>`;
@@ -111,7 +109,6 @@ async function loadSave() {
     const data = await res.json();
     balance = data.balance || 0;
     
-    // Инвентарь храним локально
     const savedInv = localStorage.getItem(`misuInv_${userId}`);
     if (savedInv) {
       const invData = JSON.parse(savedInv);
@@ -131,13 +128,11 @@ async function loadSave() {
   updateBalance();
 }
 
-// Сохранение (только инвентарь, баланс на сервере)
 function saveData() {
   const invData = { inventory, nextId };
   localStorage.setItem(`misuInv_${userId}`, JSON.stringify(invData));
 }
 
-// ===== ИНИЦИАЛИЗАЦИЯ =====
 document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const tgId = urlParams.get('tg_id');
@@ -178,7 +173,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderTargetInventory();
   updateWheelSector();
 
-  // Кнопки
   openDepositBtn.addEventListener("click", () => {
     alert("Пополнение теперь через бота! Нажми на кнопку 💰 Пополнить баланс в чате с ботом.");
   });
@@ -193,7 +187,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   btnCancelPreview.addEventListener("click", () => { previewModal.classList.remove("active"); selectedCaseToOpen = null; });
 });
 
-// ===== ОТРИСОВКА =====
 function renderCases() {
   if (!casesGrid) return;
   casesGrid.innerHTML = "";

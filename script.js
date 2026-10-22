@@ -1,4 +1,4 @@
-// ===== ДАННЫЕ (ОСТАВЛЯЕМ БЕЗ ИЗМЕНЕНИЙ) =====
+// ===== ДАННЫЕ =====
 const GIFTS_DATA = [
   { id: "whipcupcakes", name: "Whip Cupcakes", image: "https://f.2fools.app/tgs/sticker_set/6ff450c5.gif", price: 35, weight: 25 },
   { id: "mousescakes", name: "Mouses Cakes", image: "https://f.2fools.app/tgs/sticker_set/59d7f.gif", price: 50, weight: 25 },
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWheelSector();
 });
 
-// ===== ПОПОЛНЕНИЕ (ПРЯМОЙ ЗАПРОС) =====
+// ===== ПОПОЛНЕНИЕ (ЧЕРЕЗ ССЫЛКУ НА БОТА @misugradebot) =====
 openDepositBtn.addEventListener("click", () => depositModal.classList.add("active"));
 btnCancelDeposit.addEventListener("click", () => depositModal.classList.remove("active"));
 
@@ -166,64 +166,26 @@ btnPayDeposit.addEventListener("click", () => {
   const amount = parseInt(depositAmountInput.value);
   if (!amount || amount < 1) { alert("Введите сумму!"); return; }
   
-  // Создаем скрытую форму и отправляем POST-запрос на сервер Render
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = 'https://misu-bot.onrender.com/api/deposit'; // Адрес твоего сервера
-  form.target = '_blank'; // Чтобы не перезагружать страницу
-
-  const data = {
-    userId: userId,
-    userName: userName,
-    amount: amount
-  };
-
-  const input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = 'data';
-  input.value = JSON.stringify(data);
-  form.appendChild(input);
-
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-
+  // Открываем бота и передаем сумму в start параметре
+  window.open(`https://t.me/misugradebot?start=dep_${amount}`, '_blank');
+  
   depositModal.classList.remove("active");
-  alert(`Заявка на ${amount} ⭐ отправлена админу.\nПереведите ${amount} звезд на @misurade.`);
+  alert(`Заявка на ${amount} ⭐ создается. Переведите ${amount} звезд на @misurade.`);
 });
 
-// ===== ВЫВОД (ПРЯМОЙ ЗАПРОС) =====
+// ===== ВЫВОД (ЧЕРЕЗ ССЫЛКУ НА БОТА @misugradebot) =====
 actionBtnWithdraw.addEventListener("click", () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
   if (!g) return;
   
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = 'https://misu-bot.onrender.com/api/withdraw';
-  form.target = '_blank';
-
-  const data = {
-    userId: userId,
-    userName: userName,
-    itemName: g.name,
-    itemPrice: g.price
-  };
-
-  const input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = 'data';
-  input.value = JSON.stringify(data);
-  form.appendChild(input);
-
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-
+  // Открываем бота и передаем данные подарка
+  window.open(`https://t.me/misugradebot?start=wd_${g.price}_${encodeURIComponent(g.name)}`, '_blank');
+  
   inventory = inventory.filter(x => x.id !== selectedInventoryId);
   saveData(); renderInventory(); renderUpgradeInventory();
-  itemActionModal.classList.remove('active');
-  alert("Заявка на вывод отправлена админу.");
+  itemActionModal.classList.remove("active");
+  alert("Заявка на вывод создается.");
 });
 
 // ===== ОТРИСОВКА =====

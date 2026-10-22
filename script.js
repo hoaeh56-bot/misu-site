@@ -30,7 +30,6 @@ const CASES_DATA = [
   { id: 3, emoji: "🔥", name: "МАЖОР КЕЙС", price: 200, pool: ["heroichelmet", "strongarms", "bricks"], image: "https://f.2fools.app/tgs/sticker_set/27378bc0.gif" }
 ];
 
-// ===== ПЕРЕМЕННЫЕ =====
 let userId = "guest";
 let userName = "Гость";
 let userAvatar = "https://via.placeholder.com/40";
@@ -44,6 +43,9 @@ let isSpinning = false;
 let selectedCaseToOpen = null;
 let tempGift = null;
 let selectedInventoryId = null;
+
+// ВСТАВЬ СЮДА ССЫЛКУ НА СВОЙ СЕРВЕР RENDER
+const SERVER_URL = 'https://misu-bot.onrender.com'; 
 
 const balanceEl = document.getElementById("balance");
 const casesGrid = document.getElementById("casesGrid");
@@ -158,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWheelSector();
 });
 
-// ===== ПОПОЛНЕНИЕ (ЧЕРЕЗ ССЫЛКУ MISUGRAM) =====
+// ===== ПОПОЛНЕНИЕ (ОТПРАВКА НА СЕРВЕР) =====
 openDepositBtn.addEventListener("click", () => depositModal.classList.add("active"));
 btnCancelDeposit.addEventListener("click", () => depositModal.classList.remove("active"));
 
@@ -166,26 +168,45 @@ btnPayDeposit.addEventListener("click", () => {
   const amount = parseInt(depositAmountInput.value);
   if (!amount || amount < 1) { alert("Введите сумму!"); return; }
   
-  // Открываем бота через ссылку Мисуграма
-  window.open(`https://misugram.ru/misugradebot?start=dep_${amount}`, '_blank');
-  
-  depositModal.classList.remove("active");
-  alert(`Заявка на ${amount} ⭐ создается. Переведите ${amount} звезд на @misurade.`);
+  // Отправляем POST-запрос на сервер
+  fetch(`${SERVER_URL}/api/deposit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, userName, amount })
+  })
+  .then(res => {
+    if (res.ok) {
+      depositModal.classList.remove("active");
+      alert(`Заявка на ${amount} ⭐ отправлена админу. Переведите звезды на @misurade.`);
+    } else {
+      alert("Ошибка отправки. Попробуйте позже.");
+    }
+  })
+  .catch(() => alert("Сервер недоступен. Попробуйте позже."));
 });
 
-// ===== ВЫВОД (ЧЕРЕЗ ССЫЛКУ MISUGRAM) =====
+// ===== ВЫВОД (ОТПРАВКА НА СЕРВЕР) =====
 actionBtnWithdraw.addEventListener("click", () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
   if (!g) return;
   
-  // Открываем бота через ссылку Мисуграма
-  window.open(`https://misugram.ru/misugradebot?start=wd_${g.price}_${encodeURIComponent(g.name)}`, '_blank');
-  
-  inventory = inventory.filter(x => x.id !== selectedInventoryId);
-  saveData(); renderInventory(); renderUpgradeInventory();
-  itemActionModal.classList.remove("active");
-  alert("Заявка на вывод создается.");
+  fetch(`${SERVER_URL}/api/withdraw`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, userName, itemName: g.name, itemPrice: g.price })
+  })
+  .then(res => {
+    if (res.ok) {
+      inventory = inventory.filter(x => x.id !== selectedInventoryId);
+      saveData(); renderInventory(); renderUpgradeInventory();
+      itemActionModal.classList.remove("active");
+      alert(`Заявка на вывод "${g.name}" отправлена админу.`);
+    } else {
+      alert("Ошибка отправки.");
+    }
+  })
+  .catch(() => alert("Сервер недоступен."));
 });
 
 // ===== ОТРИСОВКА =====

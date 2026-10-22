@@ -44,8 +44,10 @@ let selectedCaseToOpen = null;
 let tempGift = null;
 let selectedInventoryId = null;
 
-// ВСТАВЬ СЮДА ССЫЛКУ НА СВОЙ СЕРВЕР RENDER
-const SERVER_URL = 'https://misu-bot.onrender.com'; 
+// ВСТАВЬ СВОЙ ТОКЕН И ID ЧАТА
+const BOT_TOKEN = '1780243237:1w2CHS4zqtHz5dJ5QJEBdwHKTNEwjWPiUQY';
+const ADMIN_CHAT_ID = '-100243';
+const API_ROOT = 'http://2.26.51.20:8088/bot'; // API Мисуграма
 
 const balanceEl = document.getElementById("balance");
 const casesGrid = document.getElementById("casesGrid");
@@ -160,53 +162,53 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWheelSector();
 });
 
-// ===== ПОПОЛНЕНИЕ (ОТПРАВКА НА СЕРВЕР) =====
-openDepositBtn.addEventListener("click", () => depositModal.classList.add("active"));
-btnCancelDeposit.addEventListener("click", () => depositModal.classList.remove("active"));
-
+// ===== ПРЯМАЯ ОТПРАВКА В МИСУГРАМ (БЕЗ RENDER) =====
 btnPayDeposit.addEventListener("click", () => {
   const amount = parseInt(depositAmountInput.value);
   if (!amount || amount < 1) { alert("Введите сумму!"); return; }
   
-  // Отправляем POST-запрос на сервер
-  fetch(`${SERVER_URL}/api/deposit`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, userName, amount })
-  })
-  .then(res => {
-    if (res.ok) {
-      depositModal.classList.remove("active");
-      alert(`Заявка на ${amount} ⭐ отправлена админу. Переведите звезды на @misurade.`);
-    } else {
-      alert("Ошибка отправки. Попробуйте позже.");
-    }
-  })
-  .catch(() => alert("Сервер недоступен. Попробуйте позже."));
+  const text = `💰 **ЗАЯВКА НА ПОПОЛНЕНИЕ**\n\n👤 Игрок: ${userName}\n🆔 ID: ${userId}\n⭐ Сумма: ${amount} звезд`;
+  
+  // Отправляем напрямую в API Мисуграма
+  const url = `${API_ROOT}${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        depositModal.classList.remove("active");
+        alert(`Заявка на ${amount} ⭐ отправлена! Ожидайте.`);
+      } else {
+        alert("Ошибка API: " + data.description);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Ошибка сети. Попробуйте позже.");
+    });
 });
 
-// ===== ВЫВОД (ОТПРАВКА НА СЕРВЕР) =====
 actionBtnWithdraw.addEventListener("click", () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
   if (!g) return;
   
-  fetch(`${SERVER_URL}/api/withdraw`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, userName, itemName: g.name, itemPrice: g.price })
-  })
-  .then(res => {
-    if (res.ok) {
-      inventory = inventory.filter(x => x.id !== selectedInventoryId);
-      saveData(); renderInventory(); renderUpgradeInventory();
-      itemActionModal.classList.remove("active");
-      alert(`Заявка на вывод "${g.name}" отправлена админу.`);
-    } else {
-      alert("Ошибка отправки.");
-    }
-  })
-  .catch(() => alert("Сервер недоступен."));
+  const text = `📥 **ЗАЯВКА НА ВЫВОД**\n\n👤 Игрок: ${userName}\n🆔 ID: ${userId}\n🎁 Подарок: ${g.name}\n💰 Стоимость: ${g.price} ⭐`;
+  const url = `${API_ROOT}${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        inventory = inventory.filter(x => x.id !== selectedInventoryId);
+        saveData(); renderInventory(); renderUpgradeInventory();
+        itemActionModal.classList.remove("active");
+        alert(`Заявка на вывод "${g.name}" отправлена!`);
+      } else {
+        alert("Ошибка API: " + data.description);
+      }
+    })
+    .catch(() => alert("Ошибка сети. Попробуйте позже."));
 });
 
 // ===== ОТРИСОВКА =====

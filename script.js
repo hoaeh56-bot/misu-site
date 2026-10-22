@@ -1,16 +1,50 @@
 // ===== ДАННЫЕ =====
 const GIFTS_DATA = [
-  { id: "tamagochi", name: "Tamagochi", image: "https://f.2fools.app/tgs/sticker_set/f99b65ce.gif", emoji: "🐣", price: 50, weight: 25 },
-  { id: "valentinebox", name: "Valentine box", image: "https://f.2fools.app/tgs/sticker_set/222e39f0.gif", emoji: "💝", price: 55, weight: 25 },
-  { id: "snowglobe", name: "Snow Globe", image: "https://f.2fools.app/tgs/sticker_set/851ddb69.gif", emoji: "❄️", price: 75, weight: 20 },
-  { id: "spicedwine", name: "Spiced Wine", image: "https://f.2fools.app/tgs/sticker_set/cc228867.gif", emoji: "🍷", price: 75, weight: 20 },
-  { id: "snoopdog", name: "Snoop Dog", image: "https://f.2fools.app/tgs/sticker_set/8039a5d1.gif", emoji: "🐶", price: 75, weight: 15 },
-  { id: "snoopcigar", name: "Snoop Cigar", image: "https://f.2fools.app/tgs/sticker_set/cb44c1b7.gif", emoji: "🚬", price: 75, weight: 15 },
-  { id: "xmasstocking", name: "Xmas Stocking", image: "https://f.2fools.app/tgs/sticker_set/429640bf.gif", emoji: "🧦", price: 100, weight: 5 }
+  // --- БОМЖ (дешевые 35-75) ---
+  { id: "whipcupcakes", name: "Whip Cupcakes", image: "https://f.2fools.app/tgs/sticker_set/6ff450c5.gif", price: 35, weight: 25 },
+  { id: "mousescakes", name: "Mouses Cakes", image: "https://f.2fools.app/tgs/sticker_set/59d7f.gif", price: 50, weight: 25 },
+  { id: "luckyclever", name: "Lucky Clever", image: "https://f.2fools.app/tgs/sticker_set/f97deb22.gif", price: 50, weight: 25 },
+  { id: "moonpendants", name: "Moon pendants", image: "https://f.2fools.app/tgs/sticker_set/7151eb6f.gif", price: 50, weight: 25 },
+  { id: "instantsramen", name: "Instants Ramen", image: "https://f.2fools.app/tgs/sticker_set/c08c738.gif", price: 50, weight: 25 },
+  { id: "lightlamp", name: "Light Lamp", image: "https://f.2fools.app/tgs/sticker_set/e63297e8.gif", price: 65, weight: 20 },
+  { id: "faithamulets", name: "Faith Amulets", image: "https://f.2fools.app/tgs/sticker_set/2bb0a6d0.gif", price: 65, weight: 20 },
+  { id: "socks", name: "Socks", image: "https://f.2fools.app/tgs/sticker_set/cd8ad4f2.gif", price: 75, weight: 20 },
+  { id: "prettyposies", name: "Pretty Posies", image: "https://f.2fools.app/tgs/sticker_set/1e5655c0.gif", price: 75, weight: 20 },
+  { id: "moneypot", name: "Money Pot", image: "https://f.2fools.app/tgs/sticker_set/2b18d298.gif", price: 75, weight: 20 },
+  { id: "happybrownie", name: "Happy Brownie", image: "https://f.2fools.app/tgs/sticker_set/3cb1af85.gif", price: 75, weight: 20 },
+  { id: "jackinthebox", name: "Jacks-in-the-box", image: "https://f.2fools.app/tgs/sticker_set/2ce0d04f.gif", price: 75, weight: 20 },
+
+  // --- ВИП (средние 100-150) ---
+  { id: "lightsword", name: "Light Sword", image: "https://f.2fools.app/tgs/sticker_set/dbfacb64.gif", price: 100, weight: 15 },
+  { id: "dyson", name: "Dyson", image: "https://f.2fools.app/tgs/sticker_set/70089a44.gif", price: 100, weight: 15 },
+  { id: "bowties", name: "Bow Ties", image: "https://f.2fools.app/tgs/sticker_set/b8eb5174.gif", price: 110, weight: 15 },
+  { id: "culon", name: "Culon", image: "https://f.2fools.app/tgs/sticker_set/67cb9175.gif", price: 150, weight: 10 },
+  { id: "bondedrings", name: "Bonded rings", image: "https://f.2fools.app/tgs/sticker_set/7fb2150f.gif", price: 150, weight: 10 },
+  { id: "nailbraclets", name: "Nail Braclets", image: "https://f.2fools.app/tgs/sticker_set/332d54b0.gif", price: 150, weight: 10 },
+  { id: "nekohelmet", name: "Neko helmet", image: "https://f.2fools.app/tgs/sticker_set/5bb57e.gif", price: 150, weight: 10 },
+
+  // --- МАЖОР (дорогие 200+) ---
+  { id: "heroichelmet", name: "Heroic Helmet", image: "https://f.2fools.app/tgs/sticker_set/f7141b8b.gif", price: 200, weight: 5 },
+  { id: "strongarms", name: "Strong Arms", image: "https://f.2fools.app/tgs/sticker_set/dc311465.gif", price: 250, weight: 5 },
+  { id: "bricks", name: "Bricks", image: "https://f.2fools.app/tgs/sticker_set/bae6e39.gif", price: 400, weight: 2 }
 ];
 
 const CASES_DATA = [
-  { id: 1, emoji: "🎁", name: "БОМЖ КЕЙС", price: 67, pool: ["tamagochi", "valentinebox", "snowglobe", "spicedwine", "snoopdog", "snoopcigar", "xmasstocking"], image: "https://f.2fools.app/tgs/sticker_set/25b5f56.gif" }
+  { 
+    id: 1, emoji: "🎁", name: "БОМЖ КЕЙС", price: 67, 
+    pool: ["whipcupcakes", "mousescakes", "luckyclever", "moonpendants", "instantsramen", "lightlamp", "faithamulets", "socks", "prettyposies", "moneypot", "happybrownie", "jackinthebox"], 
+    image: "https://f.2fools.app/tgs/sticker_set/25b5f56.gif" 
+  },
+  { 
+    id: 2, emoji: "📦", name: "ВИП КЕЙС", price: 100, 
+    pool: ["lightsword", "dyson", "bowties", "culon", "bondedrings", "nailbraclets", "nekohelmet"], 
+    image: "https://f.2fools.app/tgs/sticker_set/4c8a15d0.gif" 
+  },
+  { 
+    id: 3, emoji: "🔥", name: "МАЖОР КЕЙС", price: 200, 
+    pool: ["heroichelmet", "strongarms", "bricks"], 
+    image: "https://f.2fools.app/tgs/sticker_set/27378bc0.gif" 
+  }
 ];
 
 // ===== ПЕРЕМЕННЫЕ =====
@@ -19,7 +53,6 @@ let userName = "Гость";
 let balance = 0;
 let inventory = [];
 let nextId = 1;
-
 let selectedItemId = null;
 let selectedTargetId = null;
 let currentChance = 0;
@@ -103,17 +136,18 @@ function saveData() {
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Проверяем, запущено ли внутри Мисуграма/Телеграма
+  console.log("Telegram WebApp object:", window.Telegram);
+
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
     
-    // Берем данные игрока
+    console.log("initDataUnsafe:", tg.initDataUnsafe);
+
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
       const u = tg.initDataUnsafe.user;
       userId = u.id.toString();
-      // Приоритет: username (@ник), если нет - имя
       userName = u.username ? `@${u.username}` : (u.first_name || "Игрок");
       
       document.getElementById("userName").textContent = userName;
@@ -121,12 +155,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("userAvatar").src = u.photo_url;
       }
     } else {
-      // Если данных нет, ставим заглушку с уникальным ID
-      userId = "tg_" + Date.now();
-      document.getElementById("userName").textContent = "Игрок";
+      const urlParams = new URLSearchParams(window.location.search);
+      const tgId = urlParams.get('tg_id');
+      if (tgId) {
+        userId = tgId;
+        userName = "Игрок " + userId;
+        document.getElementById("userName").textContent = userName;
+      } else {
+        userId = "tg_" + Date.now();
+        document.getElementById("userName").textContent = "Игрок";
+      }
     }
   } else {
-    // Для теста в браузере
     let guestId = localStorage.getItem("misuGuestId");
     if (!guestId) {
       guestId = "guest_" + Math.floor(Math.random() * 100000);
@@ -155,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWheelSector();
 });
 
-// ===== ПОПОЛНЕНИЕ (ОТПРАВКА БОТУ) =====
+// ===== ПОПОЛНЕНИЕ =====
 openDepositBtn.addEventListener("click", () => depositModal.classList.add("active"));
 btnCancelDeposit.addEventListener("click", () => depositModal.classList.remove("active"));
 
@@ -168,12 +208,11 @@ btnPayDeposit.addEventListener("click", () => {
   
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
-    // Отправляем боту сигнал "создай счет"
     if (tg.sendData) {
       tg.sendData(JSON.stringify({ action: "deposit", amount: amount }));
-      tg.close(); // Закрываем окно, чтобы бот написал в чат
+      tg.close(); 
     } else {
-      alert("Ваш мессенджер не поддерживает отправку данных. Обновите приложение.");
+      alert("Ошибка: метод отправки не поддерживается.");
     }
   } else {
     balance += amount;
@@ -593,4 +632,4 @@ upgradeBtn.addEventListener("click", () => {
 
 function updateBalance() {
   if (balanceEl) balanceEl.textContent = balance;
-                                                }
+}

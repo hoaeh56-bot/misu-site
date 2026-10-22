@@ -101,7 +101,7 @@ h2 { color: #facc15; font-size: 0.9rem; border-left: 3px solid #facc15; padding-
 .btn-cancel { background: #222; border: 1px solid #444; color: #aaa; padding: 12px; border-radius: 10px; width: 100%; margin-top: 12px; cursor: pointer; font-size: 0.8rem; font-weight: 700; transition: all 0.2s; }
 .btn-cancel:active { background: #111; transform: scale(0.98); }
 
-/* Рулетка (ИСПРАВЛЕНО) */
+/* Рулетка */
 .roulette-container { width: 100%; height: 90px; background: #0a0a0a; border: 1px solid #222; border-radius: 12px; position: relative; overflow: hidden; margin-bottom: 15px; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
 .roulette-pointer { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: #facc15; transform: translateX(-50%); z-index: 10; box-shadow: 0 0 10px #facc15; }
 .roulette-track { display: flex; height: 100%; align-items: center; position: absolute; left: 0; top: 0; width: max-content; transition: transform 4s cubic-bezier(0.15, 1, 0.15, 1); }
@@ -119,3 +119,15 @@ h2 { color: #facc15; font-size: 0.9rem; border-left: 3px solid #facc15; padding-
 .btn-sell { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 900; font-size: 0.8rem; cursor: pointer; background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%); color: #fff; box-shadow: 0 3px 0 #14532d, 0 3px 10px rgba(22, 163, 74, 0.3); text-transform: uppercase; position: relative; top: 0; transition: all 0.1s; }
 .btn-keep { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 900; font-size: 0.8rem; cursor: pointer; background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%); color: #fff; box-shadow: 0 3px 0 #1e3a8a, 0 3px 10px rgba(37, 99, 235, 0.3); text-transform: uppercase; position: relative; top: 0; transition: all 0.1s; }
 .btn-sell:active, .btn-keep:active { top: 3px; box-shadow: none; }
+
+/* ===== РАКЕТА (CRASH) ===== */
+.rocket-game-area { position: relative; width: 100%; height: 250px; background: #111; border: 2px solid #333; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); margin-bottom: 15px; }
+.rocket-multiplier { font-size: 3rem; font-weight: 900; color: #facc15; text-shadow: 0 0 20px rgba(250, 204, 21, 0.5); z-index: 10; }
+.rocket-visual { position: absolute; bottom: 10px; left: 10px; font-size: 2rem; transition: all 0.1s linear; display: flex; align-items: center; gap: 5px; }
+.rocket-brand { font-size: 0.8rem; color: #fff; font-weight: 800; opacity: 0.7; }
+.rocket-explosion { display: none; font-size: 2rem; font-weight: 900; color: #ef4444; text-shadow: 0 0 20px #ef4444; z-index: 10; animation: explode 0.5s ease; }
+@keyframes explode { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+.rocket-controls { display: flex; flex-direction: column; gap: 10px; }
+.rocket-buttons { display: flex; gap: 10px; }
+.rocket-buttons button { flex: 1; }
+.btn-normal:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; top: 4px; }

@@ -1,4 +1,4 @@
-// ===== ДАННЫЕ =====
+ // ===== ДАННЫЕ =====
 const GIFTS_DATA = [
   { id: "whipcupcakes", name: "Whip Cupcakes", image: "https://f.2fools.app/tgs/sticker_set/6ff450c5.gif", price: 35, weight: 25 },
   { id: "mousescakes", name: "Mouses Cakes", image: "https://f.2fools.app/tgs/sticker_set/59d7f.gif", price: 50, weight: 25 },
@@ -44,7 +44,6 @@ let selectedCaseToOpen = null;
 let tempGift = null;
 let selectedInventoryId = null;
 
-// ПРАВИЛЬНАЯ ССЫЛКА НА RENDER
 const SERVER_URL = 'https://misu-bot-bjna.onrender.com';
 
 const balanceEl = document.getElementById("balance");
@@ -102,7 +101,6 @@ function getItemImageHTML(item) {
   return `<span style="font-size: 20px;">${item.emoji || '🎁'}</span>`;
 }
 
-// Загрузка баланса с сервера
 async function loadSave() {
   try {
     const res = await fetch(`${SERVER_URL}/api/get_balance/${userId}`);
@@ -116,7 +114,6 @@ async function loadSave() {
       nextId = invData.nextId || 1;
     }
   } catch (e) {
-    console.log("Сервер спит, грузим локальный баланс");
     const saved = localStorage.getItem(`misuSave_${userId}`);
     if (saved) {
       const data = JSON.parse(saved);
@@ -270,13 +267,15 @@ btnNormalOpen.addEventListener("click", () => {
   }
   rouletteTrack.innerHTML = trackItems.map(gift => `<div class="roulette-item">${gift.image ? `<img src="${gift.image}">` : `<span style="font-size:20px;">${gift.emoji}</span>`}</div>`).join("");
   rouletteTrack.style.transition = "none"; rouletteTrack.style.transform = "translateX(0)";
+  
+  // ИСПРАВЛЕННАЯ АНИМАЦИЯ
   setTimeout(() => {
-    const itemWidth = 76; const containerWidth = rouletteContainer.offsetWidth;
-    const centerOffset = containerWidth / 2; 
-    const stopPosition = -(winningIndex * itemWidth) + centerOffset - 35; 
+    const itemPercent = 100 / totalItems;
+    const stopPercent = -(winningIndex * itemPercent) + 50 - (itemPercent / 2);
     rouletteTrack.style.transition = "transform 4s cubic-bezier(0.15, 1, 0.15, 1)";
-    rouletteTrack.style.transform = `translateX(${stopPosition}px)`;
+    rouletteTrack.style.transform = `translateX(${stopPercent}%)`;
   }, 50);
+
   setTimeout(() => {
     resultScreen.classList.add("active");
     resultItem.innerHTML = getItemImageHTML(tempGift);
@@ -326,16 +325,29 @@ actionBtnSell.addEventListener("click", () => {
   selectedInventoryId = null;
 });
 
-actionBtnWithdraw.addEventListener("click", () => {
+actionBtnWithdraw.addEventListener("click", async () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
   if (!g) return;
   
-  window.open(`https://t.me/misugradebot`, '_blank');
-  inventory = inventory.filter(x => x.id !== selectedInventoryId);
-  saveData(); renderInventory(); renderUpgradeInventory();
-  itemActionModal.classList.remove("active");
-  alert("Напишите боту для вывода.");
+  try {
+    const res = await fetch(`${SERVER_URL}/api/withdraw`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, userName, itemName: g.name, itemPrice: g.price })
+    });
+    
+    if (res.ok) {
+      inventory = inventory.filter(x => x.id !== selectedInventoryId);
+      saveData(); renderInventory(); renderUpgradeInventory();
+      itemActionModal.classList.remove("active");
+      alert(`Заявка на вывод "${g.name}" создана! Ожидайте.`);
+    } else {
+      alert("Ошибка сервера. Попробуйте позже.");
+    }
+  } catch (e) {
+    alert("Сервер недоступен. Попробуйте позже.");
+  }
 });
 
 function renderUpgradeInventory() {

@@ -30,14 +30,13 @@ const GIFTS_DATA = [
 const CASES_DATA = [
   { 
     id: 1, emoji: "🎁", name: "БОМЖ КЕЙС", price: 67, 
-    // Сюда возвращаем старые подарки
     pool: ["whipcupcakes", "mousescakes", "tamagochi", "moonpendants", "instantsramen", "valentinebox", "lightlamp", "snowglobe", "spicedwine", "snoopdog", "snoopcigar", "xmasstocking", "lightsword", "dyson"], 
-    image: "https://f.2fools.app/tgs/sticker_set/25b5f56.gif" 
+    image: "https://f.2fools.app/tgs/sticker_set/281a16cf.gif" // <-- НОВАЯ КАРТИНКА БОМЖА
   },
   { 
     id: 2, emoji: "📦", name: "ВИП КЕЙС", price: 100, 
     pool: ["lightsword", "dyson", "bowties", "culon", "bondedrings", "nailbraclets", "nekohelmet"], 
-    image: "https://f.2fools.app/tgs/sticker_set/4c8a15d0.gif" 
+    image: "https://f.2fools.app/tgs/sticker_set/4d6ca0df.gif" // <-- НОВАЯ КАРТИНКА ВИПА
   },
   { 
     id: 3, emoji: "🔥", name: "МАЖОР КЕЙС", price: 200, 
@@ -631,4 +630,4 @@ upgradeBtn.addEventListener("click", () => {
 
 function updateBalance() {
   if (balanceEl) balanceEl.textContent = balance;
-}
+        }

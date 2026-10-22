@@ -33,6 +33,7 @@ const CASES_DATA = [
 // ===== ПЕРЕМЕННЫЕ =====
 let userId = "guest";
 let userName = "Гость";
+let userAvatar = "https://via.placeholder.com/40";
 let balance = 0;
 let inventory = [];
 let nextId = 1;
@@ -114,32 +115,29 @@ function saveData() {
   localStorage.setItem(`misuSave_${userId}`, JSON.stringify(data));
 }
 
-// ===== ИНИЦИАЛИЗАЦИЯ (ИСПРАВЛЕНО) =====
+// ===== ИНИЦИАЛИЗАЦИЯ =====
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const tgId = urlParams.get('tg_id');
+  const name = urlParams.get('name');
+  const avatar = urlParams.get('avatar');
 
   if (tgId) {
-    // Если ID передан в ссылке (наша новая логика)
     userId = tgId;
-    userName = "Игрок " + userId;
-    document.getElementById("userName").textContent = userName;
-  } else if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-    // Если Мисуграм вдруг передал данные
-    const u = window.Telegram.WebApp.initDataUnsafe.user;
-    userId = u.id.toString();
-    userName = u.username ? `@${u.username}` : u.first_name;
-    document.getElementById("userName").textContent = userName;
+    userName = name || ("Игрок " + userId);
+    if (avatar) userAvatar = decodeURIComponent(avatar);
   } else {
-    // Тест в браузере
     let guestId = localStorage.getItem("misuGuestId");
     if (!guestId) {
       guestId = "guest_" + Math.floor(Math.random() * 100000);
       localStorage.setItem("misuGuestId", guestId);
     }
     userId = guestId;
-    document.getElementById("userName").textContent = "Тестовый Игрок";
+    userName = "Тестовый Игрок";
   }
+
+  document.getElementById("userName").textContent = userName;
+  document.getElementById("userAvatar").src = userAvatar;
 
   loadSave();
 
@@ -160,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWheelSector();
 });
 
-// ===== ПОПОЛНЕНИЕ (ИСПРАВЛЕНО) =====
+// ===== ПОПОЛНЕНИЕ (ПРЯМОЙ ЗАПРОС) =====
 openDepositBtn.addEventListener("click", () => depositModal.classList.add("active"));
 btnCancelDeposit.addEventListener("click", () => depositModal.classList.remove("active"));
 
@@ -168,41 +166,67 @@ btnPayDeposit.addEventListener("click", () => {
   const amount = parseInt(depositAmountInput.value);
   if (!amount || amount < 1) { alert("Введите сумму!"); return; }
   
-  // Если Мисуграм поддерживает sendData (вдруг)
-  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
-    window.Telegram.WebApp.sendData(JSON.stringify({ action: "deposit", amount: amount }));
-    window.Telegram.WebApp.close(); 
-  } else {
-    // Если не поддерживает — открываем бота с текстом +сумма
-    window.open(`https://t.me/misugrader_bot?text=+${amount}`, '_blank');
-    depositModal.classList.remove("active");
-    alert("Открыт чат с ботом. Нажмите 'Отправить', чтобы создать заявку на пополнение.");
-  }
+  // Создаем скрытую форму и отправляем POST-запрос на сервер Render
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = 'https://misu-bot.onrender.com/api/deposit'; // Адрес твоего сервера
+  form.target = '_blank'; // Чтобы не перезагружать страницу
+
+  const data = {
+    userId: userId,
+    userName: userName,
+    amount: amount
+  };
+
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'data';
+  input.value = JSON.stringify(data);
+  form.appendChild(input);
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+
+  depositModal.classList.remove("active");
+  alert(`Заявка на ${amount} ⭐ отправлена админу.\nПереведите ${amount} звезд на @misurade.`);
 });
 
-// ===== ВЫВОД (ИСПРАВЛЕНО) =====
+// ===== ВЫВОД (ПРЯМОЙ ЗАПРОС) =====
 actionBtnWithdraw.addEventListener("click", () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
   if (!g) return;
   
-  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
-    window.Telegram.WebApp.sendData(JSON.stringify({ action: "withdraw", itemName: g.name, itemPrice: g.price, userName: userName }));
-    inventory = inventory.filter(x => x.id !== selectedInventoryId);
-    saveData(); renderInventory(); renderUpgradeInventory();
-    itemActionModal.classList.remove("active");
-    alert("Заявка отправлена.");
-  } else {
-    // Если sendData не работает, открываем бота с текстом для вывода
-    window.open(`https://t.me/misugrader_bot?text=Вывод: ${g.name} (${g.price}⭐)`, '_blank');
-    inventory = inventory.filter(x => x.id !== selectedInventoryId);
-    saveData(); renderInventory(); renderUpgradeInventory();
-    itemActionModal.classList.remove("active");
-    alert("Открыт чат с ботом. Отправьте сообщение для создания заявки.");
-  }
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = 'https://misu-bot.onrender.com/api/withdraw';
+  form.target = '_blank';
+
+  const data = {
+    userId: userId,
+    userName: userName,
+    itemName: g.name,
+    itemPrice: g.price
+  };
+
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'data';
+  input.value = JSON.stringify(data);
+  form.appendChild(input);
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+
+  inventory = inventory.filter(x => x.id !== selectedInventoryId);
+  saveData(); renderInventory(); renderUpgradeInventory();
+  itemActionModal.classList.remove('active');
+  alert("Заявка на вывод отправлена админу.");
 });
 
-// ===== ОТРИСОВКА И ЛОГИКА (ОСТАЛЬНОЕ БЕЗ ИЗМЕНЕНИЙ) =====
+// ===== ОТРИСОВКА =====
 function renderCases() {
   if (!casesGrid) return;
   casesGrid.innerHTML = "";
@@ -434,7 +458,6 @@ upgradeBtn.addEventListener("click", () => {
   needle.style.transition = "transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)";
   needle.style.transform = `rotate(${totalRotation}deg)`;
   hintEl.textContent = "Крутим...";
-
   setTimeout(() => {
     isSpinning = false;
     if (success) {

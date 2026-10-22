@@ -7,6 +7,33 @@ body { background: #0a0a0a; color: #f5f5f5; min-height: 100vh; padding-bottom: 2
 .avatar { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #facc15; background: #222; box-shadow: 0 0 10px rgba(250, 204, 21, 0.2); }
 .brand { font-weight: 900; font-size: 1rem; color: #facc15; letter-spacing: 1px; line-height: 1; text-shadow: 0 0 8px rgba(250, 204, 21, 0.4); }
 .username { font-size: 0.65rem; color: #888; font-weight: 600; }
+
+/* Правая часть шапки (кнопка поддержки + баланс) */
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+/* Кнопка поддержки */
+.support-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #facc15;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.support-btn:hover, .support-btn:active {
+  background: #facc15;
+  color: #111;
+  border-color: #facc15;
+  transform: scale(1.05);
+}
+
 .balance { background: #1a1a1a; border: 1px solid #facc15; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 0.9rem; color: #facc15; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; box-shadow: 0 0 10px rgba(250, 204, 21, 0.1); }
 .balance:active { transform: scale(0.95); background: #222; }
 .plus { background: #facc15; color: #111; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; box-shadow: 0 0 8px rgba(250, 204, 21, 0.4); }

@@ -1,4 +1,4 @@
- // ===== ДАННЫЕ =====
+// ===== ДАННЫЕ =====
 const GIFTS_DATA = [
   { id: "whipcupcakes", name: "Whip Cupcakes", image: "https://f.2fools.app/tgs/sticker_set/6ff450c5.gif", price: 35, weight: 25 },
   { id: "mousescakes", name: "Mouses Cakes", image: "https://f.2fools.app/tgs/sticker_set/59d7f.gif", price: 50, weight: 25 },
@@ -266,14 +266,15 @@ btnNormalOpen.addEventListener("click", () => {
     else trackItems.push(getRandomGiftByWeight(availableGifts));
   }
   rouletteTrack.innerHTML = trackItems.map(gift => `<div class="roulette-item">${gift.image ? `<img src="${gift.image}">` : `<span style="font-size:20px;">${gift.emoji}</span>`}</div>`).join("");
-  rouletteTrack.style.transition = "none"; rouletteTrack.style.transform = "translateX(0)";
-  
-  // ИСПРАВЛЕННАЯ АНИМАЦИЯ
+  rouletteTrack.style.transition = "none"; 
+  rouletteTrack.style.transform = "translateX(0)";
+
   setTimeout(() => {
-    const itemPercent = 100 / totalItems;
-    const stopPercent = -(winningIndex * itemPercent) + 50 - (itemPercent / 2);
+    const itemWidth = 84; // 76px + 8px отступы
+    const containerWidth = rouletteContainer.offsetWidth; 
+    const stopPosition = -(winningIndex * itemWidth) + (containerWidth / 2) - 38;
     rouletteTrack.style.transition = "transform 4s cubic-bezier(0.15, 1, 0.15, 1)";
-    rouletteTrack.style.transform = `translateX(${stopPercent}%)`;
+    rouletteTrack.style.transform = `translateX(${stopPosition}px)`;
   }, 50);
 
   setTimeout(() => {

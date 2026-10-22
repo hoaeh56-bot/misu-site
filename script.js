@@ -30,6 +30,7 @@ const CASES_DATA = [
   { id: 3, emoji: "🔥", name: "МАЖОР КЕЙС", price: 200, pool: ["heroichelmet", "strongarms", "bricks"], image: "https://f.2fools.app/tgs/sticker_set/27378bc0.gif" }
 ];
 
+// ===== ПЕРЕМЕННЫЕ =====
 let userId = "guest";
 let userName = "Гость";
 let userAvatar = "https://via.placeholder.com/40";
@@ -44,10 +45,8 @@ let selectedCaseToOpen = null;
 let tempGift = null;
 let selectedInventoryId = null;
 
-// ВСТАВЬ СВОЙ ТОКЕН И ID ЧАТА
-const BOT_TOKEN = '1780243237:1w2CHS4zqtHz5dJ5QJEBdwHKTNEwjWPiUQY';
-const ADMIN_CHAT_ID = '-100243';
-const API_ROOT = 'http://2.26.51.20:8088/bot'; // API Мисуграма
+// ССЫЛКА НА ТВОЙ RENDER (без слэша на конце)
+const SERVER_URL = 'https://misu-bot-9.onrender.com';
 
 const balanceEl = document.getElementById("balance");
 const casesGrid = document.getElementById("casesGrid");
@@ -99,28 +98,47 @@ const btnKeep = document.getElementById("btnKeep");
 const btnFastOpen = document.getElementById("btnFastOpen");
 const btnNormalOpen = document.getElementById("btnNormalOpen");
 
+// ===== ФУНКЦИИ =====
 function getItemImageHTML(item) {
   if (item && item.image) return `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
   return `<span style="font-size: 20px;">${item.emoji || '🎁'}</span>`;
 }
 
-function loadSave() {
-  const saved = localStorage.getItem(`misuSave_${userId}`);
-  if (saved) {
-    const data = JSON.parse(saved);
-    balance = data.balance !== undefined ? data.balance : 0;
-    inventory = data.inventory || [];
-    nextId = data.nextId || 1;
+// Загрузка баланса с сервера
+async function loadSave() {
+  try {
+    const res = await fetch(`${SERVER_URL}/api/get_balance/${userId}`);
+    const data = await res.json();
+    balance = data.balance || 0;
+    
+    // Инвентарь храним локально
+    const savedInv = localStorage.getItem(`misuInv_${userId}`);
+    if (savedInv) {
+      const invData = JSON.parse(savedInv);
+      inventory = invData.inventory || [];
+      nextId = invData.nextId || 1;
+    }
+  } catch (e) {
+    console.log("Сервер спит, грузим локальный баланс");
+    const saved = localStorage.getItem(`misuSave_${userId}`);
+    if (saved) {
+      const data = JSON.parse(saved);
+      balance = data.balance || 0;
+      inventory = data.inventory || [];
+      nextId = data.nextId || 1;
+    }
   }
+  updateBalance();
 }
 
+// Сохранение (только инвентарь, баланс на сервере)
 function saveData() {
-  const data = { balance, inventory, nextId };
-  localStorage.setItem(`misuSave_${userId}`, JSON.stringify(data));
+  const invData = { inventory, nextId };
+  localStorage.setItem(`misuInv_${userId}`, JSON.stringify(invData));
 }
 
 // ===== ИНИЦИАЛИЗАЦИЯ =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const tgId = urlParams.get('tg_id');
   const name = urlParams.get('name');
@@ -143,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById("userName").textContent = userName;
   document.getElementById("userAvatar").src = userAvatar;
 
-  loadSave();
+  await loadSave();
 
   document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
@@ -158,57 +176,21 @@ document.addEventListener('DOMContentLoaded', () => {
   renderInventory();
   renderUpgradeInventory();
   renderTargetInventory();
-  updateBalance();
   updateWheelSector();
-});
 
-// ===== ПРЯМАЯ ОТПРАВКА В МИСУГРАМ (БЕЗ RENDER) =====
-btnPayDeposit.addEventListener("click", () => {
-  const amount = parseInt(depositAmountInput.value);
-  if (!amount || amount < 1) { alert("Введите сумму!"); return; }
-  
-  const text = `💰 **ЗАЯВКА НА ПОПОЛНЕНИЕ**\n\n👤 Игрок: ${userName}\n🆔 ID: ${userId}\n⭐ Сумма: ${amount} звезд`;
-  
-  // Отправляем напрямую в API Мисуграма
-  const url = `${API_ROOT}${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+  // Кнопки
+  openDepositBtn.addEventListener("click", () => {
+    alert("Пополнение теперь через бота! Нажми на кнопку 💰 Пополнить баланс в чате с ботом.");
+  });
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      if (data.ok) {
-        depositModal.classList.remove("active");
-        alert(`Заявка на ${amount} ⭐ отправлена! Ожидайте.`);
-      } else {
-        alert("Ошибка API: " + data.description);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      alert("Ошибка сети. Попробуйте позже.");
-    });
-});
+  btnPayDeposit.addEventListener("click", () => {
+    alert("Пополнение теперь через бота! Нажми на кнопку 💰 Пополнить баланс в чате с ботом.");
+    depositModal.classList.remove("active");
+  });
 
-actionBtnWithdraw.addEventListener("click", () => {
-  if (!selectedInventoryId) return;
-  const g = inventory.find(x => x.id === selectedInventoryId);
-  if (!g) return;
-  
-  const text = `📥 **ЗАЯВКА НА ВЫВОД**\n\n👤 Игрок: ${userName}\n🆔 ID: ${userId}\n🎁 Подарок: ${g.name}\n💰 Стоимость: ${g.price} ⭐`;
-  const url = `${API_ROOT}${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
-
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      if (data.ok) {
-        inventory = inventory.filter(x => x.id !== selectedInventoryId);
-        saveData(); renderInventory(); renderUpgradeInventory();
-        itemActionModal.classList.remove("active");
-        alert(`Заявка на вывод "${g.name}" отправлена!`);
-      } else {
-        alert("Ошибка API: " + data.description);
-      }
-    })
-    .catch(() => alert("Ошибка сети. Попробуйте позже."));
+  btnCancelDeposit.addEventListener("click", () => depositModal.classList.remove("active"));
+  btnCancelAction.addEventListener("click", () => { itemActionModal.classList.remove("active"); selectedInventoryId = null; });
+  btnCancelPreview.addEventListener("click", () => { previewModal.classList.remove("active"); selectedCaseToOpen = null; });
 });
 
 // ===== ОТРИСОВКА =====
@@ -253,8 +235,6 @@ function showPreviewModal(c) {
   });
   previewModal.classList.add("active");
 }
-
-btnCancelPreview.addEventListener("click", () => { previewModal.classList.remove("active"); selectedCaseToOpen = null; });
 
 btnFastOpen.addEventListener("click", () => {
   if (!selectedCaseToOpen) return;
@@ -342,8 +322,6 @@ function renderInventory() {
   });
 }
 
-btnCancelAction.addEventListener("click", () => { itemActionModal.classList.remove("active"); selectedInventoryId = null; });
-
 actionBtnSell.addEventListener("click", () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
@@ -353,6 +331,18 @@ actionBtnSell.addEventListener("click", () => {
   itemActionModal.classList.remove("active");
   hintEl.innerHTML = `Вы продали <b>${g.name}</b> за <b>${g.price} ⭐</b>!`;
   selectedInventoryId = null;
+});
+
+actionBtnWithdraw.addEventListener("click", () => {
+  if (!selectedInventoryId) return;
+  const g = inventory.find(x => x.id === selectedInventoryId);
+  if (!g) return;
+  
+  window.open(`https://t.me/misugradebot`, '_blank');
+  inventory = inventory.filter(x => x.id !== selectedInventoryId);
+  saveData(); renderInventory(); renderUpgradeInventory();
+  itemActionModal.classList.remove("active");
+  alert("Напишите боту для вывода.");
 });
 
 function renderUpgradeInventory() {

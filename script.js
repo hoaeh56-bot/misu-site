@@ -1,6 +1,5 @@
-// ===== ДАННЫЕ =====
+// ===== ДАННЫЕ (ОСТАВЛЯЕМ БЕЗ ИЗМЕНЕНИЙ) =====
 const GIFTS_DATA = [
-  // --- СТАРЫЕ (от 35 до 100) ---
   { id: "whipcupcakes", name: "Whip Cupcakes", image: "https://f.2fools.app/tgs/sticker_set/6ff450c5.gif", price: 35, weight: 25 },
   { id: "mousescakes", name: "Mouses Cakes", image: "https://f.2fools.app/tgs/sticker_set/59d7f.gif", price: 50, weight: 25 },
   { id: "tamagochi", name: "Tamagochi", image: "https://f.2fools.app/tgs/sticker_set/f99b65ce.gif", price: 50, weight: 25 },
@@ -15,8 +14,6 @@ const GIFTS_DATA = [
   { id: "xmasstocking", name: "Xmas Stocking", image: "https://f.2fools.app/tgs/sticker_set/429640bf.gif", price: 100, weight: 15 },
   { id: "lightsword", name: "Light Sword", image: "https://f.2fools.app/tgs/sticker_set/dbfacb64.gif", price: 100, weight: 15 },
   { id: "dyson", name: "Dyson", image: "https://f.2fools.app/tgs/sticker_set/70089a44.gif", price: 100, weight: 15 },
-
-  // --- НОВЫЕ (от 110 до 400) ---
   { id: "bowties", name: "Bow Ties", image: "https://f.2fools.app/tgs/sticker_set/b8eb5174.gif", price: 110, weight: 15 },
   { id: "culon", name: "Culon", image: "https://f.2fools.app/tgs/sticker_set/67cb9175.gif", price: 150, weight: 10 },
   { id: "bondedrings", name: "Bonded rings", image: "https://f.2fools.app/tgs/sticker_set/7fb2150f.gif", price: 150, weight: 10 },
@@ -28,21 +25,9 @@ const GIFTS_DATA = [
 ];
 
 const CASES_DATA = [
-  { 
-    id: 1, emoji: "🎁", name: "БОМЖ КЕЙС", price: 67, 
-    pool: ["whipcupcakes", "mousescakes", "tamagochi", "moonpendants", "instantsramen", "valentinebox", "lightlamp", "snowglobe", "spicedwine", "snoopdog", "snoopcigar", "xmasstocking", "lightsword", "dyson"], 
-    image: "https://f.2fools.app/tgs/sticker_set/281a16cf.gif" // <-- НОВАЯ КАРТИНКА БОМЖА
-  },
-  { 
-    id: 2, emoji: "📦", name: "ВИП КЕЙС", price: 100, 
-    pool: ["lightsword", "dyson", "bowties", "culon", "bondedrings", "nailbraclets", "nekohelmet"], 
-    image: "https://f.2fools.app/tgs/sticker_set/4d6ca0df.gif" // <-- НОВАЯ КАРТИНКА ВИПА
-  },
-  { 
-    id: 3, emoji: "🔥", name: "МАЖОР КЕЙС", price: 200, 
-    pool: ["heroichelmet", "strongarms", "bricks"], 
-    image: "https://f.2fools.app/tgs/sticker_set/27378bc0.gif" 
-  }
+  { id: 1, emoji: "🎁", name: "БОМЖ КЕЙС", price: 67, pool: ["whipcupcakes", "mousescakes", "tamagochi", "moonpendants", "instantsramen", "valentinebox", "lightlamp", "snowglobe", "spicedwine", "snoopdog", "snoopcigar", "xmasstocking", "lightsword", "dyson"], image: "https://f.2fools.app/tgs/sticker_set/281a16cf.gif" },
+  { id: 2, emoji: "📦", name: "ВИП КЕЙС", price: 100, pool: ["lightsword", "dyson", "bowties", "culon", "bondedrings", "nailbraclets", "nekohelmet"], image: "https://f.2fools.app/tgs/sticker_set/4d6ca0df.gif" },
+  { id: 3, emoji: "🔥", name: "МАЖОР КЕЙС", price: 200, pool: ["heroichelmet", "strongarms", "bricks"], image: "https://f.2fools.app/tgs/sticker_set/27378bc0.gif" }
 ];
 
 // ===== ПЕРЕМЕННЫЕ =====
@@ -110,13 +95,10 @@ const btnFastOpen = document.getElementById("btnFastOpen");
 const btnNormalOpen = document.getElementById("btnNormalOpen");
 
 function getItemImageHTML(item) {
-  if (item && item.image) {
-    return `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
-  }
+  if (item && item.image) return `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
   return `<span style="font-size: 20px;">${item.emoji || '🎁'}</span>`;
 }
 
-// ===== ПРОФИЛЬ И СОХРАНЕНИЯ =====
 function loadSave() {
   const saved = localStorage.getItem(`misuSave_${userId}`);
   if (saved) {
@@ -132,39 +114,24 @@ function saveData() {
   localStorage.setItem(`misuSave_${userId}`, JSON.stringify(data));
 }
 
-// ===== ИНИЦИАЛИЗАЦИЯ =====
+// ===== ИНИЦИАЛИЗАЦИЯ (ИСПРАВЛЕНО) =====
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("Telegram WebApp object:", window.Telegram);
+  const urlParams = new URLSearchParams(window.location.search);
+  const tgId = urlParams.get('tg_id');
 
-  if (window.Telegram && window.Telegram.WebApp) {
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-    
-    console.log("initDataUnsafe:", tg.initDataUnsafe);
-
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      const u = tg.initDataUnsafe.user;
-      userId = u.id.toString();
-      userName = u.username ? `@${u.username}` : (u.first_name || "Игрок");
-      
-      document.getElementById("userName").textContent = userName;
-      if (u.photo_url) {
-        document.getElementById("userAvatar").src = u.photo_url;
-      }
-    } else {
-      const urlParams = new URLSearchParams(window.location.search);
-      const tgId = urlParams.get('tg_id');
-      if (tgId) {
-        userId = tgId;
-        userName = "Игрок " + userId;
-        document.getElementById("userName").textContent = userName;
-      } else {
-        userId = "tg_" + Date.now();
-        document.getElementById("userName").textContent = "Игрок";
-      }
-    }
+  if (tgId) {
+    // Если ID передан в ссылке (наша новая логика)
+    userId = tgId;
+    userName = "Игрок " + userId;
+    document.getElementById("userName").textContent = userName;
+  } else if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+    // Если Мисуграм вдруг передал данные
+    const u = window.Telegram.WebApp.initDataUnsafe.user;
+    userId = u.id.toString();
+    userName = u.username ? `@${u.username}` : u.first_name;
+    document.getElementById("userName").textContent = userName;
   } else {
+    // Тест в браузере
     let guestId = localStorage.getItem("misuGuestId");
     if (!guestId) {
       guestId = "guest_" + Math.floor(Math.random() * 100000);
@@ -193,55 +160,57 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWheelSector();
 });
 
-// ===== ПОПОЛНЕНИЕ =====
+// ===== ПОПОЛНЕНИЕ (ИСПРАВЛЕНО) =====
 openDepositBtn.addEventListener("click", () => depositModal.classList.add("active"));
 btnCancelDeposit.addEventListener("click", () => depositModal.classList.remove("active"));
 
 btnPayDeposit.addEventListener("click", () => {
   const amount = parseInt(depositAmountInput.value);
-  if (!amount || amount < 1) {
-    alert("Введите корректную сумму!");
-    return;
-  }
+  if (!amount || amount < 1) { alert("Введите сумму!"); return; }
   
-  if (window.Telegram && window.Telegram.WebApp) {
-    const tg = window.Telegram.WebApp;
-    if (tg.sendData) {
-      tg.sendData(JSON.stringify({ action: "deposit", amount: amount }));
-      tg.close(); 
-    } else {
-      alert("Ошибка: метод отправки не поддерживается.");
-    }
+  // Если Мисуграм поддерживает sendData (вдруг)
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
+    window.Telegram.WebApp.sendData(JSON.stringify({ action: "deposit", amount: amount }));
+    window.Telegram.WebApp.close(); 
   } else {
-    balance += amount;
-    updateBalance();
-    saveData();
+    // Если не поддерживает — открываем бота с текстом +сумма
+    window.open(`https://t.me/misugrader_bot?text=+${amount}`, '_blank');
     depositModal.classList.remove("active");
-    hintEl.textContent = `Тестовое пополнение на ${amount} ⭐`;
-    depositAmountInput.value = "";
+    alert("Открыт чат с ботом. Нажмите 'Отправить', чтобы создать заявку на пополнение.");
   }
 });
 
-// ===== ОТРИСОВКА КЕЙСОВ =====
+// ===== ВЫВОД (ИСПРАВЛЕНО) =====
+actionBtnWithdraw.addEventListener("click", () => {
+  if (!selectedInventoryId) return;
+  const g = inventory.find(x => x.id === selectedInventoryId);
+  if (!g) return;
+  
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
+    window.Telegram.WebApp.sendData(JSON.stringify({ action: "withdraw", itemName: g.name, itemPrice: g.price, userName: userName }));
+    inventory = inventory.filter(x => x.id !== selectedInventoryId);
+    saveData(); renderInventory(); renderUpgradeInventory();
+    itemActionModal.classList.remove("active");
+    alert("Заявка отправлена.");
+  } else {
+    // Если sendData не работает, открываем бота с текстом для вывода
+    window.open(`https://t.me/misugrader_bot?text=Вывод: ${g.name} (${g.price}⭐)`, '_blank');
+    inventory = inventory.filter(x => x.id !== selectedInventoryId);
+    saveData(); renderInventory(); renderUpgradeInventory();
+    itemActionModal.classList.remove("active");
+    alert("Открыт чат с ботом. Отправьте сообщение для создания заявки.");
+  }
+});
+
+// ===== ОТРИСОВКА И ЛОГИКА (ОСТАЛЬНОЕ БЕЗ ИЗМЕНЕНИЙ) =====
 function renderCases() {
   if (!casesGrid) return;
   casesGrid.innerHTML = "";
   CASES_DATA.forEach(c => {
     const div = document.createElement("div");
     div.className = "case";
-    const bgImage = c.image 
-      ? `<img src="${c.image}" class="case-bg" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-         <div class="case-overlay"></div>
-         <span class="case-fallback" style="display:none; font-size: 40px;">${c.emoji}</span>`
-      : `<span class="case-fallback" style="font-size: 40px;">${c.emoji}</span>`;
-
-    div.innerHTML = `
-      ${bgImage}
-      <div class="case-info">
-        <div class="name">${c.name}</div>
-        <div class="price">${c.price} ⭐</div>
-      </div>
-    `;
+    const bgImage = c.image ? `<img src="${c.image}" class="case-bg" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="case-overlay"></div><span class="case-fallback" style="display:none; font-size: 40px;">${c.emoji}</span>` : `<span class="case-fallback" style="font-size: 40px;">${c.emoji}</span>`;
+    div.innerHTML = `${bgImage}<div class="case-info"><div class="name">${c.name}</div><div class="price">${c.price} ⭐</div></div>`;
     div.addEventListener("click", () => showPreviewModal(c));
     casesGrid.appendChild(div);
   });
@@ -258,62 +227,42 @@ function getRandomGiftByWeight(gifts) {
   return gifts[0];
 }
 
-// ===== ПРЕВЬЮ КЕЙСА =====
 function showPreviewModal(c) {
   selectedCaseToOpen = c;
   previewImg.src = c.image;
   previewTitle.textContent = c.name;
-  
   const availableGifts = GIFTS_DATA.filter(gift => c.pool.includes(gift.id));
   const totalWeight = availableGifts.reduce((sum, gift) => sum + (gift.weight || 1), 0);
-
   previewGrid.innerHTML = "";
   availableGifts.forEach(gift => {
     const weight = gift.weight || 1;
     const percent = ((weight / totalWeight) * 100).toFixed(1);
     const div = document.createElement("div");
     div.className = "preview-item";
-    div.innerHTML = `
-      <img src="${gift.image}" alt="${gift.name}">
-      <div class="p-name">${gift.name}</div>
-      <div class="p-chance">${percent}%</div>
-    `;
+    div.innerHTML = `<img src="${gift.image}" alt="${gift.name}"><div class="p-name">${gift.name}</div><div class="p-chance">${percent}%</div>`;
     previewGrid.appendChild(div);
   });
   previewModal.classList.add("active");
 }
 
-btnCancelPreview.addEventListener("click", () => {
-  previewModal.classList.remove("active");
-  selectedCaseToOpen = null;
-});
+btnCancelPreview.addEventListener("click", () => { previewModal.classList.remove("active"); selectedCaseToOpen = null; });
 
-// ===== ОТКРЫТИЕ КЕЙСА =====
 btnFastOpen.addEventListener("click", () => {
   if (!selectedCaseToOpen) return;
   previewModal.classList.remove("active");
   const c = selectedCaseToOpen;
-  if (balance < c.price) {
-    hintEl.textContent = "Недостаточно звёзд! Пополни баланс.";
-    return;
-  }
-  balance -= c.price;
-  updateBalance();
-  saveData();
-
+  if (balance < c.price) { hintEl.textContent = "Недостаточно звёзд!"; return; }
+  balance -= c.price; updateBalance(); saveData();
   const availableGifts = GIFTS_DATA.filter(gift => c.pool.includes(gift.id));
   const randomGift = getRandomGiftByWeight(availableGifts);
   tempGift = { id: nextId++, emoji: randomGift.emoji, image: randomGift.image, name: randomGift.name, price: randomGift.price };
-
   modalTitle.innerHTML = `<div class="case-open-header"><img src="${c.image}" style="width:30px; height:30px; border-radius:5px; vertical-align:middle; margin-right:5px;"><span style="vertical-align:middle;">${c.name}</span></div>`;
   caseModal.classList.add("active");
   rouletteContainer.style.display = "none";
   resultScreen.classList.add("active");
-  
   resultItem.innerHTML = getItemImageHTML(tempGift);
   resultName.textContent = tempGift.name;
   sellPriceSpan.textContent = tempGift.price;
-
   selectedCaseToOpen = null;
 });
 
@@ -321,23 +270,15 @@ btnNormalOpen.addEventListener("click", () => {
   if (!selectedCaseToOpen) return;
   previewModal.classList.remove("active");
   const c = selectedCaseToOpen;
-  if (balance < c.price) {
-    hintEl.textContent = "Недостаточно звёзд! Пополни баланс.";
-    return;
-  }
-  balance -= c.price;
-  updateBalance();
-  saveData();
-
+  if (balance < c.price) { hintEl.textContent = "Недостаточно звёзд!"; return; }
+  balance -= c.price; updateBalance(); saveData();
   const availableGifts = GIFTS_DATA.filter(gift => c.pool.includes(gift.id));
   const randomGift = getRandomGiftByWeight(availableGifts);
   tempGift = { id: nextId++, emoji: randomGift.emoji, image: randomGift.image, name: randomGift.name, price: randomGift.price };
-
   modalTitle.innerHTML = `<div class="case-open-header"><img src="${c.image}" style="width:30px; height:30px; border-radius:5px; vertical-align:middle; margin-right:5px;"><span style="vertical-align:middle;">${c.name}</span></div>`;
   caseModal.classList.add("active");
   rouletteContainer.style.display = "block";
   resultScreen.classList.remove("active");
-
   const trackItems = [];
   const totalItems = 50;
   const winningIndex = 45;
@@ -345,41 +286,27 @@ btnNormalOpen.addEventListener("click", () => {
     if (i === winningIndex) trackItems.push(tempGift);
     else trackItems.push(getRandomGiftByWeight(availableGifts));
   }
-
-  rouletteTrack.innerHTML = trackItems.map(gift => `
-    <div class="roulette-item">
-      ${gift.image ? `<img src="${gift.image}">` : `<span style="font-size:20px;">${gift.emoji}</span>`}
-    </div>
-  `).join("");
-
-  rouletteTrack.style.transition = "none";
-  rouletteTrack.style.transform = "translateX(0)";
-
+  rouletteTrack.innerHTML = trackItems.map(gift => `<div class="roulette-item">${gift.image ? `<img src="${gift.image}">` : `<span style="font-size:20px;">${gift.emoji}</span>`}</div>`).join("");
+  rouletteTrack.style.transition = "none"; rouletteTrack.style.transform = "translateX(0)";
   setTimeout(() => {
-    const itemWidth = 76; 
-    const containerWidth = rouletteContainer.offsetWidth;
+    const itemWidth = 76; const containerWidth = rouletteContainer.offsetWidth;
     const centerOffset = containerWidth / 2; 
     const stopPosition = -(winningIndex * itemWidth) + centerOffset - 35; 
     rouletteTrack.style.transition = "transform 4s cubic-bezier(0.15, 1, 0.15, 1)";
     rouletteTrack.style.transform = `translateX(${stopPosition}px)`;
   }, 50);
-
   setTimeout(() => {
     resultScreen.classList.add("active");
     resultItem.innerHTML = getItemImageHTML(tempGift);
     resultName.textContent = tempGift.name;
     sellPriceSpan.textContent = tempGift.price;
   }, 4100);
-
   selectedCaseToOpen = null;
 });
 
-// ===== ЗАБРАТЬ / ПРОДАТЬ ИЗ КЕЙСА =====
 btnSell.addEventListener("click", () => {
   if (!tempGift) return;
-  balance += tempGift.price;
-  updateBalance();
-  saveData();
+  balance += tempGift.price; updateBalance(); saveData();
   caseModal.classList.remove("active");
   hintEl.innerHTML = `Вы продали <b>${tempGift.name}</b> за <b>${tempGift.price} ⭐</b>!`;
   tempGift = null;
@@ -387,94 +314,38 @@ btnSell.addEventListener("click", () => {
 
 btnKeep.addEventListener("click", () => {
   if (!tempGift) return;
-  inventory.push(tempGift);
-  saveData();
-  renderInventory();
-  renderUpgradeInventory();
+  inventory.push(tempGift); saveData(); renderInventory(); renderUpgradeInventory();
   caseModal.classList.remove("active");
-  hintEl.innerHTML = `Вы забрали <b>${tempGift.name}</b> в инвентарь!`;
+  hintEl.innerHTML = `Вы забрали <b>${tempGift.name}</b>!`;
   tempGift = null;
 });
 
-// ===== ИНВЕНТАРЬ (ВЫВОД И ПРОДАЖА) =====
 function renderInventory() {
   if (!inventoryEl) return;
-  if (inventory.length === 0) { inventoryEl.innerHTML = `<p class="empty" style="font-size:0.7rem;">Пока пусто. Открой кейс.</p>`; return; }
+  if (inventory.length === 0) { inventoryEl.innerHTML = `<p class="empty" style="font-size:0.7rem;">Пока пусто.</p>`; return; }
   inventoryEl.innerHTML = "";
   inventory.forEach(g => {
     const div = document.createElement("div");
     div.className = "inv-item";
     div.innerHTML = `<div class="item-img-box">${getItemImageHTML(g)}</div><div class="name">${g.name}</div><div class="price">${g.price} ⭐</div>`;
-    
-    div.addEventListener("click", () => {
-      selectedInventoryId = g.id;
-      actionItemImg.src = g.image;
-      actionItemName.textContent = g.name;
-      itemActionModal.classList.add("active");
-    });
-    
+    div.addEventListener("click", () => { selectedInventoryId = g.id; actionItemImg.src = g.image; actionItemName.textContent = g.name; itemActionModal.classList.add("active"); });
     inventoryEl.appendChild(div);
   });
 }
 
-btnCancelAction.addEventListener("click", () => {
-  itemActionModal.classList.remove("active");
-  selectedInventoryId = null;
-});
+btnCancelAction.addEventListener("click", () => { itemActionModal.classList.remove("active"); selectedInventoryId = null; });
 
 actionBtnSell.addEventListener("click", () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
   if (!g) return;
-  
-  balance += g.price;
-  inventory = inventory.filter(x => x.id !== selectedInventoryId);
-  
-  updateBalance();
-  saveData();
-  renderInventory();
-  renderUpgradeInventory();
-  
+  balance += g.price; inventory = inventory.filter(x => x.id !== selectedInventoryId);
+  updateBalance(); saveData(); renderInventory(); renderUpgradeInventory();
   itemActionModal.classList.remove("active");
   hintEl.innerHTML = `Вы продали <b>${g.name}</b> за <b>${g.price} ⭐</b>!`;
   selectedInventoryId = null;
 });
 
-// ВЫВОД
-actionBtnWithdraw.addEventListener("click", () => {
-  if (!selectedInventoryId) return;
-  const g = inventory.find(x => x.id === selectedInventoryId);
-  if (!g) return;
-  
-  if (window.Telegram && window.Telegram.WebApp) {
-    const tg = window.Telegram.WebApp;
-    if (tg.sendData) {
-      tg.sendData(JSON.stringify({ 
-        action: "withdraw", 
-        itemName: g.name, 
-        itemPrice: g.price,
-        userName: userName
-      }));
-      
-      inventory = inventory.filter(x => x.id !== selectedInventoryId);
-      saveData();
-      renderInventory();
-      renderUpgradeInventory();
-      
-      itemActionModal.classList.remove("active");
-      alert("Заявка обрабатывается. Ожидайте сообщения от администратора.");
-      selectedInventoryId = null;
-      tg.close();
-    } else {
-      alert("Ошибка: метод отправки не поддерживается.");
-    }
-  } else {
-    alert("Заявка на вывод создана (тестовый режим).");
-    itemActionModal.classList.remove("active");
-  }
-});
-
-// ===== АПГРЕЙДЕР =====
 function renderUpgradeInventory() {
   if (!upgradeInventoryEl) return;
   if (inventory.length === 0) { upgradeInventoryEl.innerHTML = `<p class="empty" style="font-size:0.7rem;">Инвентарь пуст.</p>`; return; }
@@ -507,26 +378,18 @@ function selectItem(id) {
   const g = inventory.find(x => x.id === id);
   if (!g) return;
   selectedEmoji.innerHTML = getItemImageHTML(g);
-  selectedName.textContent = g.name;
-  selectedPrice.textContent = `${g.price} ⭐`;
-  calculateChance();
-  renderUpgradeInventory();
+  selectedName.textContent = g.name; selectedPrice.textContent = `${g.price} ⭐`;
+  calculateChance(); renderUpgradeInventory();
 }
 
 function selectTarget(id) {
   if (isSpinning) return;
   const currentItem = inventory.find(x => x.id === selectedItemId);
   const targetItem = GIFTS_DATA.find(x => x.id === id);
-  if (currentItem && targetItem && targetItem.price <= currentItem.price) {
-    hintEl.textContent = "Цель должна быть дороже!";
-    return;
-  }
-  selectedTargetId = id;
-  nextEmoji.innerHTML = getItemImageHTML(targetItem);
-  nextName.textContent = targetItem.name;
-  nextPrice.textContent = `${targetItem.price} ⭐`;
-  calculateChance();
-  renderTargetInventory();
+  if (currentItem && targetItem && targetItem.price <= currentItem.price) { hintEl.textContent = "Цель должна быть дороже!"; return; }
+  selectedTargetId = id; nextEmoji.innerHTML = getItemImageHTML(targetItem);
+  nextName.textContent = targetItem.name; nextPrice.textContent = `${targetItem.price} ⭐`;
+  calculateChance(); renderTargetInventory();
 }
 
 function calculateChance() {
@@ -537,30 +400,19 @@ function calculateChance() {
       let chance = (currentItem.price / targetItem.price) * 0.9;
       if (chance > 0.9) chance = 0.9;
       if (chance < 0.01) chance = 0.01;
-      currentChance = chance;
-      updateWheelSector();
-      upgradeBtn.disabled = false;
+      currentChance = chance; updateWheelSector(); upgradeBtn.disabled = false;
       hintEl.textContent = `Шанс успеха: ${Math.round(chance * 100)}%`;
     }
-  } else {
-    currentChance = 0;
-    updateWheelSector();
-    upgradeBtn.disabled = true;
-  }
+  } else { currentChance = 0; updateWheelSector(); upgradeBtn.disabled = true; }
 }
 
 function updateWheelSector() {
   if (!wheelPath || !centerChance) return;
   const angle = currentChance * 360;
-  const startAngle = 90 - angle / 2;
-  const endAngle = 90 + angle / 2;
-  const startRad = (startAngle * Math.PI) / 180;
-  const endRad = (endAngle * Math.PI) / 180;
-  const r = 96;
-  const x1 = 100 + r * Math.cos(startRad);
-  const y1 = 100 + r * Math.sin(startRad);
-  const x2 = 100 + r * Math.cos(endRad);
-  const y2 = 100 + r * Math.sin(endRad);
+  const startAngle = 90 - angle / 2; const endAngle = 90 + angle / 2;
+  const startRad = (startAngle * Math.PI) / 180; const endRad = (endAngle * Math.PI) / 180;
+  const r = 96; const x1 = 100 + r * Math.cos(startRad); const y1 = 100 + r * Math.sin(startRad);
+  const x2 = 100 + r * Math.cos(endRad); const y2 = 100 + r * Math.sin(endRad);
   const largeArc = angle > 180 ? 1 : 0;
   if (angle >= 360) { wheelPath.setAttribute("d", `M 100 4 A 96 96 0 1 1 99.9 4 Z`); } 
   else { wheelPath.setAttribute("d", `M 100 100 L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`); }
@@ -572,11 +424,9 @@ upgradeBtn.addEventListener("click", () => {
   const g = inventory.find(x => x.id === selectedItemId);
   const target = GIFTS_DATA.find(x => x.id === selectedTargetId);
   if (!g || !target) return;
-  isSpinning = true;
-  upgradeBtn.disabled = true;
+  isSpinning = true; upgradeBtn.disabled = true;
   const success = Math.random() < currentChance;
-  const angle = currentChance * 360;
-  let stopAngle;
+  const angle = currentChance * 360; let stopAngle;
   if (success) stopAngle = 180 - angle / 2 + Math.random() * angle;
   else stopAngle = 180 + angle / 2 + Math.random() * (360 - angle);
   const fullSpins = 5 + Math.floor(Math.random() * 3);
@@ -589,45 +439,23 @@ upgradeBtn.addEventListener("click", () => {
     isSpinning = false;
     if (success) {
       const upgraded = { id: nextId++, emoji: target.emoji, image: target.image, name: target.name, price: target.price };
-      inventory = inventory.filter(x => x.id !== g.id);
-      inventory.push(upgraded);
-      selectedItemId = null;
-      selectedTargetId = null;
+      inventory = inventory.filter(x => x.id !== g.id); inventory.push(upgraded);
+      selectedItemId = null; selectedTargetId = null;
       hintEl.textContent = `Успех! ${g.name} → ${upgraded.name}`;
     } else {
-      inventory = inventory.filter(x => x.id !== g.id);
-      selectedItemId = null;
+      inventory = inventory.filter(x => x.id !== g.id); selectedItemId = null;
       hintEl.textContent = `Неудача. ${g.name} сгорел.`;
     }
-    
     saveData();
-
     setTimeout(() => {
-      needle.style.transition = "none";
-      needle.style.transform = "rotate(0deg)";
-      setTimeout(() => {
-        needle.style.transition = "transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)";
-      }, 50);
+      needle.style.transition = "none"; needle.style.transform = "rotate(0deg)";
+      setTimeout(() => { needle.style.transition = "transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)"; }, 50);
     }, 300);
-
-    renderInventory();
-    renderUpgradeInventory();
-    renderTargetInventory();
-
-    if (selectedItemId === null) {
-      selectedEmoji.innerHTML = "—";
-      selectedName.textContent = "Выбери подарок";
-      selectedPrice.textContent = "—";
-    }
-    if (selectedTargetId === null) {
-      nextEmoji.innerHTML = "—";
-      nextName.textContent = "Хочешь получить";
-      nextPrice.textContent = "—";
-    }
+    renderInventory(); renderUpgradeInventory(); renderTargetInventory();
+    if (selectedItemId === null) { selectedEmoji.innerHTML = "—"; selectedName.textContent = "Выбери подарок"; selectedPrice.textContent = "—"; }
+    if (selectedTargetId === null) { nextEmoji.innerHTML = "—"; nextName.textContent = "Хочешь получить"; nextPrice.textContent = "—"; }
     calculateChance();
   }, 4100);
 });
 
-function updateBalance() {
-  if (balanceEl) balanceEl.textContent = balance;
-        }
+function updateBalance() { if (balanceEl) balanceEl.textContent = balance; }

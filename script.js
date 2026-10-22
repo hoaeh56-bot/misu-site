@@ -30,14 +30,6 @@ const CASES_DATA = [
   { id: 3, emoji: "🔥", name: "МАЖОР КЕЙС", price: 200, pool: ["lightsword", "dyson", "bowties", "culon", "bondedrings", "nailbraclets", "nekohelmet", "heroichelmet", "strongarms", "bricks"], image: "https://f.2fools.app/tgs/sticker_set/27378bc0.gif" }
 ];
 
-// --- ИВЕНТ ДАННЫЕ ---
-const EVENT_TASKS = [
-  { id: "case_bomj", name: "Открыть БОМЖ кейс", target: 10, reward: 5, type: "case", caseId: 1 },
-  { id: "case_vip", name: "Открыть ВИП кейс", target: 5, reward: 10, type: "case", caseId: 2 },
-  { id: "rocket", name: "Сыграть в Ракетку", target: 3, reward: 5, type: "rocket" },
-  { id: "upgrade", name: "Улучшить скин", target: 10, reward: 8, type: "upgrade" }
-];
-
 let userId = "guest";
 let userName = "Гость";
 let userAvatar = "https://via.placeholder.com/40";
@@ -52,12 +44,477 @@ let selectedCaseToOpen = null;
 let tempGift = null;
 let selectedInventoryId = null;
 
-// Переменные Ивента
-let eventPoints = 0;
-let eventProgress = {}; // { taskId: count }
-let hasLuckPotion = false;
-let eventLeaderboard = []; // { name: string, points: number }
+// Ракета
+let rocketInterval = null;
+let currentMultiplier = 1.00;
+let rocketCrashed = false;
+let rocketActive = false;
+let currentBet = 0;
 
 const SERVER_URL = 'https://misu-bot-bjna.onrender.com';
 
-// ... (продолжение кода, элементы DOM и функции загрузки, как в прошлом сообщении)
+const balanceEl = document.getElementById("balance");
+const casesGrid = document.getElementById("casesGrid");
+const inventoryEl = document.getElementById("inventory");
+const upgradeInventoryEl = document.getElementById("upgradeInventory");
+const targetInventoryEl = document.getElementById("targetInventory");
+const wheelPath = document.getElementById("wheelPath");
+const centerChance = document.getElementById("centerChance");
+const needle = document.getElementById("needle");
+const upgradeBtn = document.getElementById("upgradeBtn");
+const hintEl = document.getElementById("hint");
+
+const selectedEmoji = document.getElementById("selectedEmoji");
+const selectedName = document.getElementById("selectedName");
+const selectedPrice = document.getElementById("selectedPrice");
+const nextEmoji = document.getElementById("nextEmoji");
+const nextName = document.getElementById("nextName");
+const nextPrice = document.getElementById("nextPrice");
+
+const depositModal = document.getElementById("depositModal");
+const openDepositBtn = document.getElementById("openDepositBtn");
+
+const itemActionModal = document.getElementById("itemActionModal");
+const actionItemImg = document.getElementById("actionItemImg");
+const actionItemName = document.getElementById("actionItemName");
+const actionBtnSell = document.getElementById("actionBtnSell");
+const actionBtnWithdraw = document.getElementById("actionBtnWithdraw");
+const btnCancelAction = document.getElementById("btnCancelAction");
+
+const previewModal = document.getElementById("previewModal");
+const previewImg = document.getElementById("previewImg");
+const previewTitle = document.getElementById("previewTitle");
+const previewGrid = document.getElementById("previewGrid");
+const btnCancelPreview = document.getElementById("btnCancelPreview");
+
+const caseModal = document.getElementById("caseModal");
+const modalTitle = document.getElementById("modalTitle");
+const rouletteContainer = document.getElementById("rouletteContainer");
+const rouletteTrack = document.getElementById("rouletteTrack");
+const resultScreen = document.getElementById("resultScreen");
+const resultItem = document.getElementById("resultItem");
+const resultName = document.getElementById("resultName");
+const sellPriceSpan = document.getElementById("sellPrice");
+const btnSell = document.getElementById("btnSell");
+const btnKeep = document.getElementById("btnKeep");
+const btnFastOpen = document.getElementById("btnFastOpen");
+const btnNormalOpen = document.getElementById("btnNormalOpen");
+
+// Ракета элементы
+const rocketArea = document.getElementById("rocketArea");
+const rocketMultiplier = document.getElementById("rocketMultiplier");
+const rocketVisual = document.getElementById("rocketVisual");
+const rocketExplosion = document.getElementById("rocketExplosion");
+const rocketBet = document.getElementById("rocketBet");
+const btnStartRocket = document.getElementById("btnStartRocket");
+const btnCashout = document.getElementById("btnCashout");
+const rocketHint = document.getElementById("rocketHint");
+
+function getItemImageHTML(item) {
+  if (item && item.image) return `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
+  return `<span style="font-size: 20px;">${item.emoji || '🎁'}</span>`;
+}
+
+async function loadSave() {
+  try {
+    const res = await fetch(`${SERVER_URL}/api/get_balance/${userId}`);
+    const data = await res.json();
+    balance = data.balance || 0;
+  } catch (e) {
+    const saved = localStorage.getItem(`misuSave_${userId}`);
+    if (saved) balance = JSON.parse(saved).balance || 0;
+  }
+
+  const savedInv = localStorage.getItem(`misuInv_${userId}`);
+  if (savedInv) {
+    const invData = JSON.parse(savedInv);
+    inventory = invData.inventory || [];
+    nextId = invData.nextId || 1;
+  }
+
+  updateBalance();
+}
+
+function saveData() {
+  localStorage.setItem(`misuInv_${userId}`, JSON.stringify({ inventory, nextId }));
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tgId = urlParams.get('tg_id');
+  const name = urlParams.get('name');
+  const avatar = urlParams.get('avatar');
+
+  // Пытаемся взять ID из Telegram WebApp (Мисуграм)
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+    const u = window.Telegram.WebApp.initDataUnsafe.user;
+    userId = u.id.toString();
+    userName = u.username ? `@${u.username}` : u.first_name;
+  } else if (tgId) {
+    // Или из ссылки, которую передал бот
+    userId = tgId;
+    userName = name || ("Игрок " + userId);
+  }
+
+  // Защита: если ID так и не получили
+  if (!userId || userId === "guest") {
+    userId = "test_user";
+    userName = "Тест";
+  }
+
+  document.getElementById("userName").textContent = userName;
+  if (avatar) document.getElementById("userAvatar").src = decodeURIComponent(avatar);
+  else if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user && window.Telegram.WebApp.initDataUnsafe.user.photo_url) {
+    document.getElementById("userAvatar").src = window.Telegram.WebApp.initDataUnsafe.user.photo_url;
+  }
+
+  await loadSave();
+
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById(`tab-${tab.dataset.tab}`).classList.add("active");
+    });
+  });
+
+  renderCases();
+  renderInventory();
+  renderUpgradeInventory();
+  renderTargetInventory();
+  updateWheelSector();
+
+  openDepositBtn.addEventListener("click", () => alert("Пополнение через бота!"));
+  btnCancelAction.addEventListener("click", () => { itemActionModal.classList.remove("active"); selectedInventoryId = null; });
+  btnCancelPreview.addEventListener("click", () => { previewModal.classList.remove("active"); selectedCaseToOpen = null; });
+
+  // Ракета
+  btnStartRocket.addEventListener("click", () => {
+    if (rocketActive) return;
+    const bet = parseInt(rocketBet.value);
+    if (isNaN(bet) || bet < 10) { rocketHint.textContent = "Мин. 10⭐"; return; }
+    if (balance < bet) { rocketHint.textContent = "Недостаточно звёзд!"; return; }
+
+    balance -= bet; updateBalance();
+    currentBet = bet; rocketActive = true; rocketCrashed = false; currentMultiplier = 1.00;
+    
+    rocketMultiplier.textContent = `x1.00`; rocketMultiplier.style.color = "#facc15";
+    rocketVisual.style.bottom = "10px"; rocketVisual.style.left = "10px";
+    rocketExplosion.style.display = "none"; rocketVisual.style.display = "flex";
+    
+    btnStartRocket.disabled = true; btnCashout.disabled = false; btnCashout.textContent = `Забрать (x1.00)`;
+    rocketHint.textContent = "Ракета летит...";
+
+    const crashPoint = 1.01 + Math.random() * 8.99; 
+    rocketInterval = setInterval(() => {
+      if (rocketCrashed) return;
+      currentMultiplier += 0.05;
+      
+      const progress = currentMultiplier / crashPoint;
+      const bottomPos = 10 + (progress * 200);
+      const leftPos = 10 + (progress * 250);
+      
+      if (bottomPos >= 240 || leftPos >= 320 || currentMultiplier >= 10.00) {
+        if (currentMultiplier >= crashPoint) { crashRocket(); } else { currentMultiplier = Math.min(currentMultiplier, 9.99); }
+      }
+      if (currentMultiplier >= crashPoint) { crashRocket(); return; }
+
+      rocketVisual.style.bottom = `${bottomPos}px`;
+      rocketVisual.style.left = `${leftPos}px`;
+      rocketMultiplier.textContent = `x${currentMultiplier.toFixed(2)}`;
+      btnCashout.textContent = `Забрать (x${currentMultiplier.toFixed(2)})`;
+    }, 100);
+  });
+
+  btnCashout.addEventListener("click", () => {
+    if (!rocketActive || rocketCrashed) return;
+    rocketActive = false; clearInterval(rocketInterval);
+    const winAmount = Math.floor(currentBet * currentMultiplier);
+    balance += winAmount; updateBalance();
+    btnStartRocket.disabled = false; btnCashout.disabled = true;
+    rocketHint.textContent = `🎉 Вы выиграли ${winAmount} ⭐`;
+    rocketVisual.style.display = "none";
+  });
+
+  function crashRocket() {
+    rocketActive = false; rocketCrashed = true; clearInterval(rocketInterval);
+    rocketVisual.style.display = "none"; rocketExplosion.style.display = "block";
+    rocketMultiplier.textContent = `x${currentMultiplier.toFixed(2)}`; rocketMultiplier.style.color = "#ef4444";
+    btnStartRocket.disabled = false; btnCashout.disabled = true;
+    rocketHint.textContent = `💥 Ракета взорвалась! Вы проиграли ${currentBet} ⭐`;
+  }
+});
+
+function renderCases() {
+  if (!casesGrid) return;
+  casesGrid.innerHTML = "";
+  CASES_DATA.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "case";
+    const bgImage = c.image ? `<img src="${c.image}" class="case-bg" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="case-overlay"></div><span class="case-fallback" style="display:none; font-size: 40px;">${c.emoji}</span>` : `<span class="case-fallback" style="font-size: 40px;">${c.emoji}</span>`;
+    div.innerHTML = `${bgImage}<div class="case-info"><div class="name">${c.name}</div><div class="price">${c.price} ⭐</div></div>`;
+    div.addEventListener("click", () => showPreviewModal(c));
+    casesGrid.appendChild(div);
+  });
+}
+
+function getRandomGiftByWeight(gifts) {
+  const totalWeight = gifts.reduce((sum, gift) => sum + (gift.weight || 1), 0);
+  let random = Math.random() * totalWeight;
+  for (const gift of gifts) {
+    const weight = gift.weight || 1;
+    if (random < weight) return gift;
+    random -= weight;
+  }
+  return gifts[0];
+}
+
+function showPreviewModal(c) {
+  selectedCaseToOpen = c;
+  previewImg.src = c.image;
+  previewTitle.textContent = c.name;
+  const availableGifts = GIFTS_DATA.filter(gift => c.pool.includes(gift.id));
+  const totalWeight = availableGifts.reduce((sum, gift) => sum + (gift.weight || 1), 0);
+  previewGrid.innerHTML = "";
+  availableGifts.forEach(gift => {
+    const weight = gift.weight || 1;
+    const percent = ((weight / totalWeight) * 100).toFixed(1);
+    const div = document.createElement("div");
+    div.className = "preview-item";
+    div.innerHTML = `<img src="${gift.image}" alt="${gift.name}"><div class="p-name">${gift.name}</div><div class="p-chance">${percent}%</div>`;
+    previewGrid.appendChild(div);
+  });
+  previewModal.classList.add("active");
+}
+
+btnFastOpen.addEventListener("click", () => {
+  if (!selectedCaseToOpen) return;
+  previewModal.classList.remove("active");
+  const c = selectedCaseToOpen;
+  if (balance < c.price) { hintEl.textContent = "Недостаточно звёзд!"; return; }
+  balance -= c.price; updateBalance(); saveData();
+  const availableGifts = GIFTS_DATA.filter(gift => c.pool.includes(gift.id));
+  const randomGift = getRandomGiftByWeight(availableGifts);
+  tempGift = { id: nextId++, emoji: randomGift.emoji, image: randomGift.image, name: randomGift.name, price: randomGift.price };
+  modalTitle.innerHTML = `<div class="case-open-header"><img src="${c.image}" style="width:30px; height:30px; border-radius:5px; vertical-align:middle; margin-right:5px;"><span style="vertical-align:middle;">${c.name}</span></div>`;
+  caseModal.classList.add("active");
+  rouletteContainer.style.display = "none";
+  resultScreen.classList.add("active");
+  resultItem.innerHTML = getItemImageHTML(tempGift);
+  resultName.textContent = tempGift.name;
+  sellPriceSpan.textContent = tempGift.price;
+  selectedCaseToOpen = null;
+});
+
+btnNormalOpen.addEventListener("click", () => {
+  if (!selectedCaseToOpen) return;
+  previewModal.classList.remove("active");
+  const c = selectedCaseToOpen;
+  if (balance < c.price) { hintEl.textContent = "Недостаточно звёзд!"; return; }
+  balance -= c.price; updateBalance(); saveData();
+  const availableGifts = GIFTS_DATA.filter(gift => c.pool.includes(gift.id));
+  const randomGift = getRandomGiftByWeight(availableGifts);
+  tempGift = { id: nextId++, emoji: randomGift.emoji, image: randomGift.image, name: randomGift.name, price: randomGift.price };
+  modalTitle.innerHTML = `<div class="case-open-header"><img src="${c.image}" style="width:30px; height:30px; border-radius:5px; vertical-align:middle; margin-right:5px;"><span style="vertical-align:middle;">${c.name}</span></div>`;
+  caseModal.classList.add("active");
+  rouletteContainer.style.display = "block";
+  resultScreen.classList.remove("active");
+  const trackItems = [];
+  const totalItems = 50;
+  const winningIndex = 45;
+  for (let i = 0; i < totalItems; i++) {
+    if (i === winningIndex) trackItems.push(tempGift);
+    else trackItems.push(getRandomGiftByWeight(availableGifts));
+  }
+  rouletteTrack.innerHTML = trackItems.map(gift => `<div class="roulette-item">${gift.image ? `<img src="${gift.image}">` : `<span style="font-size:20px;">${gift.emoji}</span>`}</div>`).join("");
+  rouletteTrack.style.transition = "none"; rouletteTrack.style.transform = "translateX(0)";
+
+  setTimeout(() => {
+    const itemWidth = 84; 
+    const containerWidth = rouletteContainer.offsetWidth; 
+    const stopPosition = -(winningIndex * itemWidth) + (containerWidth / 2) - 38;
+    rouletteTrack.style.transition = "transform 4s cubic-bezier(0.15, 1, 0.15, 1)";
+    rouletteTrack.style.transform = `translateX(${stopPosition}px)`;
+  }, 50);
+
+  setTimeout(() => {
+    resultScreen.classList.add("active");
+    resultItem.innerHTML = getItemImageHTML(tempGift);
+    resultName.textContent = tempGift.name;
+    sellPriceSpan.textContent = tempGift.price;
+  }, 4100);
+  selectedCaseToOpen = null;
+});
+
+btnSell.addEventListener("click", () => {
+  if (!tempGift) return;
+  balance += tempGift.price; updateBalance(); saveData();
+  caseModal.classList.remove("active");
+  hintEl.innerHTML = `Вы продали <b>${tempGift.name}</b> за <b>${tempGift.price} ⭐</b>!`;
+  tempGift = null;
+});
+
+btnKeep.addEventListener("click", () => {
+  if (!tempGift) return;
+  inventory.push(tempGift); saveData(); renderInventory(); renderUpgradeInventory();
+  caseModal.classList.remove("active");
+  hintEl.innerHTML = `Вы забрали <b>${tempGift.name}</b>!`;
+  tempGift = null;
+});
+
+function renderInventory() {
+  if (!inventoryEl) return;
+  if (inventory.length === 0) { inventoryEl.innerHTML = `<p class="empty" style="font-size:0.7rem;">Пока пусто.</p>`; return; }
+  inventoryEl.innerHTML = "";
+  inventory.forEach(g => {
+    const div = document.createElement("div");
+    div.className = "inv-item";
+    div.innerHTML = `<div class="item-img-box">${getItemImageHTML(g)}</div><div class="name">${g.name}</div><div class="price">${g.price} ⭐</div>`;
+    div.addEventListener("click", () => { selectedInventoryId = g.id; actionItemImg.src = g.image; actionItemName.textContent = g.name; itemActionModal.classList.add("active"); });
+    inventoryEl.appendChild(div);
+  });
+}
+
+actionBtnSell.addEventListener("click", () => {
+  if (!selectedInventoryId) return;
+  const g = inventory.find(x => x.id === selectedInventoryId);
+  if (!g) return;
+  balance += g.price; inventory = inventory.filter(x => x.id !== selectedInventoryId);
+  updateBalance(); saveData(); renderInventory(); renderUpgradeInventory();
+  itemActionModal.classList.remove("active");
+  hintEl.innerHTML = `Вы продали <b>${g.name}</b> за <b>${g.price} ⭐</b>!`;
+  selectedInventoryId = null;
+});
+
+actionBtnWithdraw.addEventListener("click", async () => {
+  if (!selectedInventoryId) return;
+  const g = inventory.find(x => x.id === selectedInventoryId);
+  if (!g) return;
+  try {
+    const res = await fetch(`${SERVER_URL}/api/withdraw`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, userName, itemName: g.name, itemPrice: g.price })
+    });
+    if (res.ok) {
+      inventory = inventory.filter(x => x.id !== selectedInventoryId);
+      saveData(); renderInventory(); renderUpgradeInventory();
+      itemActionModal.classList.remove("active");
+      alert(`Заявка на вывод "${g.name}" создана!`);
+    } else { alert("Ошибка сервера."); }
+  } catch (e) { alert("Сервер недоступен."); }
+});
+
+function renderUpgradeInventory() {
+  if (!upgradeInventoryEl) return;
+  if (inventory.length === 0) { upgradeInventoryEl.innerHTML = `<p class="empty" style="font-size:0.7rem;">Инвентарь пуст.</p>`; return; }
+  upgradeInventoryEl.innerHTML = "";
+  inventory.forEach(g => {
+    const div = document.createElement("div");
+    div.className = "inv-item" + (g.id === selectedItemId ? " selected" : "");
+    div.innerHTML = `<div class="item-img-box">${getItemImageHTML(g)}</div><div class="name">${g.name}</div><div class="price">${g.price} ⭐</div>`;
+    div.addEventListener("click", () => selectItem(g.id));
+    upgradeInventoryEl.appendChild(div);
+  });
+}
+
+function renderTargetInventory() {
+  if (!targetInventoryEl) return;
+  targetInventoryEl.innerHTML = "";
+  const sortedGifts = [...GIFTS_DATA].sort((a, b) => a.price - b.price);
+  sortedGifts.forEach(g => {
+    const div = document.createElement("div");
+    div.className = "inv-item" + (g.id === selectedTargetId ? " target-selected" : "");
+    div.innerHTML = `<div class="item-img-box">${getItemImageHTML(g)}</div><div class="name">${g.name}</div><div class="price">${g.price} ⭐</div>`;
+    div.addEventListener("click", () => selectTarget(g.id));
+    targetInventoryEl.appendChild(div);
+  });
+}
+
+function selectItem(id) {
+  if (isSpinning) return;
+  selectedItemId = id;
+  const g = inventory.find(x => x.id === id);
+  if (!g) return;
+  selectedEmoji.innerHTML = getItemImageHTML(g);
+  selectedName.textContent = g.name; selectedPrice.textContent = `${g.price} ⭐`;
+  calculateChance(); renderUpgradeInventory();
+}
+
+function selectTarget(id) {
+  if (isSpinning) return;
+  const currentItem = inventory.find(x => x.id === selectedItemId);
+  const targetItem = GIFTS_DATA.find(x => x.id === id);
+  if (currentItem && targetItem && targetItem.price <= currentItem.price) { hintEl.textContent = "Цель должна быть дороже!"; return; }
+  selectedTargetId = id; nextEmoji.innerHTML = getItemImageHTML(targetItem);
+  nextName.textContent = targetItem.name; nextPrice.textContent = `${targetItem.price} ⭐`;
+  calculateChance(); renderTargetInventory();
+}
+
+function calculateChance() {
+  if (selectedItemId !== null && selectedTargetId !== null) {
+    const currentItem = inventory.find(x => x.id === selectedItemId);
+    const targetItem = GIFTS_DATA.find(x => x.id === selectedTargetId);
+    if (currentItem && targetItem) {
+      let chance = (currentItem.price / targetItem.price) * 0.9;
+      if (chance > 0.9) chance = 0.9;
+      if (chance < 0.01) chance = 0.01;
+      currentChance = chance; updateWheelSector(); upgradeBtn.disabled = false;
+      hintEl.textContent = `Шанс успеха: ${Math.round(chance * 100)}%`;
+    }
+  } else { currentChance = 0; updateWheelSector(); upgradeBtn.disabled = true; }
+}
+
+function updateWheelSector() {
+  if (!wheelPath || !centerChance) return;
+  const angle = currentChance * 360;
+  const startAngle = 90 - angle / 2; const endAngle = 90 + angle / 2;
+  const startRad = (startAngle * Math.PI) / 180; const endRad = (endAngle * Math.PI) / 180;
+  const r = 96; const x1 = 100 + r * Math.cos(startRad); const y1 = 100 + r * Math.sin(startRad);
+  const x2 = 100 + r * Math.cos(endRad); const y2 = 100 + r * Math.sin(endRad);
+  const largeArc = angle > 180 ? 1 : 0;
+  if (angle >= 360) { wheelPath.setAttribute("d", `M 100 4 A 96 96 0 1 1 99.9 4 Z`); } 
+  else { wheelPath.setAttribute("d", `M 100 100 L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`); }
+  centerChance.textContent = `${Math.round(currentChance * 100)}%`;
+}
+
+upgradeBtn.addEventListener("click", () => {
+  if (isSpinning || selectedItemId === null || selectedTargetId === null) return;
+  const g = inventory.find(x => x.id === selectedItemId);
+  const target = GIFTS_DATA.find(x => x.id === selectedTargetId);
+  if (!g || !target) return;
+  isSpinning = true; upgradeBtn.disabled = true;
+  const success = Math.random() < currentChance;
+  const angle = currentChance * 360; let stopAngle;
+  if (success) stopAngle = 180 - angle / 2 + Math.random() * angle;
+  else stopAngle = 180 + angle / 2 + Math.random() * (360 - angle);
+  const fullSpins = 5 + Math.floor(Math.random() * 3);
+  const totalRotation = fullSpins * 360 + stopAngle;
+  needle.style.transition = "transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)";
+  needle.style.transform = `rotate(${totalRotation}deg)`;
+  hintEl.textContent = "Крутим...";
+  setTimeout(() => {
+    isSpinning = false;
+    if (success) {
+      const upgraded = { id: nextId++, emoji: target.emoji, image: target.image, name: target.name, price: target.price };
+      inventory = inventory.filter(x => x.id !== g.id); inventory.push(upgraded);
+      selectedItemId = null; selectedTargetId = null;
+      hintEl.textContent = `Успех! ${g.name} → ${upgraded.name}`;
+    } else {
+      inventory = inventory.filter(x => x.id !== g.id); selectedItemId = null;
+      hintEl.textContent = `Неудача. ${g.name} сгорел.`;
+    }
+    saveData();
+    setTimeout(() => {
+      needle.style.transition = "none"; needle.style.transform = "rotate(0deg)";
+      setTimeout(() => { needle.style.transition = "transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)"; }, 50);
+    }, 300);
+    renderInventory(); renderUpgradeInventory(); renderTargetInventory();
+    if (selectedItemId === null) { selectedEmoji.innerHTML = "—"; selectedName.textContent = "Выбери подарок"; selectedPrice.textContent = "—"; }
+    if (selectedTargetId === null) { nextEmoji.innerHTML = "—"; nextName.textContent = "Хочешь получить"; nextPrice.textContent = "—"; }
+    calculateChance();
+  }, 4100);
+});
+
+function updateBalance() { if (balanceEl) balanceEl.textContent = balance; }

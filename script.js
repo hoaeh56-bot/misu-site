@@ -30,6 +30,60 @@ const CASES_DATA = [
   { id: 3, emoji: "🔥", name: "МАЖОР КЕЙС", price: 200, pool: ["lightsword", "dyson", "bowties", "culon", "bondedrings", "nailbraclets", "nekohelmet", "heroichelmet", "strongarms", "bricks"], image: "https://f.2fools.app/tgs/sticker_set/27378bc0.gif" }
 ];
 
+// ===== 50 ЗАДАНИЙ =====
+const EVENT_TASKS = [
+  { id: "t1", name: "Открыть 1 БОМЖ кейс", target: 1, reward: 10, type: "case_1" },
+  { id: "t2", name: "Открыть 3 БОМЖ кейса", target: 3, reward: 10, type: "case_1" },
+  { id: "t3", name: "Открыть 5 БОМЖ кейсов", target: 5, reward: 10, type: "case_1" },
+  { id: "t4", name: "Открыть 10 БОМЖ кейсов", target: 10, reward: 10, type: "case_1" },
+  { id: "t5", name: "Открыть 20 БОМЖ кейсов", target: 20, reward: 10, type: "case_1" },
+  { id: "t6", name: "Открыть 1 ВИП кейс", target: 1, reward: 10, type: "case_2" },
+  { id: "t7", name: "Открыть 3 ВИП кейса", target: 3, reward: 10, type: "case_2" },
+  { id: "t8", name: "Открыть 5 ВИП кейсов", target: 5, reward: 10, type: "case_2" },
+  { id: "t9", name: "Открыть 10 ВИП кейсов", target: 10, reward: 10, type: "case_2" },
+  { id: "t10", name: "Открыть 1 МАЖОР кейс", target: 1, reward: 10, type: "case_3" },
+  { id: "t11", name: "Открыть 3 МАЖОР кейса", target: 3, reward: 10, type: "case_3" },
+  { id: "t12", name: "Открыть 5 МАЖОР кейсов", target: 5, reward: 10, type: "case_3" },
+  { id: "t13", name: "Сыграть в Ракетку 1 раз", target: 1, reward: 10, type: "rocket" },
+  { id: "t14", name: "Сыграть в Ракетку 3 раза", target: 3, reward: 10, type: "rocket" },
+  { id: "t15", name: "Сыграть в Ракетку 5 раз", target: 5, reward: 10, type: "rocket" },
+  { id: "t16", name: "Сыграть в Ракетку 10 раз", target: 10, reward: 10, type: "rocket" },
+  { id: "t17", name: "Улучшить скин 1 раз", target: 1, reward: 10, type: "upgrade" },
+  { id: "t18", name: "Улучшить скин 3 раза", target: 3, reward: 10, type: "upgrade" },
+  { id: "t19", name: "Улучшить скин 5 раз", target: 5, reward: 10, type: "upgrade" },
+  { id: "t20", name: "Улучшить скин 10 раз", target: 10, reward: 10, type: "upgrade" },
+  { id: "t21", name: "Улучшить скин 20 раз", target: 20, reward: 10, type: "upgrade" },
+  { id: "t22", name: "Продать 1 подарок", target: 1, reward: 10, type: "sell" },
+  { id: "t23", name: "Продать 3 подарка", target: 3, reward: 10, type: "sell" },
+  { id: "t24", name: "Продать 5 подарков", target: 5, reward: 10, type: "sell" },
+  { id: "t25", name: "Продать 10 подарков", target: 10, reward: 10, type: "sell" },
+  { id: "t26", name: "Выбить Ракету", target: 1, reward: 10, type: "drop_rocket" },
+  { id: "t27", name: "Выбить Алмаз", target: 1, reward: 10, type: "drop_diamond" },
+  { id: "t28", name: "Выбить Королевский подарок", target: 1, reward: 10, type: "drop_crown" },
+  { id: "t29", name: "Выбить Огонь", target: 1, reward: 10, type: "drop_fire" },
+  { id: "t30", name: "Выбить Мифик", target: 1, reward: 10, type: "drop_mythic" },
+  { id: "t31", name: "Сделать 5 ставок в Ракетке", target: 5, reward: 10, type: "rocket_bet" },
+  { id: "t32", name: "Сделать 10 ставок в Ракетке", target: 10, reward: 10, type: "rocket_bet" },
+  { id: "t33", name: "Дойти до x2.00 в Ракетке", target: 1, reward: 10, type: "rocket_x2" },
+  { id: "t34", name: "Дойти до x5.00 в Ракетке", target: 1, reward: 10, type: "rocket_x5" },
+  { id: "t35", name: "Улучшить на 100⭐", target: 100, reward: 10, type: "upgrade_sum" },
+  { id: "t36", name: "Улучшить на 500⭐", target: 500, reward: 10, type: "upgrade_sum" },
+  { id: "t37", name: "Купить 1 зелье", target: 1, reward: 10, type: "buy_potion" },
+  { id: "t38", name: "Купить 3 зелья", target: 3, reward: 10, type: "buy_potion" },
+  { id: "t39", name: "Сделать 5 апгрейдов подряд", target: 5, reward: 10, type: "upgrade_streak" },
+  { id: "t40", name: "Выиграть 3 апгрейда подряд", target: 3, reward: 10, type: "upgrade_win_streak" },
+  { id: "t41", name: "Открыть 50 кейсов", target: 50, reward: 10, type: "case_total" },
+  { id: "t42", name: "Сыграть 20 раз в Ракетку", target: 20, reward: 10, type: "rocket" },
+  { id: "t43", name: "Улучшить 50 скинов", target: 50, reward: 10, type: "upgrade" },
+  { id: "t44", name: "Продать 50 подарков", target: 50, reward: 10, type: "sell" },
+  { id: "t45", name: "Потратить 1000⭐ в кейсах", target: 1000, reward: 10, type: "case_spend" },
+  { id: "t46", name: "Потратить 5000⭐ в кейсах", target: 5000, reward: 10, type: "case_spend" },
+  { id: "t47", name: "Выиграть 500⭐ в Ракетке", target: 500, reward: 10, type: "rocket_win_sum" },
+  { id: "t48", name: "Выиграть 1000⭐ в Ракетке", target: 1000, reward: 10, type: "rocket_win_sum" },
+  { id: "t49", name: "Сделать 10 апгрейдов", target: 10, reward: 10, type: "upgrade" },
+  { id: "t50", name: "Открыть 100 кейсов", target: 100, reward: 10, type: "case_total" }
+];
+
 let userId = "guest";
 let userName = "Гость";
 let userAvatar = "https://via.placeholder.com/40";
@@ -44,6 +98,10 @@ let selectedCaseToOpen = null;
 let tempGift = null;
 let selectedInventoryId = null;
 
+// Ивент
+let eventPoints = 0;
+let eventProgress = {};
+
 // Ракета
 let rocketInterval = null;
 let currentMultiplier = 1.00;
@@ -53,6 +111,7 @@ let currentBet = 0;
 
 const SERVER_URL = 'https://misu-bot-bjna.onrender.com';
 
+// Элементы
 const balanceEl = document.getElementById("balance");
 const casesGrid = document.getElementById("casesGrid");
 const inventoryEl = document.getElementById("inventory");
@@ -63,7 +122,6 @@ const centerChance = document.getElementById("centerChance");
 const needle = document.getElementById("needle");
 const upgradeBtn = document.getElementById("upgradeBtn");
 const hintEl = document.getElementById("hint");
-
 const selectedEmoji = document.getElementById("selectedEmoji");
 const selectedName = document.getElementById("selectedName");
 const selectedPrice = document.getElementById("selectedPrice");
@@ -100,7 +158,7 @@ const btnKeep = document.getElementById("btnKeep");
 const btnFastOpen = document.getElementById("btnFastOpen");
 const btnNormalOpen = document.getElementById("btnNormalOpen");
 
-// Ракета элементы
+// Ракета
 const rocketArea = document.getElementById("rocketArea");
 const rocketMultiplier = document.getElementById("rocketMultiplier");
 const rocketVisual = document.getElementById("rocketVisual");
@@ -109,6 +167,11 @@ const rocketBet = document.getElementById("rocketBet");
 const btnStartRocket = document.getElementById("btnStartRocket");
 const btnCashout = document.getElementById("btnCashout");
 const rocketHint = document.getElementById("rocketHint");
+
+// Ивент
+const eventPointsEl = document.getElementById("eventPoints");
+const eventTasksEl = document.getElementById("eventTasks");
+const eventShopEl = document.getElementById("eventShop");
 
 function getItemImageHTML(item) {
   if (item && item.image) return `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
@@ -132,11 +195,24 @@ async function loadSave() {
     nextId = invData.nextId || 1;
   }
 
+  const savedEvent = localStorage.getItem(`misuEvent_${userId}`);
+  if (savedEvent) {
+    const ev = JSON.parse(savedEvent);
+    eventPoints = ev.points || 0;
+    eventProgress = ev.progress || {};
+  }
+
   updateBalance();
+  updateEventUI();
+  renderShop();
 }
 
 function saveData() {
   localStorage.setItem(`misuInv_${userId}`, JSON.stringify({ inventory, nextId }));
+}
+
+function saveEventData() {
+  localStorage.setItem(`misuEvent_${userId}`, JSON.stringify({ points: eventPoints, progress: eventProgress }));
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -145,28 +221,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   const name = urlParams.get('name');
   const avatar = urlParams.get('avatar');
 
-  // Пытаемся взять ID из Telegram WebApp (Мисуграм)
   if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
     const u = window.Telegram.WebApp.initDataUnsafe.user;
     userId = u.id.toString();
     userName = u.username ? `@${u.username}` : u.first_name;
   } else if (tgId) {
-    // Или из ссылки, которую передал бот
     userId = tgId;
     userName = name || ("Игрок " + userId);
   }
 
-  // Защита: если ID так и не получили
-  if (!userId || userId === "guest") {
-    userId = "test_user";
-    userName = "Тест";
-  }
+  if (!userId || userId === "guest") { userId = "test_user"; userName = "Тест"; }
 
   document.getElementById("userName").textContent = userName;
   if (avatar) document.getElementById("userAvatar").src = decodeURIComponent(avatar);
-  else if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user && window.Telegram.WebApp.initDataUnsafe.user.photo_url) {
-    document.getElementById("userAvatar").src = window.Telegram.WebApp.initDataUnsafe.user.photo_url;
-  }
 
   await loadSave();
 
@@ -189,7 +256,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   btnCancelAction.addEventListener("click", () => { itemActionModal.classList.remove("active"); selectedInventoryId = null; });
   btnCancelPreview.addEventListener("click", () => { previewModal.classList.remove("active"); selectedCaseToOpen = null; });
 
-  // Ракета
+  // Ракета логика
   btnStartRocket.addEventListener("click", () => {
     if (rocketActive) return;
     const bet = parseInt(rocketBet.value);
@@ -205,6 +272,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     btnStartRocket.disabled = true; btnCashout.disabled = false; btnCashout.textContent = `Забрать (x1.00)`;
     rocketHint.textContent = "Ракета летит...";
+    
+    incrementTaskProgress("rocket");
 
     const crashPoint = 1.01 + Math.random() * 8.99; 
     rocketInterval = setInterval(() => {
@@ -246,6 +315,102 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// ===== ФУНКЦИИ ИВЕНТА =====
+function incrementTaskProgress(type) {
+  let updated = false;
+  EVENT_TASKS.forEach(task => {
+    if (task.type === type) {
+      if (eventProgress[task.id] === undefined) eventProgress[task.id] = 0;
+      if (eventProgress[task.id] < task.target) {
+        eventProgress[task.id]++;
+        updated = true;
+        if (eventProgress[task.id] === task.target) {
+          eventPoints += task.reward;
+          eventPointsEl.textContent = eventPoints;
+          alert(`Задание выполнено: ${task.name}! +${task.reward} 🎃`);
+        }
+      }
+    }
+  });
+  if (updated) { saveEventData(); updateEventUI(); }
+}
+
+function updateEventUI() {
+  eventPointsEl.textContent = eventPoints;
+  eventTasksEl.innerHTML = "";
+  let completedCount = 0;
+  
+  EVENT_TASKS.forEach(task => {
+    const progress = eventProgress[task.id] || 0;
+    const isDone = progress >= task.target;
+    if (isDone) completedCount++;
+    
+    const div = document.createElement("div");
+    div.className = "task-item";
+    div.innerHTML = `
+      <div class="task-info">
+        <div class="task-name">${task.name}</div>
+        <div class="task-progress">${progress} / ${task.target}</div>
+        <div class="task-reward">+${task.reward} 🎃</div>
+      </div>
+      <button class="task-btn ${isDone ? 'done' : ''}" ${isDone ? '' : 'disabled'}>
+        ${isDone ? 'Выполнено' : 'В процессе'}
+      </button>
+    `;
+    eventTasksEl.appendChild(div);
+  });
+}
+
+function renderShop() {
+  if (!eventShopEl) return;
+  eventShopEl.innerHTML = `
+    <div class="shop-item" style="border-color: #a855f7;">
+      <div class="shop-name">🎃 Halloween Кейс<br><small style="color:#888;">(все подарки)</small></div>
+      <div class="shop-price">Цена: 10 🎃</div>
+      <button class="bp-claim-btn" id="buyHalloweenCase">Купить</button>
+    </div>
+    <div class="shop-item">
+      <div class="shop-name">🍀 Зелье удачи (x2 к шансу)</div>
+      <div class="shop-price">Цена: 5 🎃</div>
+      <button class="bp-claim-btn" id="buyLuckPotion">Купить</button>
+    </div>
+    <div class="shop-item">
+      <div class="shop-name">⭐ +100 Звезд</div>
+      <div class="shop-price">Цена: 10 🎃</div>
+      <button class="bp-claim-btn" id="buyStars">Купить</button>
+    </div>
+  `;
+
+  document.getElementById("buyHalloweenCase").addEventListener("click", () => {
+    if (eventPoints < 10) return alert("Недостаточно тыковок!");
+    eventPoints -= 10;
+    saveEventData(); updateEventUI();
+
+    // Выдаем случайный подарок из всех
+    const randomGift = GIFTS_DATA[Math.floor(Math.random() * GIFTS_DATA.length)];
+    const gift = { id: nextId++, emoji: randomGift.emoji, image: randomGift.image, name: randomGift.name, price: randomGift.price };
+    inventory.push(gift);
+    saveData(); renderInventory(); renderUpgradeInventory();
+    alert(`Вы открыли Halloween Кейс и получили: ${gift.emoji} ${gift.name} (${gift.price} ⭐)`);
+  });
+
+  document.getElementById("buyLuckPotion").addEventListener("click", () => {
+    if (eventPoints < 5) return alert("Недостаточно тыковок!");
+    eventPoints -= 5;
+    saveEventData(); updateEventUI();
+    alert("Вы купили Зелье удачи! (В бете эффект не реализован)");
+  });
+
+  document.getElementById("buyStars").addEventListener("click", () => {
+    if (eventPoints < 10) return alert("Недостаточно тыковок!");
+    eventPoints -= 10;
+    balance += 100;
+    saveEventData(); updateEventUI(); updateBalance();
+    alert("Вы получили 100 ⭐!");
+  });
+}
+
+// ===== ОСТАЛЬНЫЕ ФУНКЦИИ (КЕЙСЫ, АПГРЕЙДЕР, ИНВЕНТАРЬ) =====
 function renderCases() {
   if (!casesGrid) return;
   casesGrid.innerHTML = "";
@@ -294,6 +459,9 @@ btnFastOpen.addEventListener("click", () => {
   const c = selectedCaseToOpen;
   if (balance < c.price) { hintEl.textContent = "Недостаточно звёзд!"; return; }
   balance -= c.price; updateBalance(); saveData();
+  
+  incrementTaskProgress(`case_${c.id}`);
+
   const availableGifts = GIFTS_DATA.filter(gift => c.pool.includes(gift.id));
   const randomGift = getRandomGiftByWeight(availableGifts);
   tempGift = { id: nextId++, emoji: randomGift.emoji, image: randomGift.image, name: randomGift.name, price: randomGift.price };
@@ -313,6 +481,9 @@ btnNormalOpen.addEventListener("click", () => {
   const c = selectedCaseToOpen;
   if (balance < c.price) { hintEl.textContent = "Недостаточно звёзд!"; return; }
   balance -= c.price; updateBalance(); saveData();
+  
+  incrementTaskProgress(`case_${c.id}`);
+
   const availableGifts = GIFTS_DATA.filter(gift => c.pool.includes(gift.id));
   const randomGift = getRandomGiftByWeight(availableGifts);
   tempGift = { id: nextId++, emoji: randomGift.emoji, image: randomGift.image, name: randomGift.name, price: randomGift.price };
@@ -350,6 +521,7 @@ btnNormalOpen.addEventListener("click", () => {
 btnSell.addEventListener("click", () => {
   if (!tempGift) return;
   balance += tempGift.price; updateBalance(); saveData();
+  incrementTaskProgress("sell");
   caseModal.classList.remove("active");
   hintEl.innerHTML = `Вы продали <b>${tempGift.name}</b> за <b>${tempGift.price} ⭐</b>!`;
   tempGift = null;
@@ -382,6 +554,7 @@ actionBtnSell.addEventListener("click", () => {
   if (!g) return;
   balance += g.price; inventory = inventory.filter(x => x.id !== selectedInventoryId);
   updateBalance(); saveData(); renderInventory(); renderUpgradeInventory();
+  incrementTaskProgress("sell");
   itemActionModal.classList.remove("active");
   hintEl.innerHTML = `Вы продали <b>${g.name}</b> за <b>${g.price} ⭐</b>!`;
   selectedInventoryId = null;
@@ -506,6 +679,8 @@ upgradeBtn.addEventListener("click", () => {
       hintEl.textContent = `Неудача. ${g.name} сгорел.`;
     }
     saveData();
+    incrementTaskProgress("upgrade");
+    
     setTimeout(() => {
       needle.style.transition = "none"; needle.style.transform = "rotate(0deg)";
       setTimeout(() => { needle.style.transition = "transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)"; }, 50);

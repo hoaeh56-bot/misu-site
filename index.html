@@ -17,6 +17,9 @@
       </div>
     </div>
     <div class="header-right">
+      <!-- НОВАЯ КНОПКА ПОДДЕРЖКИ -->
+      <a href="https://t.me/misurader" target="_blank" class="support-btn" title="Поддержка">🛠</a>
+      
       <div class="balance" id="openDepositBtn">Баланс: <span id="balance">0</span> ⭐ <span class="plus">+</span></div>
     </div>
   </header>
@@ -57,7 +60,6 @@
     </section>
   </main>
 
-  <!-- МОДАЛЬНОЕ ОКНО ПОПОЛНЕНИЯ -->
   <div class="modal-overlay" id="depositModal">
     <div class="modal-content">
       <h3>Пополнение</h3>
@@ -67,22 +69,18 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО ДЕЙСТВИЙ С ПОДАРКОМ (ПРОДАТЬ/ВЫВЕСТИ) -->
   <div class="modal-overlay" id="itemActionModal">
     <div class="modal-content">
       <img id="actionItemImg" src="" style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px;">
       <h3 id="actionItemName" style="margin-bottom: 15px;">Подарок</h3>
-      
       <div class="choice-buttons">
-        <button class="btn-normal" id="actionBtnWithdraw" style="background: #facc15; color: #111;">Вывести</button>
-        <button class="btn-fast" id="actionBtnSell" style="background: #22c55e; color: #fff;">Продать</button>
+        <button class="btn-normal" id="actionBtnWithdraw">Вывести</button>
+        <button class="btn-fast" id="actionBtnSell" style="background: #22c55e;">Продать</button>
       </div>
-      
       <button class="btn-cancel" id="btnCancelAction">Отмена</button>
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО ПРОСМОТРА КЕЙСА -->
   <div class="modal-overlay" id="previewModal">
     <div class="modal-content">
       <div class="preview-header"><img id="previewImg" src=""><h3 id="previewTitle"></h3></div>
@@ -95,7 +93,6 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО РУЛЕТКИ -->
   <div class="modal-overlay" id="caseModal">
     <div class="modal-content">
       <h3 id="modalTitle"></h3>
@@ -113,4 +110,4 @@
 
   <script src="script.js"></script>
 </body>
-</html>
+          </html>

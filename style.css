@@ -15,10 +15,10 @@ body { background: #0a0a0a; color: #f5f5f5; min-height: 100vh; padding-bottom: 2
 .plus { background: #facc15; color: #111; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; }
 
 /* Вкладки */
-.tabs { display: flex; background: #111; border-bottom: 1px solid #222; margin-bottom: 10px; }
-.tab { flex: 1; padding: 12px; background: none; border: none; color: #666; font-size: 0.85rem; font-weight: 800; cursor: pointer; transition: all 0.3s; position: relative; text-transform: uppercase; letter-spacing: 1px; }
+.tabs { display: flex; background: #111; border-bottom: 1px solid #222; margin-bottom: 10px; overflow-x: auto; }
+.tab { flex: 1; padding: 12px 10px; background: none; border: none; color: #666; font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: all 0.3s; position: relative; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
 .tab.active { color: #facc15; text-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
-.tab.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 3px; background: #facc15; border-radius: 3px 3px 0 0; box-shadow: 0 0 10px #facc15; }
+.tab.active::after { content: ''; position: absolute; bottom: 0; left: 10%; right: 10%; height: 3px; background: #facc15; border-radius: 3px 3px 0 0; box-shadow: 0 0 10px #facc15; }
 
 .container { padding: 12px; width: 100%; max-width: 600px; margin: 0 auto; }
 .tab-content { display: none; flex-direction: column; gap: 12px; }
@@ -131,3 +131,28 @@ h2 { color: #facc15; font-size: 0.9rem; border-left: 3px solid #facc15; padding-
 .rocket-buttons { display: flex; gap: 10px; }
 .rocket-buttons button { flex: 1; }
 .btn-normal:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; top: 4px; }
+
+/* ===== ИВЕНТ ХЭЛЛОУИН ===== */
+.event-header { background: #1a1a1a; border: 1px solid #a855f7; border-radius: 16px; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+.event-points { font-size: 1.2rem; font-weight: 900; color: #facc15; text-align: center; }
+.event-leaderboard { display: flex; flex-direction: column; gap: 5px; font-size: 0.9rem; color: #ccc; }
+.event-leaderboard div { background: rgba(168, 85, 247, 0.1); padding: 5px 10px; border-radius: 8px; }
+
+.event-tasks { display: flex; flex-direction: column; gap: 10px; }
+.task-item { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+.task-info { display: flex; flex-direction: column; gap: 5px; }
+.task-name { font-weight: 700; font-size: 0.9rem; }
+.task-progress { font-size: 0.75rem; color: #888; }
+.task-reward { color: #facc15; font-weight: 800; font-size: 0.9rem; }
+.task-btn { background: #a855f7; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: all 0.2s; }
+.task-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+.task-btn.done { background: #22c55e; }
+
+.event-shop { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+.shop-item { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+.shop-name { font-size: 0.85rem; font-weight: 600; }
+.shop-price { font-size: 0.8rem; color: #facc15; }
+
+.event-top { display: flex; flex-direction: column; gap: 5px; }
+.top-item { display: flex; justify-content: space-between; background: #1a1a1a; padding: 10px; border-radius: 10px; font-size: 0.85rem; }
+.top-item:first-child { border: 1px solid #facc15; background: rgba(250, 204, 21, 0.1); }

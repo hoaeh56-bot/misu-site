@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWheelSector();
 });
 
-// ===== ПОПОЛНЕНИЕ (ЧЕРЕЗ ССЫЛКУ НА БОТА @misugradebot) =====
+// ===== ПОПОЛНЕНИЕ (ЧЕРЕЗ ССЫЛКУ MISUGRAM) =====
 openDepositBtn.addEventListener("click", () => depositModal.classList.add("active"));
 btnCancelDeposit.addEventListener("click", () => depositModal.classList.remove("active"));
 
@@ -166,21 +166,21 @@ btnPayDeposit.addEventListener("click", () => {
   const amount = parseInt(depositAmountInput.value);
   if (!amount || amount < 1) { alert("Введите сумму!"); return; }
   
-  // Открываем бота и передаем сумму в start параметре
-  window.open(`https://t.me/misugradebot?start=dep_${amount}`, '_blank');
+  // Открываем бота через ссылку Мисуграма
+  window.open(`https://misugram.ru/misugradebot?start=dep_${amount}`, '_blank');
   
   depositModal.classList.remove("active");
   alert(`Заявка на ${amount} ⭐ создается. Переведите ${amount} звезд на @misurade.`);
 });
 
-// ===== ВЫВОД (ЧЕРЕЗ ССЫЛКУ НА БОТА @misugradebot) =====
+// ===== ВЫВОД (ЧЕРЕЗ ССЫЛКУ MISUGRAM) =====
 actionBtnWithdraw.addEventListener("click", () => {
   if (!selectedInventoryId) return;
   const g = inventory.find(x => x.id === selectedInventoryId);
   if (!g) return;
   
-  // Открываем бота и передаем данные подарка
-  window.open(`https://t.me/misugradebot?start=wd_${g.price}_${encodeURIComponent(g.name)}`, '_blank');
+  // Открываем бота через ссылку Мисуграма
+  window.open(`https://misugram.ru/misugradebot?start=wd_${g.price}_${encodeURIComponent(g.name)}`, '_blank');
   
   inventory = inventory.filter(x => x.id !== selectedInventoryId);
   saveData(); renderInventory(); renderUpgradeInventory();

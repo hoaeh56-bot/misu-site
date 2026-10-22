@@ -1,29 +1,27 @@
 // ===== ДАННЫЕ =====
 const GIFTS_DATA = [
-  // --- БОМЖ (дешевые 35-75) ---
+  // --- СТАРЫЕ (от 35 до 100) ---
   { id: "whipcupcakes", name: "Whip Cupcakes", image: "https://f.2fools.app/tgs/sticker_set/6ff450c5.gif", price: 35, weight: 25 },
   { id: "mousescakes", name: "Mouses Cakes", image: "https://f.2fools.app/tgs/sticker_set/59d7f.gif", price: 50, weight: 25 },
-  { id: "luckyclever", name: "Lucky Clever", image: "https://f.2fools.app/tgs/sticker_set/f97deb22.gif", price: 50, weight: 25 },
+  { id: "tamagochi", name: "Tamagochi", image: "https://f.2fools.app/tgs/sticker_set/f99b65ce.gif", price: 50, weight: 25 },
   { id: "moonpendants", name: "Moon pendants", image: "https://f.2fools.app/tgs/sticker_set/7151eb6f.gif", price: 50, weight: 25 },
   { id: "instantsramen", name: "Instants Ramen", image: "https://f.2fools.app/tgs/sticker_set/c08c738.gif", price: 50, weight: 25 },
+  { id: "valentinebox", name: "Valentine box", image: "https://f.2fools.app/tgs/sticker_set/222e39f0.gif", price: 55, weight: 25 },
   { id: "lightlamp", name: "Light Lamp", image: "https://f.2fools.app/tgs/sticker_set/e63297e8.gif", price: 65, weight: 20 },
-  { id: "faithamulets", name: "Faith Amulets", image: "https://f.2fools.app/tgs/sticker_set/2bb0a6d0.gif", price: 65, weight: 20 },
-  { id: "socks", name: "Socks", image: "https://f.2fools.app/tgs/sticker_set/cd8ad4f2.gif", price: 75, weight: 20 },
-  { id: "prettyposies", name: "Pretty Posies", image: "https://f.2fools.app/tgs/sticker_set/1e5655c0.gif", price: 75, weight: 20 },
-  { id: "moneypot", name: "Money Pot", image: "https://f.2fools.app/tgs/sticker_set/2b18d298.gif", price: 75, weight: 20 },
-  { id: "happybrownie", name: "Happy Brownie", image: "https://f.2fools.app/tgs/sticker_set/3cb1af85.gif", price: 75, weight: 20 },
-  { id: "jackinthebox", name: "Jacks-in-the-box", image: "https://f.2fools.app/tgs/sticker_set/2ce0d04f.gif", price: 75, weight: 20 },
-
-  // --- ВИП (средние 100-150) ---
+  { id: "snowglobe", name: "Snow Globe", image: "https://f.2fools.app/tgs/sticker_set/851ddb69.gif", price: 75, weight: 20 },
+  { id: "spicedwine", name: "Spiced Wine", image: "https://f.2fools.app/tgs/sticker_set/cc228867.gif", price: 75, weight: 20 },
+  { id: "snoopdog", name: "Snoop Dog", image: "https://f.2fools.app/tgs/sticker_set/8039a5d1.gif", price: 75, weight: 20 },
+  { id: "snoopcigar", name: "Snoop Cigar", image: "https://f.2fools.app/tgs/sticker_set/cb44c1b7.gif", price: 75, weight: 20 },
+  { id: "xmasstocking", name: "Xmas Stocking", image: "https://f.2fools.app/tgs/sticker_set/429640bf.gif", price: 100, weight: 15 },
   { id: "lightsword", name: "Light Sword", image: "https://f.2fools.app/tgs/sticker_set/dbfacb64.gif", price: 100, weight: 15 },
   { id: "dyson", name: "Dyson", image: "https://f.2fools.app/tgs/sticker_set/70089a44.gif", price: 100, weight: 15 },
+
+  // --- НОВЫЕ (от 110 до 400) ---
   { id: "bowties", name: "Bow Ties", image: "https://f.2fools.app/tgs/sticker_set/b8eb5174.gif", price: 110, weight: 15 },
   { id: "culon", name: "Culon", image: "https://f.2fools.app/tgs/sticker_set/67cb9175.gif", price: 150, weight: 10 },
   { id: "bondedrings", name: "Bonded rings", image: "https://f.2fools.app/tgs/sticker_set/7fb2150f.gif", price: 150, weight: 10 },
   { id: "nailbraclets", name: "Nail Braclets", image: "https://f.2fools.app/tgs/sticker_set/332d54b0.gif", price: 150, weight: 10 },
   { id: "nekohelmet", name: "Neko helmet", image: "https://f.2fools.app/tgs/sticker_set/5bb57e.gif", price: 150, weight: 10 },
-
-  // --- МАЖОР (дорогие 200+) ---
   { id: "heroichelmet", name: "Heroic Helmet", image: "https://f.2fools.app/tgs/sticker_set/f7141b8b.gif", price: 200, weight: 5 },
   { id: "strongarms", name: "Strong Arms", image: "https://f.2fools.app/tgs/sticker_set/dc311465.gif", price: 250, weight: 5 },
   { id: "bricks", name: "Bricks", image: "https://f.2fools.app/tgs/sticker_set/bae6e39.gif", price: 400, weight: 2 }
@@ -32,7 +30,8 @@ const GIFTS_DATA = [
 const CASES_DATA = [
   { 
     id: 1, emoji: "🎁", name: "БОМЖ КЕЙС", price: 67, 
-    pool: ["whipcupcakes", "mousescakes", "luckyclever", "moonpendants", "instantsramen", "lightlamp", "faithamulets", "socks", "prettyposies", "moneypot", "happybrownie", "jackinthebox"], 
+    // Сюда возвращаем старые подарки
+    pool: ["whipcupcakes", "mousescakes", "tamagochi", "moonpendants", "instantsramen", "valentinebox", "lightlamp", "snowglobe", "spicedwine", "snoopdog", "snoopcigar", "xmasstocking", "lightsword", "dyson"], 
     image: "https://f.2fools.app/tgs/sticker_set/25b5f56.gif" 
   },
   { 

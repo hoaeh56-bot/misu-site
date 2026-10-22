@@ -25,6 +25,7 @@
   <nav class="tabs">
     <button class="tab active" data-tab="cases">Кейсы</button>
     <button class="tab" data-tab="upgrader">Апгрейдер</button>
+    <button class="tab" data-tab="rocket">Ракета</button>
   </nav>
 
   <main class="container">
@@ -56,19 +57,34 @@
       <h2 class="inventory-title">Все подарки (цель)</h2>
       <div class="inventory" id="targetInventory"></div>
     </section>
+
+    <!-- ВКЛАДКА РАКЕТА -->
+    <section class="tab-content" id="tab-rocket">
+      <h2>Ракета (Crash)</h2>
+      <div class="rocket-game-area" id="rocketArea">
+        <div class="rocket-multiplier" id="rocketMultiplier">x1.00</div>
+        <div class="rocket-visual" id="rocketVisual">🚀 <span class="rocket-brand">misugram</span></div>
+        <div class="rocket-explosion" id="rocketExplosion">💥 ВЗРЫВ!</div>
+      </div>
+      <div class="rocket-controls">
+        <input type="number" id="rocketBet" class="deposit-input" placeholder="Ставка (⭐)" value="100">
+        <div class="rocket-buttons">
+          <button class="btn-fast" id="btnStartRocket">Запустить</button>
+          <button class="btn-normal" id="btnCashout" disabled>Забрать (x1.00)</button>
+        </div>
+      </div>
+      <p class="hint" id="rocketHint">Введи ставку и запусти ракету.</p>
+    </section>
   </main>
 
-  <!-- ОКНО ПОПОЛНЕНИЯ -->
   <div class="modal-overlay" id="depositModal">
     <div class="modal-content">
       <h3>Пополнение</h3>
-      <input type="number" id="depositAmount" class="deposit-input" placeholder="Сумма">
-      <div class="choice-buttons" style="margin-top: 15px;"><button class="btn-fast" id="btnPayDeposit">Оплатить</button></div>
-      <button class="btn-cancel" id="btnCancelDeposit">Отмена</button>
+      <p style="color:#888; font-size:0.9rem; margin-bottom:15px;">Пополнение только через бота</p>
+      <button class="btn-fast" onclick="document.getElementById('depositModal').classList.remove('active')">Понятно</button>
     </div>
   </div>
 
-  <!-- ОКНО ВЫВОДА -->
   <div class="modal-overlay" id="itemActionModal">
     <div class="modal-content">
       <img id="actionItemImg" src="" style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px;">
@@ -81,7 +97,6 @@
     </div>
   </div>
 
-  <!-- ОКНО ПРОСМОТРА КЕЙСА -->
   <div class="modal-overlay" id="previewModal">
     <div class="modal-content">
       <div class="preview-header"><img id="previewImg" src=""><h3 id="previewTitle"></h3></div>
@@ -94,7 +109,6 @@
     </div>
   </div>
 
-  <!-- ОКНО РУЛЕТКИ -->
   <div class="modal-overlay" id="caseModal">
     <div class="modal-content">
       <h3 id="modalTitle"></h3>
@@ -110,6 +124,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=999"></script> —
+  <script src="script.js"></script>
 </body>
-  </html>
+                                                                       </html>

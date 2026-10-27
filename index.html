@@ -1,166 +1,58 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>misugrader</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Halloween Case</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <header class="header">
-    <div class="profile-info">
-      <img id="userAvatar" src="https://via.placeholder.com/40" class="avatar">
-      <div class="user-details">
-        <span class="brand">misugrader</span>
-        <span id="userName" class="username">Гость</span>
-      </div>
-    </div>
-    <div class="header-right">
-      <a href="https://t.me/misurader" target="_blank" class="support-btn" title="Поддержка">🛠</a>
-      <div class="balance" id="openDepositBtn">Баланс: <span id="balance">0</span> ⭐ <span class="plus">+</span></div>
-    </div>
-  </header>
-
-  <nav class="tabs">
-    <button class="tab active" data-tab="cases">Кейсы</button>
-    <button class="tab" data-tab="upgrader">Апгрейдер</button>
-    <button class="tab" data-tab="rocket">Ракета</button>
-    <button class="tab" data-tab="event">🎃 Ивент</button>
-  </nav>
-
-  <main class="container">
-    <section class="tab-content active" id="tab-cases">
-      <h2>Кейсы</h2>
-      <div class="cases-grid" id="casesGrid"></div>
-      <h2 class="inventory-title">Инвентарь</h2>
-      <div class="inventory" id="inventory"><p class="empty">Пока пусто.</p></div>
-    </section>
-
-    <section class="tab-content" id="tab-upgrader">
-      <h2>Апгрейдер</h2>
-      <div class="upgrade-view">
-        <div class="upgrade-side"><div class="side-item" id="selectedItemBox"><div class="side-emoji" id="selectedEmoji">—</div><div class="side-name" id="selectedName">Выбери</div><div class="side-price" id="selectedPrice">—</div></div></div>
-        <div class="upgrade-arrow">➜</div>
-        <div class="upgrade-side"><div class="side-item next"><div class="side-emoji" id="nextEmoji">—</div><div class="side-name" id="nextName">Цель</div><div class="side-price" id="nextPrice">—</div></div></div>
-      </div>
-      <div class="wheel-wrap">
-        <div class="wheel-container">
-          <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#2a2a2a" /><path id="wheelPath" fill="#facc15" /><circle cx="100" cy="100" r="96" fill="none" stroke="#facc15" stroke-width="8" /></svg>
-          <div class="needle" id="needle"><svg viewBox="0 0 40 40" width="30" height="30"><path d="M20 38 L8 12 L20 18 L32 12 Z" fill="#000" stroke="#facc15" stroke-width="3" stroke-linejoin="round"/></svg></div>
-          <div class="wheel-center"><div class="center-chance" id="centerChance">0%</div></div>
+    <!-- Шапка с балансом -->
+    <header class="top-bar">
+        <h1 class="logo">🎃 Halloween Case</h1>
+        <div class="balance-box">
+            <span id="balance-amount">0</span> 🎃
         </div>
-      </div>
-      <button class="btn-upgrade" id="upgradeBtn" disabled>КРУТИТЬ</button>
-      <p class="hint" id="hint">Выбери два подарка.</p>
-      <h2 class="inventory-title">Твой инвентарь</h2>
-      <div class="inventory" id="upgradeInventory"></div>
-      <h2 class="inventory-title">Все подарки (цель)</h2>
-      <div class="inventory" id="targetInventory"></div>
-    </section>
+    </header>
 
-    <section class="tab-content" id="tab-rocket">
-      <h2>Ракета (Crash)</h2>
-      <div class="rocket-game-area" id="rocketArea">
-        <div class="rocket-multiplier" id="rocketMultiplier">x1.00</div>
-        <div class="rocket-visual" id="rocketVisual">🚀 <span class="rocket-brand">misugram</span></div>
-        <div class="rocket-explosion" id="rocketExplosion">💥 ВЗРЫВ!</div>
-      </div>
-      <div class="rocket-controls">
-        <input type="number" id="rocketBet" class="deposit-input" placeholder="Ставка (⭐)" value="100">
-        <div class="rocket-buttons">
-          <button class="btn-fast" id="btnStartRocket">Запустить</button>
-          <button class="btn-normal" id="btnCashout" disabled>Забрать (x1.00)</button>
+    <main class="container">
+        <!-- Секция кейсов -->
+        <h2 class="section-title">Кейсы</h2>
+        <div class="cases-grid">
+            <div class="case-card" onclick="openCase('hell', 100)">
+                <div class="case-icon">📦</div>
+                <h3>Адский кейс</h3>
+                <p>Цена: 100 🎃</p>
+            </div>
+            <div class="case-card" onclick="openCase('vip', 500)">
+                <div class="case-icon">💎</div>
+                <h3>Кейс Тыквы</h3>
+                <p>Цена: 500 🎃</p>
+            </div>
         </div>
-      </div>
-      <p class="hint" id="rocketHint">Введи ставку и запусти ракету.</p>
-    </section>
 
-    <!-- ВКЛАДКА ИВЕНТ -->
-    <section class="tab-content" id="tab-event">
-      <h2>🎃 Хэллоуин Ивент</h2>
-      
-      <div class="event-header">
-        <div class="event-points">🎃 Тыквы: <span id="eventPoints">0</span></div>
-        <div class="event-leaderboard">
-          <div>1 место: 10 000 ⭐</div>
-          <div>2 место: Черный фон</div>
-          <div>3 место: 3 500 ⭐</div>
+        <!-- Секция Апгрейдера -->
+        <h2 class="section-title" style="margin-top: 30px;">Апгрейдер</h2>
+        <div class="upgrader-panel">
+            <div class="upgrader-slots">
+                <div class="slot" id="slot-1">
+                    <span class="plus">+</span>
+                    <p>Выбери</p>
+                </div>
+                <div class="upgrader-arrow">➜</div>
+                <div class="slot" id="slot-2">
+                    <span class="plus">+</span>
+                    <p>Цель</p>
+                </div>
+            </div>
+            <div class="upgrader-chance">
+                <span id="chance-text">0%</span>
+            </div>
+            <button class="main-btn" onclick="upgrade()">Апгрейд</button>
         </div>
-      </div>
+    </main>
 
-      <h2>Задания</h2>
-      <div class="event-tasks" id="eventTasks"></div>
-
-      <h2>Магазин зелий</h2>
-      <div class="event-shop" id="eventShop">
-        <div class="shop-item">
-          <div class="shop-name">🍀 Зелье удачи (x2 к шансу)</div>
-          <div class="shop-price">Цена: 5 🎃</div>
-          <button class="bp-claim-btn" id="buyLuckPotion">Купить</button>
-        </div>
-        <div class="shop-item">
-          <div class="shop-name">⭐ +100 Звезд</div>
-          <div class="shop-price">Цена: 10 🎃</div>
-          <button class="bp-claim-btn" id="buyStars">Купить</button>
-        </div>
-      </div>
-
-      <h2>Топ игроков</h2>
-      <div class="event-top" id="eventTop">
-        <p class="empty">Пока никто не выполнил задания.</p>
-      </div>
-    </section>
-  </main>
-
-  <!-- МОДАЛКИ -->
-  <div class="modal-overlay" id="depositModal">
-    <div class="modal-content">
-      <h3>Пополнение</h3>
-      <p style="color:#888; font-size:0.9rem; margin-bottom:15px;">Пополнение только через бота</p>
-      <button class="btn-fast" onclick="document.getElementById('depositModal').classList.remove('active')">Понятно</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="itemActionModal">
-    <div class="modal-content">
-      <img id="actionItemImg" src="" style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px;">
-      <h3 id="actionItemName" style="margin-bottom: 15px;">Подарок</h3>
-      <div class="choice-buttons">
-        <button class="btn-normal" id="actionBtnWithdraw">Вывести</button>
-        <button class="btn-fast" id="actionBtnSell" style="background: #22c55e;">Продать</button>
-      </div>
-      <button class="btn-cancel" id="btnCancelAction">Отмена</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="previewModal">
-    <div class="modal-content">
-      <div class="preview-header"><img id="previewImg" src=""><h3 id="previewTitle"></h3></div>
-      <div class="preview-grid" id="previewGrid"></div>
-      <div class="choice-buttons" style="margin-top: 20px;">
-        <button class="btn-fast" id="btnFastOpen">Быстро</button>
-        <button class="btn-normal" id="btnNormalOpen">С анимацией</button>
-      </div>
-      <button class="btn-cancel" id="btnCancelPreview">Закрыть</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="caseModal">
-    <div class="modal-content">
-      <h3 id="modalTitle"></h3>
-      <div class="roulette-container" id="rouletteContainer"><div class="roulette-pointer"></div><div class="roulette-track" id="rouletteTrack"></div></div>
-      <div class="result-screen" id="resultScreen">
-        <div class="result-item" id="resultItem"></div>
-        <p class="result-name" id="resultName"></p>
-        <div class="result-actions">
-          <button class="btn-sell" id="btnSell">Продать за <span id="sellPrice">0</span> ⭐</button>
-          <button class="btn-keep" id="btnKeep">В инвентарь</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

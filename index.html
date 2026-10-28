@@ -9,7 +9,8 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background-color: #120a1f; color: #fff; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 20px; }
-        .top-bar { background-color: #1f1235; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff7b00; box-shadow: 0 4px 15px rgba(255, 123, 0, 0.2); }
+        
+        .top-bar { background-color: #1f1235; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff7b00; box-shadow: 0 4px 15px rgba(255, 123, 0, 0.2); position: sticky; top: 0; z-index: 10; }
         .logo { font-size: 1.2rem; color: #ff7b00; text-shadow: 0 0 10px rgba(255, 123, 0, 0.5); }
         .balance-box { background: #000; padding: 8px 15px; border-radius: 20px; border: 1px solid #ff7b00; font-weight: bold; font-size: 1.1rem; color: #ffb700; cursor: pointer; }
         
@@ -21,16 +22,11 @@
         .section-title { color: #ff7b00; margin-bottom: 20px; font-size: 1.4rem; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
         .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
-        /* Карточка кейса */
-        .case-card { background: linear-gradient(145deg, #26163f, #1a0f2b); border: 1px solid #4a2c7a; border-radius: 15px; padding: 15px; text-align: center; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: space-between; }
-        .case-img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,123,0,0.3)); cursor: pointer; }
-        .case-img:active { transform: scale(0.95); }
+        .case-card { background: linear-gradient(145deg, #26163f, #1a0f2b); border: 1px solid #4a2c7a; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; }
+        .case-card:active { transform: scale(0.95); border-color: #ff7b00; box-shadow: 0 0 15px rgba(255, 123, 0, 0.4); }
+        .case-img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,123,0,0.3)); }
         .case-card h3 { font-size: 0.95rem; margin-bottom: 8px; color: #e0d0f0; line-height: 1.2; }
-        .case-card p { color: #ffb700; font-weight: bold; font-size: 1rem; background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 10px; margin-bottom: 10px; }
-        
-        .case-buttons { display: flex; width: 100%; gap: 5px; }
-        .btn-open { background: #ff7b00; color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; }
-        .btn-view { background: #4a2c7a; color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; }
+        .case-card p { color: #ffb700; font-weight: bold; font-size: 1rem; background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 10px; }
 
         .inventory-list { display: flex; flex-direction: column; gap: 10px; }
         .inventory-item { background: #1f1235; padding: 15px; border-radius: 10px; border: 1px solid #4a2c7a; display: flex; justify-content: space-between; align-items: center; }
@@ -41,14 +37,23 @@
         .tab-content.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Модальное окно (всплывающее) */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        /* Модальное окно */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(5px); }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: #1f1235; border: 1px solid #ff7b00; border-radius: 15px; padding: 20px; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; text-align: center; }
-        .modal-content h3 { color: #ff7b00; margin-bottom: 15px; }
-        .modal-content ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .modal-content li { background: #120a1f; padding: 8px 12px; border-radius: 8px; border: 1px solid #4a2c7a; font-weight: bold; color: #e0d0f0; }
-        .close-btn { margin-top: 20px; background: #ff4500; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+        .modal-content { background: #1f1235; border: 2px solid #ff7b00; border-radius: 20px; padding: 25px 20px; width: 100%; max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(255,123,0,0.3); }
+        .modal-title { color: #ff7b00; margin-bottom: 15px; text-align: center; font-size: 1.3rem; text-transform: uppercase; }
+        
+        .modal-items-scroll { overflow-y: auto; flex: 1; margin-bottom: 15px; padding-right: 5px; }
+        .modal-items-scroll::-webkit-scrollbar { width: 5px; }
+        .modal-items-scroll::-webkit-scrollbar-thumb { background: #ff7b00; border-radius: 5px; }
+        
+        .modal-content ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .modal-content li { background: #120a1f; padding: 10px; border-radius: 10px; border: 1px solid #4a2c7a; font-weight: bold; color: #e0d0f0; text-align: center; font-size: 0.9rem; word-break: break-all; }
+        
+        .modal-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-open-case { background: linear-gradient(135deg, #ff7b00, #ff4500); color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; flex: 1; text-transform: uppercase; font-size: 1rem; box-shadow: 0 4px 10px rgba(255,69,0,0.4); }
+        .btn-fast-case { background: #4a2c7a; color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; flex: 1; text-transform: uppercase; font-size: 1rem; }
+        .close-btn { background: #2b1b45; color: #aaa; border: 1px solid #4a2c7a; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -58,59 +63,36 @@
     </header>
 
     <main class="container">
-        <!-- Навигация -->
         <div class="nav-tabs">
             <div class="nav-tab active" onclick="switchTab('cases', this)">Кейсы</div>
             <div class="nav-tab" onclick="switchTab('inventory', this)">Инвентарь</div>
         </div>
 
-        <!-- Вкладка: Кейсы -->
         <div id="tab-cases" class="tab-content active">
             <div class="cases-grid">
-                <!-- Адский -->
-                <div class="case-card">
-                    <img src="https://f.2fools.app/tgs/sticker_set/f70510f3.gif" class="case-img" onclick="viewContents('hell')">
+                <div class="case-card" onclick="viewContents('hell')">
+                    <img src="https://f.2fools.app/tgs/sticker_set/f70510f3.gif" class="case-img">
                     <h3>Адский кейс</h3>
                     <p>300 🎃</p>
-                    <div class="case-buttons">
-                        <button class="btn-open" onclick="openCase('hell', 300)">Открыть</button>
-                        <button class="btn-view" onclick="viewContents('hell')">Инфо</button>
-                    </div>
                 </div>
-                <!-- Гробный -->
-                <div class="case-card">
-                    <img src="https://f.2fools.app/tgs/sticker_set/debf8fd6.gif" class="case-img" onclick="viewContents('coffin')">
+                <div class="case-card" onclick="viewContents('coffin')">
+                    <img src="https://f.2fools.app/tgs/sticker_set/debf8fd6.gif" class="case-img">
                     <h3>Гробный кейс</h3>
                     <p>250 🎃</p>
-                    <div class="case-buttons">
-                        <button class="btn-open" onclick="openCase('coffin', 250)">Открыть</button>
-                        <button class="btn-view" onclick="viewContents('coffin')">Инфо</button>
-                    </div>
                 </div>
-                <!-- NFT -->
-                <div class="case-card">
-                    <img src="https://f.2fools.app/tgs/sticker_set/1a148ae3.gif" class="case-img" onclick="viewContents('nft')">
+                <div class="case-card" onclick="viewContents('nft')">
+                    <img src="https://f.2fools.app/tgs/sticker_set/1a148ae3.gif" class="case-img">
                     <h3>NFT юзернеймы</h3>
                     <p>1000 🎃</p>
-                    <div class="case-buttons">
-                        <button class="btn-open" onclick="openCase('nft', 1000)">Открыть</button>
-                        <button class="btn-view" onclick="viewContents('nft')">Инфо</button>
-                    </div>
                 </div>
-                <!-- Анонимные -->
-                <div class="case-card">
-                    <img src="https://f.2fools.app/tgs/sticker_set/baa518d9.gif" class="case-img" onclick="viewContents('anon')">
+                <div class="case-card" onclick="viewContents('anon')">
+                    <img src="https://f.2fools.app/tgs/sticker_set/baa518d9.gif" class="case-img">
                     <h3>Анонимные номера</h3>
                     <p>1500 🎃</p>
-                    <div class="case-buttons">
-                        <button class="btn-open" onclick="openCase('anon', 1500)">Открыть</button>
-                        <button class="btn-view" onclick="viewContents('anon')">Инфо</button>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Вкладка: Инвентарь -->
         <div id="tab-inventory" class="tab-content">
             <h2 class="section-title">Твой инвентарь</h2>
             <div id="inventory-list" class="inventory-list">
@@ -119,11 +101,16 @@
         </div>
     </main>
 
-    <!-- Модальное окно для просмотра содержимого -->
     <div class="modal-overlay" id="content-modal">
         <div class="modal-content">
-            <h3 id="modal-title">Содержимое</h3>
-            <ul id="modal-list"></ul>
+            <h3 class="modal-title" id="modal-title">Содержимое</h3>
+            <div class="modal-items-scroll">
+                <ul id="modal-list"></ul>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-fast-case" onclick="openCase(currentCase, true)">Быстро</button>
+                <button class="btn-open-case" onclick="openCase(currentCase, false)">Открыть</button>
+            </div>
             <button class="close-btn" onclick="closeModal()">Закрыть</button>
         </div>
     </div>
@@ -139,13 +126,16 @@
         tg.expand();
         const userId = (tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243317;
 
-        // СПИСКИ ПРЕДМЕТОВ
+        // ЮЗЕРНЕЙМЫ
         const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
-        const ANON_NUMBERS = ["+8881002003", "+8882003004", "+8883004005", "+8884005006", "+8885006007", "+8886007008", "+8887008009", "+8888009010", "+8889010011", "+8881011022", "+8882022033", "+8883033044", "+8884044055", "+8885055066", "+8886066077", "+8887077088", "+8888088099", "+8889099010", "+8881111111", "+8882222222", "+8883333333", "+8884444444", "+8885555555", "+8886666666", "+8887777777"];
+        
+        // НОМЕРА (только +888 и 7 цифр)
+        const ANON_NUMBERS = ["+8881002003", "+8887777777", "+8881234567", "+8889876543", "+8885556667", "+8881112223", "+8883334445", "+8880009991", "+8882468135", "+8881357924"];
+        
+        const HELL_ITEMS = ["🔥 Череп", "🩸 Глаз", "🔮 Книга", "🦇 Мышь", "🔥 Пламя"];
+        const COFFIN_ITEMS = ["⚰️ Гроб", "💀 Кость", "🕷 Паук", "🕸 Сеть", "🌫 Туман"];
 
-        // Содержимое Адского и Гробного (пока тестовое)
-        const HELL_ITEMS = ["🔥 Демонический череп", "🩸 Кровавый глаз", "🔮 Проклятая книга", "🦇 Летучая мышь", "🔥 Адское пламя"];
-        const COFFIN_ITEMS = ["⚰️ Деревянный гроб", "💀 Старая кость", "🕷 Паук-мутант", "🕸 Сеть", "🌫 Призрачный туман"];
+        let currentCase = null;
 
         async function loadBalance() {
             try {
@@ -185,26 +175,18 @@
             if (tabName === 'inventory') loadInventory();
         }
 
-        // Функция просмотра содержимого
         function viewContents(caseId) {
+            currentCase = caseId;
             let title = "";
             let items = [];
+            let price = 0;
 
-            if (caseId === 'nft') {
-                title = "NFT Юзернеймы";
-                items = NFT_USERNAMES;
-            } else if (caseId === 'anon') {
-                title = "Анонимные номера";
-                items = ANON_NUMBERS;
-            } else if (caseId === 'hell') {
-                title = "Адский кейс";
-                items = HELL_ITEMS;
-            } else if (caseId === 'coffin') {
-                title = "Гробный кейс";
-                items = COFFIN_ITEMS;
-            }
+            if (caseId === 'nft') { title = "NFT Юзернеймы"; items = NFT_USERNAMES; price = 1000; }
+            else if (caseId === 'anon') { title = "Анонимные номера"; items = ANON_NUMBERS; price = 1500; }
+            else if (caseId === 'hell') { title = "Адский кейс"; items = HELL_ITEMS; price = 300; }
+            else if (caseId === 'coffin') { title = "Гробный кейс"; items = COFFIN_ITEMS; price = 250; }
 
-            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-title').innerText = `${title} | ${price} 🎃`;
             const list = document.getElementById('modal-list');
             list.innerHTML = '';
             
@@ -221,39 +203,52 @@
             document.getElementById('content-modal').classList.remove('active');
         }
 
-        async function openCase(caseId, price) {
+        async function openCase(caseId, isFast) {
+            let price = 0;
+            if (caseId === 'nft') price = 1000;
+            else if (caseId === 'anon') price = 1500;
+            else if (caseId === 'hell') price = 300;
+            else if (caseId === 'coffin') price = 250;
+
             const currentBalance = parseInt(document.getElementById('balance-amount').innerText);
             if (currentBalance < price) {
                 tg.showAlert("Недостаточно тыкв! Купи их в боте через /buy");
                 return;
             }
 
+            closeModal();
+
             let prize = "";
             let type = "";
 
-            if (caseId === 'nft') {
-                prize = NFT_USERNAMES[Math.floor(Math.random() * NFT_USERNAMES.length)];
-                type = "Юзернейм";
-            } else if (caseId === 'anon') {
-                prize = ANON_NUMBERS[Math.floor(Math.random() * ANON_NUMBERS.length)];
-                type = "Номер";
-            } else if (caseId === 'hell') {
-                prize = HELL_ITEMS[Math.floor(Math.random() * HELL_ITEMS.length)];
-                type = "Подарок";
-            } else if (caseId === 'coffin') {
-                prize = COFFIN_ITEMS[Math.floor(Math.random() * COFFIN_ITEMS.length)];
-                type = "Подарок";
+            if (caseId === 'nft') { prize = NFT_USERNAMES[Math.floor(Math.random() * NFT_USERNAMES.length)]; type = "Юзернейм"; }
+            else if (caseId === 'anon') { 
+                // Генерируем номер: +888 и 7 случайных цифр
+                let randomDigits = "";
+                for (let i = 0; i < 7; i++) randomDigits += Math.floor(Math.random() * 10);
+                prize = "+888" + randomDigits; 
+                type = "Номер"; 
             }
+            else if (caseId === 'hell') { prize = HELL_ITEMS[Math.floor(Math.random() * HELL_ITEMS.length)]; type = "Подарок"; }
+            else if (caseId === 'coffin') { prize = COFFIN_ITEMS[Math.floor(Math.random() * COFFIN_ITEMS.length)]; type = "Подарок"; }
 
             const newBalance = currentBalance - price;
             await db.from('users').update({ balance: newBalance }).eq('user_id', userId);
             await db.from('inventory').insert([{ user_id: userId, item_name: prize, item_type: type }]);
 
-            tg.showAlert(`Ты открыл кейс и получил: ${prize} (${type})!`);
+            if (isFast) {
+                tg.showAlert(`Выпало: ${prize}`);
+            } else {
+                tg.showAlert(`Крутим...`);
+                setTimeout(() => {
+                    tg.showAlert(`Поздравляем! Выпало: ${prize}`);
+                }, 1000);
+            }
+            
             loadBalance();
         }
 
         loadBalance();
     </script>
 </body>
-    </html>
+</html>

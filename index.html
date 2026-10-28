@@ -36,39 +36,28 @@
         .inventory-item { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
         .inventory-item span { font-weight: 800; color: #fff; }
         .inventory-item small { color: #ff7b00; font-weight: 600; font-size: 0.8rem; }
+        
+        /* Кнопка вывода */
+        .withdraw-btn { background: #ff4500; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .withdraw-btn:active { transform: scale(0.95); }
+
         .empty-text { text-align: center; color: #555; margin-top: 40px; font-weight: 600; }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Модальное окно */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(10px); }
         .modal-overlay.active { display: flex; }
         .modal-content { background: #0f0f0f; border: 1px solid #333; border-radius: 24px; padding: 25px 20px; width: 100%; max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px rgba(255,123,0,0.15); position: relative; }
         
         .modal-title { color: #fff; margin-bottom: 20px; text-align: center; font-size: 1.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-        
         .modal-items-scroll { overflow-y: auto; flex: 1; margin-bottom: 20px; padding: 5px; }
         .modal-items-scroll::-webkit-scrollbar { width: 4px; }
         .modal-items-scroll::-webkit-scrollbar-thumb { background: #ff7b00; border-radius: 4px; }
         
         .modal-content ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .modal-content li { 
-            background: linear-gradient(145deg, #1a1a1a, #111); 
-            padding: 15px 10px; 
-            border-radius: 12px; 
-            border: 1px solid #2a2a2a; 
-            font-weight: 600; 
-            color: #eee; 
-            text-align: center; 
-            font-size: 0.85rem; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            word-break: break-word;
-            transition: 0.2s;
-        }
+        .modal-content li { background: linear-gradient(145deg, #1a1a1a, #111); padding: 15px 10px; border-radius: 12px; border: 1px solid #2a2a2a; font-weight: 600; color: #eee; text-align: center; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; word-break: break-word; transition: 0.2s; }
         .modal-content li:hover { border-color: #ff7b00; box-shadow: 0 0 15px rgba(255,123,0,0.2); }
 
         .modal-actions { display: flex; gap: 10px; }
@@ -147,14 +136,13 @@
         tg.ready();
         tg.expand();
         
-        const userId = (tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243205;
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramId = urlParams.get('user_id');
+        const userId = paramId ? parseInt(paramId) : ((tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243205);
 
         const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
-        
         const ANON_PREVIEW = ["+8881234567", "+8889876543", "+8885556667", "+8881112223", "+8883334445", "+8880009991"];
-
         const HELL_ITEMS = ["Демонический череп", "Кровавый глаз", "Проклятая книга", "Адская мышь", "Адское пламя"];
-
         const COFFIN_ITEMS = ["Деревянный гроб", "Старая кость", "Паук-мутант", "Призрачная сеть", "Туман"];
 
         let currentCase = null;
@@ -181,7 +169,13 @@
                 data.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'inventory-item';
-                    div.innerHTML = `<span>${item.item_name}</span> <small>${item.item_type}</small>`;
+                    div.innerHTML = `
+                        <div>
+                            <span>${item.item_name}</span><br>
+                            <small>${item.item_type}</small>
+                        </div>
+                        <button class="withdraw-btn" onclick="withdrawItem(${item.id}, '${item.item_name}')">Вывести</button>
+                    `;
                     list.appendChild(div);
                 });
             } catch (e) {
@@ -273,6 +267,22 @@
             }
             
             loadBalance();
+        }
+
+        // ФУНКЦИЯ ВЫВОДА ПРЕДМЕТА
+        async function withdrawItem(itemId, itemName) {
+            // Отправляем данные боту
+            tg.sendData(JSON.stringify({
+                action: "withdraw",
+                item_name: itemName,
+                user_id: userId
+            }));
+            
+            // Удаляем предмет из инвентаря на сайте (чтобы нельзя было вывести дважды)
+            await db.from('inventory').delete().eq('id', itemId);
+            
+            tg.showAlert(`Запрос на вывод "${itemName}" отправлен в бота!`);
+            loadInventory();
         }
 
         loadBalance();

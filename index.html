@@ -18,22 +18,24 @@
         .nav-tab { flex: 1; text-align: center; padding: 12px; background: #151515; border: 1px solid #222; border-radius: 12px; color: #777; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; }
         .nav-tab.active { background: #1a1a1a; color: #fff; border-color: #ff7b00; box-shadow: inset 0 0 15px rgba(255,123,0,0.1), 0 0 15px rgba(255,123,0,0.2); }
         .section-title { color: #fff; margin-bottom: 20px; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-left: 3px solid #ff7b00; padding-left: 10px; }
+        
         .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .case-card { background: #111; border: 1px solid #222; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .case-card { background: #111; border: 1px solid #222; border-radius: 16px; padding: 15px 10px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; position: relative; }
         .case-card:active { transform: scale(0.96); border-color: #ff7b00; }
-        .case-img { width: 110px; height: 110px; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 0 15px rgba(255,123,0,0.4)); }
-        .case-card h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; color: #ccc; }
-        .case-card p { color: #fff; font-weight: 800; font-size: 1rem; background: #1a1a1a; padding: 6px 14px; border-radius: 8px; border: 1px solid #333; }
+        .case-img { width: 90px; height: 90px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 0 15px rgba(255,123,0,0.4)); }
+        .case-card h3 { font-size: 0.8rem; font-weight: 800; margin-bottom: 4px; color: #fff; }
+        .case-card .creator { font-size: 0.65rem; color: #00ffff; text-shadow: 0 0 5px #00ffff; margin-bottom: 8px; font-weight: 600; }
+        .case-card p { color: #fff; font-weight: 800; font-size: 0.9rem; background: #1a1a1a; padding: 4px 10px; border-radius: 8px; border: 1px solid #333; }
 
         .inventory-list { display: flex; flex-direction: column; gap: 10px; }
         .inventory-item { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .inv-info { flex: 1; min-width: 120px; }
-        .inv-info span { font-weight: 800; color: #fff; display: block; margin-bottom: 4px; word-break: break-all; }
-        .inv-info small { color: #ff7b00; font-weight: 600; font-size: 0.8rem; }
+        .inv-info { flex: 1; min-width: 120px; display: flex; align-items: center; gap: 10px; }
+        .inv-info img { width: 40px; height: 40px; object-fit: contain; }
+        .inv-info span { font-weight: 800; color: #fff; display: block; margin-bottom: 2px; word-break: break-all; font-size: 0.9rem; }
+        .inv-info small { color: #ff7b00; font-weight: 600; font-size: 0.75rem; }
         .inv-actions { display: flex; gap: 5px; }
-        .btn-sell { background: #28a745; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .btn-withdraw { background: #ff4500; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .btn-sell:active, .btn-withdraw:active { transform: scale(0.95); }
+        .btn-sell { background: #28a745; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
+        .btn-withdraw { background: #ff4500; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
 
         .empty-text { text-align: center; color: #555; margin-top: 40px; font-weight: 600; }
         .tab-content { display: none; }
@@ -42,16 +44,24 @@
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(10px); }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: #0f0f0f; border: 1px solid #333; border-radius: 24px; padding: 25px 20px; width: 100%; max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px rgba(255,123,0,0.15); }
-        .modal-title { color: #fff; margin-bottom: 20px; text-align: center; font-size: 1.2rem; font-weight: 800; text-transform: uppercase; }
+        .modal-content { background: #0f0f0f; border: 1px solid #333; border-radius: 24px; padding: 25px 20px; width: 100%; max-width: 400px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.8); text-align: center; }
+        .modal-title { color: #fff; margin-bottom: 15px; text-align: center; font-size: 1.2rem; font-weight: 800; text-transform: uppercase; }
+        
+        .win-img { width: 150px; height: 150px; object-fit: contain; margin: 0 auto 15px auto; filter: drop-shadow(0 0 20px rgba(255,123,0,0.6)); }
+        .win-img.legendary { filter: drop-shadow(0 0 30px gold); animation: pulseGold 1.5s infinite; }
+        @keyframes pulseGold { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .win-name { color: #fff; font-size: 1.2rem; font-weight: 800; margin-bottom: 5px; }
+        .win-price { color: #ffb700; font-size: 1rem; font-weight: 600; margin-bottom: 20px; }
+        
         .confirm-text { text-align: center; color: #aaa; margin-bottom: 20px; font-size: 0.9rem; }
-        .modal-actions { display: flex; gap: 10px; }
-        .btn-yes { background: #28a745; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; flex: 1; text-transform: uppercase; font-size: 0.9rem; }
-        .btn-no { background: transparent; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; flex: 1; text-transform: uppercase; font-size: 0.9rem; }
+        .modal-actions { display: flex; gap: 10px; flex-direction: column; }
+        .btn-yes { background: #28a745; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+        .btn-no { background: transparent; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+        .btn-sell-win { background: #ff7b00; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
 
         .roulette-container { overflow: hidden; width: 100%; height: 120px; position: relative; border-top: 1px solid #333; border-bottom: 1px solid #333; margin-bottom: 20px; background: #151515; }
         .roulette-strip { display: flex; height: 100%; width: max-content; align-items: center; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); }
-        .roulette-item { width: 100px; height: 100px; margin: 0 10px; border-radius: 10px; background: #1a1a1a; border: 1px solid #333; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 0.65rem; font-weight: 600; padding: 5px; flex-shrink: 0; }
+        .roulette-item { width: 100px; height: 100px; margin: 0 10px; border-radius: 10px; background: #1a1a1a; border: 1px solid #333; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 0.6rem; font-weight: 600; padding: 5px; flex-shrink: 0; }
         .roulette-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 5px; }
         .roulette-pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: #ff7b00; box-shadow: 0 0 10px #ff7b00; z-index: 2; }
         .roulette-pointer::before { content: ''; position: absolute; top: -10px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid #ff7b00; }
@@ -75,22 +85,38 @@
                 <div class="case-card" onclick="openCase('hell', 300)">
                     <img src="https://f.2fools.app/tgs/sticker_set/f70510f3.gif" class="case-img">
                     <h3>АДСКИЙ КЕЙС</h3>
+                    <div class="creator">Create - @user</div>
                     <p>300 🎃</p>
                 </div>
                 <div class="case-card" onclick="openCase('coffin', 250)">
                     <img src="https://f.2fools.app/tgs/sticker_set/debf8fd6.gif" class="case-img">
                     <h3>ГРОБНЫЙ КЕЙС</h3>
+                    <div class="creator">Create - @user</div>
                     <p>250 🎃</p>
                 </div>
                 <div class="case-card" onclick="openCase('nft', 1000)">
                     <img src="https://f.2fools.app/tgs/sticker_set/1a148ae3.gif" class="case-img">
                     <h3>NFT ЮЗЕРНЕЙМЫ</h3>
+                    <div class="creator">Create - @user</div>
                     <p>1000 🎃</p>
                 </div>
                 <div class="case-card" onclick="openCase('anon', 1500)">
                     <img src="https://f.2fools.app/tgs/sticker_set/baa518d9.gif" class="case-img">
                     <h3>АНОНИМНЫЕ НОМЕРА</h3>
+                    <div class="creator">Create - @user</div>
                     <p>1500 🎃</p>
+                </div>
+                <div class="case-card" onclick="openCase('suchiy', 275)">
+                    <img src="https://f.2fools.app/tgs/sticker_set/79425d09.gif" class="case-img">
+                    <h3>СУЧИЙ КЕЙС</h3>
+                    <div class="creator">Create - @user</div>
+                    <p>275 🎃</p>
+                </div>
+                <div class="case-card" onclick="openCase('bober', 2000)">
+                    <img src="https://f.2fools.app/tgs/sticker_set/558bb616.gif" class="case-img">
+                    <h3>КЕЙС БОБРА</h3>
+                    <div class="creator">Create - @sardelka @telegram</div>
+                    <p>2000 🎃</p>
                 </div>
             </div>
         </div>
@@ -113,13 +139,26 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="win-modal">
+        <div class="modal-content">
+            <h3 class="modal-title" style="color: #ffb700;">Твой выигрыш!</h3>
+            <img id="win-img" class="win-img" src="">
+            <div class="win-name" id="win-name"></div>
+            <div class="win-price" id="win-price"></div>
+            <div class="modal-actions">
+                <button class="btn-sell-win" id="win-sell-btn">Продать за <span id="win-sell-price"></span> 🎃</button>
+                <button class="btn-yes" onclick="closeWinModal()">В инвентарь</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="confirm-modal">
         <div class="modal-content">
             <h3 class="modal-title">Подтверждение</h3>
             <p class="confirm-text" id="confirm-text">Вы уверены?</p>
             <div class="modal-actions">
-                <button class="btn-no" onclick="closeConfirm()">Нет</button>
                 <button class="btn-yes" id="confirm-yes-btn">Да</button>
+                <button class="btn-no" onclick="closeConfirm()">Нет</button>
             </div>
         </div>
     </div>
@@ -138,7 +177,22 @@
         const paramId = urlParams.get('user_id');
         const userId = paramId ? parseInt(paramId) : ((tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243205);
 
-        // ПОДАРКИ ДЛЯ АДСКОГО КЕЙСА
+        // === СУЧИЙ КЕЙС ===
+        const SUCHIY_ITEMS = [
+            { name: "Neko helmet", url: "https://f.2fools.app/tgs/sticker_set/5bb57e.gif", value: 150, weight: 40 },
+            { name: "Candy", url: "https://f.2fools.app/tgs/sticker_set/b205dfeb.gif", value: 200, weight: 30 },
+            { name: "Peach", url: "https://f.2fools.app/tgs/sticker_set/43bee242.gif", value: 250, weight: 20 },
+            { name: "Perfume", url: "https://f.2fools.app/tgs/sticker_set/cf9da734.gif", value: 300, weight: 10 }
+        ];
+
+        // === КЕЙС БОБРА ===
+        const BOBER_ITEMS = [
+            { name: "Crazy Cap", url: "https://f.2fools.app/tgs/sticker_set/f1cb2a76.gif", value: 400, weight: 35 },
+            { name: "Switches Watch", url: "https://f.2fools.app/tgs/sticker_set/e3f75839.gif", value: 300, weight: 25 },
+            { name: "Toy bear", url: "https://f.2fools.app/tgs/sticker_set/fcdbafe0.gif", value: 500, weight: 20 },
+            { name: "Pepe", url: "https://f.2fools.app/tgs/sticker_set/20af6852.gif", value: 2000, weight: 1, legendary: true }
+        ];
+
         const HELL_ITEMS = [
             { name: "Candle", url: "https://f.2fools.app/tgs/sticker_set/1f7df42a.gif", value: 100, weight: 25 },
             { name: "Witch's Hat", url: "https://f.2fools.app/tgs/sticker_set/44d07e3a.gif", value: 150, weight: 20 },
@@ -152,7 +206,6 @@
             { name: "Mask Vurses", url: "https://f.2fools.app/tgs/sticker_set/860a7d97.gif", value: 300, weight: 1 }
         ];
 
-        // ПОДАРКИ ДЛЯ ГРОБНОГО КЕЙСА
         const COFFIN_ITEMS = [
             { name: "Mushroom", url: "https://f.2fools.app/tgs/sticker_set/8640d690.gif", value: 200, weight: 40 },
             { name: "magic ball", url: "https://f.2fools.app/tgs/sticker_set/6083fc02.gif", value: 200, weight: 20 },
@@ -169,6 +222,9 @@
         const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
 
         let currentAction = null; 
+        let currentWinItem = null;
+        let currentWinCase = null;
+        let currentWinItemId = null;
 
         async function loadBalance() {
             try {
@@ -189,14 +245,19 @@
                     return;
                 }
                 list.innerHTML = '';
+                
+                const allItems = [...HELL_ITEMS, ...COFFIN_ITEMS, ...SUCHIY_ITEMS, ...BOBER_ITEMS];
+                
                 data.forEach(item => {
                     let value = 0;
+                    let imgUrl = "";
+                    
                     if (item.item_type === "Номер") value = 1500;
                     else if (item.item_type === "Юзернейм") value = 1000;
                     else {
-                        const allItems = [...HELL_ITEMS, ...COFFIN_ITEMS];
                         const found = allItems.find(i => i.name === item.item_name);
-                        value = found ? found.value : 50;
+                        if (found) { value = found.value; imgUrl = found.url; }
+                        else value = 50;
                     }
 
                     const itemId = Number(item.id);
@@ -205,8 +266,11 @@
                     div.className = 'inventory-item';
                     div.innerHTML = `
                         <div class="inv-info">
-                            <span>${item.item_name}</span>
-                            <small>${item.item_type} | ${value} 🎃</small>
+                            ${imgUrl ? `<img src="${imgUrl}">` : ''}
+                            <div>
+                                <span>${item.item_name}</span>
+                                <small>${item.item_type} | ${value} 🎃</small>
+                            </div>
                         </div>
                         <div class="inv-actions">
                             <button class="btn-sell" onclick="askAction('sell', ${itemId}, '${item.item_name}', ${value})">Продать</button>
@@ -248,26 +312,16 @@
 
             if (action === 'sell') {
                 const currentBal = parseInt(document.getElementById('balance-amount').innerText);
-                
-                // Мгновенное обновление в интерфейсе
                 document.getElementById('balance-amount').innerText = currentBal + value;
-                
                 await db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
-                const { error: err2 } = await db.from('inventory').delete().eq('id', itemId);
-                
-                if (!err2) {
-                    tg.showAlert(`✅ Предмет продан за ${value} 🎃`);
-                    loadInventory();
-                } else {
-                    tg.showAlert(`❌ Ошибка удаления: ${err2.message}`);
-                }
+                await db.from('inventory').delete().eq('id', itemId);
+                tg.showAlert(`✅ Предмет продан за ${value} 🎃`);
+                loadInventory();
             } else if (action === 'withdraw') {
-                // Отправляем заявку в базу данных
                 const { error } = await db.from('withdrawals').insert([{ user_id: userId, item_name: itemName }]);
-                
                 if (!error) {
                     await db.from('inventory').delete().eq('id', itemId);
-                    tg.showAlert(`✅ Заявка на вывод "${itemName}" создана!\nБот пришлет уведомление админу.`);
+                    tg.showAlert(`✅ Заявка на вывод отправлена!`);
                     loadInventory();
                 } else {
                     tg.showAlert(`❌ Ошибка вывода: ${error.message}`);
@@ -277,6 +331,11 @@
             btnYes.innerText = "Да";
             btnYes.disabled = false;
             closeConfirm();
+        }
+
+        function closeWinModal() {
+            document.getElementById('win-modal').classList.remove('active');
+            loadInventory();
         }
 
         async function openCase(caseId, price) {
@@ -300,17 +359,12 @@
                 selectedItem = { name: "+888" + rnd, url: "", value: 1500 };
                 pool = [{ name: "+888XXXXXXX", url: "", value: 1500 }];
             }
-            else if (caseId === 'hell') {
-                pool = HELL_ITEMS;
-                const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
-                let random = Math.random() * totalWeight;
-                for (const item of pool) {
-                    if (random < item.weight) { selectedItem = item; break; }
-                    random -= item.weight;
-                }
-            }
-            else if (caseId === 'coffin') {
-                pool = COFFIN_ITEMS;
+            else {
+                if (caseId === 'hell') pool = HELL_ITEMS;
+                else if (caseId === 'coffin') pool = COFFIN_ITEMS;
+                else if (caseId === 'suchiy') pool = SUCHIY_ITEMS;
+                else if (caseId === 'bober') pool = BOBER_ITEMS;
+
                 const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
                 let random = Math.random() * totalWeight;
                 for (const item of pool) {
@@ -335,11 +389,8 @@
             displayPool.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'roulette-item';
-                if (item.url) {
-                    div.innerHTML = `<img src="${item.url}"><span>${item.name}</span>`;
-                } else {
-                    div.innerText = item.name;
-                }
+                if (item.url) div.innerHTML = `<img src="${item.url}"><span>${item.name}</span>`;
+                else div.innerText = item.name;
                 strip.appendChild(div);
             });
 
@@ -356,12 +407,46 @@
 
             setTimeout(() => {
                 document.getElementById('roulette-modal').classList.remove('active');
-                tg.showAlert(`🎉 Твой выигрыш: ${selectedItem.name}`);
-                loadInventory();
+                showWinModal(selectedItem, caseId);
             }, 4500);
+        }
+
+        function showWinModal(item, caseId) {
+            document.getElementById('win-name').innerText = item.name;
+            document.getElementById('win-price').innerText = item.value + " 🎃";
+            
+            const img = document.getElementById('win-img');
+            if (item.url) { img.src = item.url; img.style.display = 'block'; } 
+            else { img.style.display = 'none'; }
+
+            if (item.legendary) img.classList.add('legendary');
+            else img.classList.remove('legendary');
+
+            const sellBtn = document.getElementById('win-sell-btn');
+            document.getElementById('win-sell-price').innerText = item.value;
+            
+            currentWinItem = item;
+            currentWinCase = caseId;
+
+            sellBtn.onclick = async () => {
+                const currentBal = parseInt(document.getElementById('balance-amount').innerText);
+                document.getElementById('balance-amount').innerText = currentBal + item.value;
+                await db.from('users').update({ balance: currentBal + item.value }).eq('user_id', userId);
+                
+                // Удаляем последний добавленный предмет (самый новый)
+                const { data } = await db.from('inventory').select('id').eq('user_id', userId).order('created_at', { ascending: false }).limit(1);
+                if (data && data.length > 0) {
+                    await db.from('inventory').delete().eq('id', data[0].id);
+                }
+                
+                tg.showAlert(`✅ Продано за ${item.value} 🎃`);
+                closeWinModal();
+            };
+
+            document.getElementById('win-modal').classList.add('active');
         }
 
         loadBalance();
     </script>
 </body>
-    </html>
+                        </html>

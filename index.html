@@ -311,7 +311,6 @@
             if (!currentAction) return;
             const { action, itemId, itemName, value } = currentAction;
             
-            // Мгновенно закрываем окно
             closeConfirm(); 
 
             if (action === 'sell') {
@@ -512,6 +511,7 @@
 
         loadBalance();
         updateFreeTimer();
+        loadInventory();
     </script>
 </body>
 </html>

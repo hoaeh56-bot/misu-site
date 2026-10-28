@@ -6,8 +6,6 @@
     <title>Halloween Case</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
@@ -25,7 +23,6 @@
         
         .section-title { color: #fff; margin-bottom: 20px; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-left: 3px solid #ff7b00; padding-left: 10px; }
         
-        /* Кейсы */
         .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .case-card { background: #111; border: 1px solid #222; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
         .case-card:active { transform: scale(0.96); border-color: #ff7b00; }
@@ -33,7 +30,6 @@
         .case-card h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; color: #ccc; }
         .case-card p { color: #fff; font-weight: 800; font-size: 1rem; background: #1a1a1a; padding: 6px 14px; border-radius: 8px; border: 1px solid #333; }
 
-        /* Инвентарь */
         .inventory-list { display: flex; flex-direction: column; gap: 10px; }
         .inventory-item { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .inv-info { flex: 1; min-width: 120px; }
@@ -45,29 +41,24 @@
         .btn-sell:active, .btn-withdraw:active { transform: scale(0.95); }
 
         .empty-text { text-align: center; color: #555; margin-top: 40px; font-weight: 600; }
-        
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Модалки */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(10px); }
         .modal-overlay.active { display: flex; }
         .modal-content { background: #0f0f0f; border: 1px solid #333; border-radius: 24px; padding: 25px 20px; width: 100%; max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px rgba(255,123,0,0.15); }
         
         .modal-title { color: #fff; margin-bottom: 20px; text-align: center; font-size: 1.2rem; font-weight: 800; text-transform: uppercase; }
         
-        /* Окно подтверждения */
         .confirm-text { text-align: center; color: #aaa; margin-bottom: 20px; font-size: 0.9rem; }
         .modal-actions { display: flex; gap: 10px; }
         .btn-yes { background: #28a745; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; flex: 1; text-transform: uppercase; font-size: 0.9rem; }
         .btn-no { background: transparent; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; flex: 1; text-transform: uppercase; font-size: 0.9rem; }
 
-        /* === АНИМАЦИЯ РУЛЕТКИ (КЕЙС) === */
         .roulette-container { overflow: hidden; width: 100%; height: 120px; position: relative; border-top: 1px solid #333; border-bottom: 1px solid #333; margin-bottom: 20px; background: #151515; }
         .roulette-strip { display: flex; height: 100%; width: max-content; align-items: center; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); }
         .roulette-item { width: 100px; height: 100px; margin: 0 10px; border-radius: 10px; background: #1a1a1a; border: 1px solid #333; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 0.8rem; font-weight: 600; padding: 10px; flex-shrink: 0; }
-        
         .roulette-pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: #ff7b00; box-shadow: 0 0 10px #ff7b00; z-index: 2; }
         .roulette-pointer::before { content: ''; position: absolute; top: -10px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid #ff7b00; }
     </style>
@@ -84,7 +75,6 @@
             <div class="nav-tab" onclick="switchTab('inventory', this)">Инвентарь</div>
         </div>
 
-        <!-- ВКЛАДКА КЕЙСОВ -->
         <div id="tab-cases" class="tab-content active">
             <h2 class="section-title">Доступные кейсы</h2>
             <div class="cases-grid">
@@ -111,7 +101,6 @@
             </div>
         </div>
 
-        <!-- ВКЛАДКА ИНВЕНТАРЯ -->
         <div id="tab-inventory" class="tab-content">
             <h2 class="section-title">Твой инвентарь</h2>
             <div id="inventory-list" class="inventory-list">
@@ -120,7 +109,6 @@
         </div>
     </main>
 
-    <!-- МОДАЛКА РУЛЕТКИ -->
     <div class="modal-overlay" id="roulette-modal">
         <div class="modal-content" style="max-width: 500px; padding: 20px;">
             <h3 class="modal-title" id="roulette-title">Открываем...</h3>
@@ -131,7 +119,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ПОДТВЕРЖДЕНИЯ -->
     <div class="modal-overlay" id="confirm-modal">
         <div class="modal-content">
             <h3 class="modal-title">Подтверждение</h3>
@@ -157,7 +144,6 @@
         const paramId = urlParams.get('user_id');
         const userId = paramId ? parseInt(paramId) : ((tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243205);
 
-        // ЦЕННОСТИ: Юзернейм = 1000, Номер = 1500
         const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
         const ANON_PREVIEW = ["+8881234567", "+8889876543", "+8885556667", "+8881112223", "+8883334445", "+8880009991"];
         const HELL_ITEMS = ["Демонический череп", "Кровавый глаз", "Проклятая книга", "Адская мышь", "Адское пламя"];
@@ -185,11 +171,13 @@
                 }
                 list.innerHTML = '';
                 data.forEach(item => {
-                    // Определяем ценность
                     let value = 0;
                     if (item.item_type === "Номер") value = 1500;
                     else if (item.item_type === "Юзернейм") value = 1000;
-                    else value = 50; // Для остальных кейсов
+                    else value = 50;
+
+                    // Убеждаемся, что item.id - число
+                    const itemId = Number(item.id);
 
                     const div = document.createElement('div');
                     div.className = 'inventory-item';
@@ -199,14 +187,15 @@
                             <small>${item.item_type} | ${value} 🎃</small>
                         </div>
                         <div class="inv-actions">
-                            <button class="btn-sell" onclick="askAction('sell', ${item.id}, '${item.item_name}', ${value})">Продать</button>
-                            <button class="btn-withdraw" onclick="askAction('withdraw', ${item.id}, '${item.item_name}', 0)">Вывод</button>
+                            <button class="btn-sell" onclick="askAction('sell', ${itemId}, '${item.item_name}', ${value})">Продать</button>
+                            <button class="btn-withdraw" onclick="askAction('withdraw', ${itemId}, '${item.item_name}', 0)">Вывод</button>
                         </div>
                     `;
                     list.appendChild(div);
                 });
             } catch (e) {
                 list.innerHTML = '<p class="empty-text">Ошибка загрузки</p>';
+                console.error(e);
             }
         }
 
@@ -218,7 +207,6 @@
             if (tabName === 'inventory') loadInventory();
         }
 
-        // ФУНКЦИЯ ПОДТВЕРЖДЕНИЯ
         function askAction(action, itemId, itemName, value) {
             currentAction = { action, itemId, itemName, value };
             const text = action === 'sell' 
@@ -226,11 +214,7 @@
                 : `Запросить вывод "${itemName}"?`;
             
             document.getElementById('confirm-text').innerText = text;
-            
-            // Настраиваем кнопку "Да"
-            const btnYes = document.getElementById('confirm-yes-btn');
-            btnYes.onclick = () => confirmAction();
-            
+            document.getElementById('confirm-yes-btn').onclick = () => confirmAction();
             document.getElementById('confirm-modal').classList.add('active');
         }
 
@@ -243,40 +227,48 @@
             if (!currentAction) return;
             const { action, itemId, itemName, value } = currentAction;
 
+            const btnYes = document.getElementById('confirm-yes-btn');
+            btnYes.innerText = "Ждите...";
+            btnYes.disabled = true;
+
             if (action === 'sell') {
-                // Добавляем баланс
                 const currentBal = parseInt(document.getElementById('balance-amount').innerText);
-                await db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
-                // Удаляем предмет
-                await db.from('inventory').delete().eq('id', itemId);
-                tg.showAlert(`✅ Предмет продан за ${value} 🎃`);
-                loadBalance();
-                loadInventory();
+                
+                // Сначала обновляем баланс
+                const { error: err1 } = await db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
+                
+                // Затем удаляем предмет по ID
+                const { error: err2 } = await db.from('inventory').delete().eq('id', itemId);
+                
+                if (!err1 && !err2) {
+                    tg.showAlert(`✅ Предмет продан за ${value} 🎃`);
+                    loadBalance();
+                    loadInventory();
+                } else {
+                    tg.showAlert(`Ошибка: ${err1?.message || err2?.message}`);
+                }
             } else if (action === 'withdraw') {
-                // Отправляем боту
                 tg.sendData(JSON.stringify({ action: "withdraw", item_name: itemName, user_id: userId }));
-                // Удаляем с сайта
                 await db.from('inventory').delete().eq('id', itemId);
-                tg.showAlert(`✅ Запрос на вывод отправлен!`);
+                tg.showAlert(`✅ Заявка на вывод отправлена!`);
                 loadInventory();
             }
 
+            btnYes.innerText = "Да";
+            btnYes.disabled = false;
             closeConfirm();
         }
 
-        // === АНИМАЦИЯ КЕЙСА ===
         async function openCase(caseId, price) {
             const currentBalance = parseInt(document.getElementById('balance-amount').innerText);
             if (currentBalance < price) {
-                tg.showAlert("Недостаточно средств! Пополни баланс в боте.");
+                tg.showAlert("Недостаточно средств!");
                 return;
             }
 
-            // Списываем баланс сразу
             await db.from('users').update({ balance: currentBalance - price }).eq('user_id', userId);
             loadBalance();
 
-            // Определяем пул предметов
             let pool = [];
             if (caseId === 'nft') pool = NFT_USERNAMES;
             else if (caseId === 'anon') {
@@ -289,23 +281,18 @@
             else if (caseId === 'hell') pool = HELL_ITEMS;
             else if (caseId === 'coffin') pool = COFFIN_ITEMS;
 
-            // Выбираем победителя
             const prize = pool[Math.floor(Math.random() * pool.length)];
             let type = (caseId === 'nft' || caseId === 'anon') ? "Юзернейм" : "Подарок";
             if (caseId === 'anon') type = "Номер";
             
-            // Записываем в БД
             await db.from('inventory').insert([{ user_id: userId, item_name: prize, item_type: type }]);
 
-            // Настраиваем анимацию
             const strip = document.getElementById('roulette-strip');
             strip.innerHTML = '';
             strip.style.transition = 'none';
             strip.style.transform = 'translateX(0)';
 
-            // Генерируем 50 элементов для прокрутки
             const displayPool = [...pool, ...pool, ...pool, ...pool, prize, ...pool];
-            
             displayPool.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'roulette-item';
@@ -313,14 +300,11 @@
                 strip.appendChild(div);
             });
 
-            // Открываем модалку
             document.getElementById('roulette-modal').classList.add('active');
             
-            // Ждем чуть-чуть и запускаем анимацию
             setTimeout(() => {
-                const itemWidth = 120; // ширина + отступы
-                const winnerIndex = displayPool.lastIndexOf(prize); // Индекс победителя
-                // Прокручиваем так, чтобы победитель был под указателем (в центре)
+                const itemWidth = 120;
+                const winnerIndex = displayPool.lastIndexOf(prize);
                 const screenWidth = window.innerWidth > 500 ? 500 : window.innerWidth;
                 const centerOffset = screenWidth / 2;
                 const targetX = -(winnerIndex * itemWidth) + centerOffset - (itemWidth / 2);
@@ -329,7 +313,6 @@
                 strip.style.transform = `translateX(${targetX}px)`;
             }, 100);
 
-            // Закрываем через 4.5 секунды
             setTimeout(() => {
                 document.getElementById('roulette-modal').classList.remove('active');
                 tg.showAlert(`🎉 Твой выигрыш: ${prize}`);

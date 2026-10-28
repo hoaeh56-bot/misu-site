@@ -176,7 +176,6 @@
                     else if (item.item_type === "Юзернейм") value = 1000;
                     else value = 50;
 
-                    // Убеждаемся, что item.id - число
                     const itemId = Number(item.id);
 
                     const div = document.createElement('div');
@@ -234,10 +233,10 @@
             if (action === 'sell') {
                 const currentBal = parseInt(document.getElementById('balance-amount').innerText);
                 
-                // Сначала обновляем баланс
+                // 1. Обновляем баланс
                 const { error: err1 } = await db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
                 
-                // Затем удаляем предмет по ID
+                // 2. Удаляем предмет
                 const { error: err2 } = await db.from('inventory').delete().eq('id', itemId);
                 
                 if (!err1 && !err2) {
@@ -245,12 +244,17 @@
                     loadBalance();
                     loadInventory();
                 } else {
-                    tg.showAlert(`Ошибка: ${err1?.message || err2?.message}`);
+                    let errorText = "";
+                    if (err1) errorText += `Баланс: ${err1.message}\n`;
+                    if (err2) errorText += `Удаление: ${err2.message}`;
+                    tg.showAlert(`❌ ОШИБКА БАЗЫ:\n${errorText}`);
                 }
             } else if (action === 'withdraw') {
+                // Отправляем данные боту
                 tg.sendData(JSON.stringify({ action: "withdraw", item_name: itemName, user_id: userId }));
+                // Удаляем с сайта
                 await db.from('inventory').delete().eq('id', itemId);
-                tg.showAlert(`✅ Заявка на вывод отправлена!`);
+                tg.showAlert(`✅ Заявка отправлена!`);
                 loadInventory();
             }
 

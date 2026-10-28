@@ -14,9 +14,9 @@
         .logo { font-size: 1.1rem; font-weight: 800; color: #fff; text-shadow: 0 0 15px #ff7b00; letter-spacing: 1px; }
         .balance-box { background: #151515; padding: 8px 16px; border-radius: 8px; border: 1px solid #333; font-weight: 800; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 5px; }
         .container { padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
-        .nav-tabs { display: flex; gap: 15px; margin-bottom: 30px; }
-        .nav-tab { flex: 1; text-align: center; padding: 12px; background: #151515; border: 1px solid #222; border-radius: 12px; color: #777; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; }
-        .nav-tab.active { background: #1a1a1a; color: #fff; border-color: #ff7b00; box-shadow: inset 0 0 15px rgba(255,123,0,0.1), 0 0 15px rgba(255,123,0,0.2); }
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        .nav-tab { text-align: center; padding: 10px 15px; background: #151515; border: 1px solid #222; border-radius: 12px; color: #777; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .nav-tab.active { background: #1a1a1a; color: #fff; border-color: #ff7b00; box-shadow: 0 0 15px rgba(255,123,0,0.2); }
         .section-title { color: #fff; margin-bottom: 20px; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-left: 3px solid #ff7b00; padding-left: 10px; }
         
         .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -66,12 +66,16 @@
         .roulette-pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: #ff7b00; box-shadow: 0 0 10px #ff7b00; z-index: 2; }
         .roulette-pointer::before { content: ''; position: absolute; top: -10px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid #ff7b00; }
 
-        /* Игра "Корова" (Crash) */
-        .game-area { width: 100%; height: 250px; background: #151515; position: relative; overflow: hidden; border-radius: 15px; margin-bottom: 20px; border: 2px solid #333; display: flex; justify-content: center; align-items: center; }
-        .crash-multiplier { font-size: 4rem; font-weight: 800; color: #ff7b00; text-shadow: 0 0 20px rgba(255,123,0,0.5); transition: 0.1s; }
+        /* Краш */
+        .game-area { width: 100%; height: 250px; background: #151515; position: relative; overflow: hidden; border-radius: 15px; margin-bottom: 20px; border: 2px solid #333; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .rocket { font-size: 4rem; transition: transform 0.1s linear; }
+        .rocket.flying { animation: flyUp 0.1s infinite alternate; }
+        @keyframes flyUp { from { transform: translateY(0px) rotate(0deg); } to { transform: translateY(-10px) rotate(5deg); } }
+        .rocket.crashed { animation: crash 0.5s forwards; }
+        @keyframes crash { to { transform: translateY(100px) rotate(90deg); opacity: 0; } }
+        .crash-multiplier { font-size: 3rem; font-weight: 800; color: #ff7b00; text-shadow: 0 0 20px rgba(255,123,0,0.5); margin-bottom: 10px; }
         .crash-multiplier.crashed { color: #ff0000; text-shadow: 0 0 20px rgba(255,0,0,0.5); }
         .crash-multiplier.cashed-out { color: #28a745; text-shadow: 0 0 20px rgba(40,167,69,0.5); }
-        
         .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .input-group input { padding: 15px; border-radius: 12px; border: 1px solid #333; background: #111; color: #fff; font-size: 1.2rem; text-align: center; font-weight: 800; }
         .btn-start { background: #ff7b00; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; }
@@ -88,14 +92,18 @@
     <main class="container">
         <div class="nav-tabs">
             <div class="nav-tab active" onclick="switchTab('cases', this)">Кейсы</div>
-            <div class="nav-tab" onclick="switchTab('game', this)">Корова</div>
+            <div class="nav-tab" onclick="switchTab('game', this)">Краш</div>
             <div class="nav-tab" onclick="switchTab('inventory', this)">Инвентарь</div>
         </div>
 
-        <!-- ВКЛАДКА КЕЙСОВ -->
         <div id="tab-cases" class="tab-content active">
             <h2 class="section-title">Доступные кейсы</h2>
             <div class="cases-grid">
+                <div class="case-card" onclick="openCase('free', 0)">
+                    <img src="https://f.2fools.app/tgs/sticker_set/558bb616.gif" class="case-img">
+                    <h3>КЕЙС БОБРА (FREE)</h3>
+                    <p>Бесплатно</p>
+                </div>
                 <div class="case-card" onclick="openCase('hell', 300)">
                     <img src="https://f.2fools.app/tgs/sticker_set/f70510f3.gif" class="case-img">
                     <h3>АДСКИЙ КЕЙС</h3>
@@ -131,26 +139,24 @@
             </div>
         </div>
 
-        <!-- ВКЛАДКА ИГРЫ -->
         <div id="tab-game" class="tab-content">
-            <h2 class="section-title">Crash (Корова)</h2>
-            
+            <h2 class="section-title">Краш (Ракета)</h2>
             <div id="game-setup">
                 <div class="input-group">
                     <input type="number" id="bet-input" placeholder="Ставка (🎃)">
                 </div>
-                <button class="btn-start" onclick="startGame()">НАЧАТЬ ИГРУ</button>
+                <button class="btn-start" onclick="startGame()">ЗАПУСТИТЬ РАКЕТУ</button>
             </div>
 
             <div id="game-play" style="display: none;">
                 <div class="game-area">
+                    <div class="rocket" id="rocket">🚀</div>
                     <div class="crash-multiplier" id="crash-multiplier">x1.00</div>
                 </div>
                 <button class="btn-cashout-game" id="btn-cashout" onclick="cashoutGame()">ЗАБРАТЬ <span id="cashout-amount">0</span> 🎃</button>
             </div>
         </div>
 
-        <!-- ВКЛАДКА ИНВЕНТАРЯ -->
         <div id="tab-inventory" class="tab-content">
             <h2 class="section-title">Твой инвентарь</h2>
             <div id="inventory-list" class="inventory-list">
@@ -159,7 +165,6 @@
         </div>
     </main>
 
-    <!-- Модалки -->
     <div class="modal-overlay" id="roulette-modal">
         <div class="modal-content" style="max-width: 500px; padding: 20px;">
             <h3 class="modal-title" id="roulette-title">Открываем...</h3>
@@ -248,9 +253,20 @@
             { name: "Coffin", url: "https://beta.2fools.app/packs/sticker_set", value: 1000, weight: 0.1 }
         ];
 
+        const FREE_ITEMS = [
+            { name: "+1 Тыква", value: 1, weight: 60 },
+            { name: "+10 Тыкв", value: 10, weight: 30 },
+            { name: "+50 Тыкв", value: 50, weight: 10 }
+        ];
+
         const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
 
         let currentAction = null; 
+        let gameInterval = null;
+        let isGameActive = false;
+        let currentMultiplier = 1.00;
+        let crashPoint = 1.00;
+        let currentBet = 0;
 
         async function loadBalance() {
             try {
@@ -280,6 +296,7 @@
                     
                     if (item.item_type === "Номер") value = 1500;
                     else if (item.item_type === "Юзернейм") value = 1000;
+                    else if (item.item_type === "Тыква") value = parseInt(item.item_name.replace(/\D/g, ''));
                     else {
                         const found = allItems.find(i => i.name === item.item_name);
                         if (found) { value = found.value; imgUrl = found.url; }
@@ -333,40 +350,35 @@
         async function confirmAction() {
             if (!currentAction) return;
             const { action, itemId, itemName, value } = currentAction;
-            const btnYes = document.getElementById('confirm-yes-btn');
-            btnYes.innerText = "Ждите...";
-            btnYes.disabled = true;
-
+            
             if (action === 'sell') {
                 const currentBal = parseInt(document.getElementById('balance-amount').innerText);
                 document.getElementById('balance-amount').innerText = currentBal + value;
-                await db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
-                await db.from('inventory').delete().eq('id', itemId);
                 
                 const itemEl = document.getElementById(`inv-item-${itemId}`);
                 if (itemEl) itemEl.remove();
-                tg.showAlert(`✅ Предмет продан за ${value} 🎃`);
-                
                 if (document.getElementById('inventory-list').children.length === 0) {
                     document.getElementById('inventory-list').innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
                 }
+                
+                db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
+                db.from('inventory').delete().eq('id', itemId);
+                
+                tg.showAlert(`✅ Предмет продан за ${value} 🎃`);
+                
             } else if (action === 'withdraw') {
-                const { error } = await db.from('withdrawals').insert([{ user_id: userId, item_name: itemName }]);
-                if (!error) {
-                    await db.from('inventory').delete().eq('id', itemId);
-                    const itemEl = document.getElementById(`inv-item-${itemId}`);
-                    if (itemEl) itemEl.remove();
-                    tg.showAlert(`✅ Заявка на вывод отправлена!`);
-                    if (document.getElementById('inventory-list').children.length === 0) {
-                        document.getElementById('inventory-list').innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
-                    }
-                } else {
-                    tg.showAlert(`❌ Ошибка вывода: ${error.message}`);
+                const itemEl = document.getElementById(`inv-item-${itemId}`);
+                if (itemEl) itemEl.remove();
+                if (document.getElementById('inventory-list').children.length === 0) {
+                    document.getElementById('inventory-list').innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
                 }
+                
+                db.from('withdrawals').insert([{ user_id: userId, item_name: itemName }]);
+                db.from('inventory').delete().eq('id', itemId);
+                
+                tg.showAlert(`✅ Заявка на вывод отправлена!`);
             }
 
-            btnYes.innerText = "Да";
-            btnYes.disabled = false;
             closeConfirm();
         }
 
@@ -375,12 +387,37 @@
             loadInventory();
         }
 
+        // === ПРОВЕРКА КУЛДАУНА (12 ЧАСОВ) ===
+        async function checkFreeCooldown() {
+            const { data } = await db.from('users').select('last_free_case').eq('user_id', userId).single();
+            if (!data || !data.last_free_case) return true; // Если не открывал - можно
+            
+            const lastTime = new Date(data.last_free_case).getTime();
+            const now = new Date().getTime();
+            const hoursPassed = (now - lastTime) / (1000 * 60 * 60);
+            
+            return hoursPassed >= 12;
+        }
+
+        async function updateFreeCooldown() {
+            await db.from('users').update({ last_free_case: new Date().toISOString() }).eq('user_id', userId);
+        }
+
         async function openCase(caseId, price) {
             const currentBalance = parseInt(document.getElementById('balance-amount').innerText);
             if (currentBalance < price) return tg.showAlert("Недостаточно средств!");
 
-            document.getElementById('balance-amount').innerText = currentBalance - price;
-            await db.from('users').update({ balance: currentBalance - price }).eq('user_id', userId);
+            if (caseId === 'free') {
+                const canOpen = await checkFreeCooldown();
+                if (!canOpen) {
+                    return tg.showAlert("⏳ Этот кейс можно открывать раз в 12 часов!");
+                }
+            }
+
+            if (price > 0) {
+                document.getElementById('balance-amount').innerText = currentBalance - price;
+                await db.from('users').update({ balance: currentBalance - price }).eq('user_id', userId);
+            }
 
             let pool = [];
             let selectedItem = null;
@@ -396,6 +433,16 @@
                 selectedItem = { name: "+888" + rnd, url: "", value: 1500 };
                 pool = [{ name: "+888XXXXXXX", url: "", value: 1500 }];
             }
+            else if (caseId === 'free') {
+                pool = FREE_ITEMS;
+                const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
+                let random = Math.random() * totalWeight;
+                for (const item of pool) {
+                    if (random < item.weight) { selectedItem = item; break; }
+                    random -= item.weight;
+                }
+                await updateFreeCooldown(); // Записываем время открытия
+            }
             else {
                 if (caseId === 'hell') pool = HELL_ITEMS;
                 else if (caseId === 'coffin') pool = COFFIN_ITEMS;
@@ -410,8 +457,16 @@
                 }
             }
 
-            let type = (caseId === 'nft') ? "Юзернейм" : (caseId === 'anon' ? "Номер" : "Подарок");
-            await db.from('inventory').insert([{ user_id: userId, item_name: selectedItem.name, item_type: type }]);
+            let type = (caseId === 'nft') ? "Юзернейм" : (caseId === 'anon' ? "Номер" : (caseId === 'free' ? "Тыква" : "Подарок"));
+            
+            // Если это бесплатный кейс, сразу начисляем баланс, а не в инвентарь
+            if (caseId === 'free') {
+                const newBal = parseInt(document.getElementById('balance-amount').innerText) + selectedItem.value;
+                document.getElementById('balance-amount').innerText = newBal;
+                await db.from('users').update({ balance: newBal }).eq('user_id', userId);
+            } else {
+                await db.from('inventory').insert([{ user_id: userId, item_name: selectedItem.name, item_type: type }]);
+            }
 
             const strip = document.getElementById('roulette-strip');
             strip.innerHTML = '';
@@ -443,7 +498,12 @@
 
             setTimeout(() => {
                 document.getElementById('roulette-modal').classList.remove('active');
-                showWinModal(selectedItem, caseId);
+                if (caseId === 'free') {
+                    tg.showAlert(`🎉 Ты выиграл ${selectedItem.name}!\nБаланс пополнен.`);
+                    loadBalance();
+                } else {
+                    showWinModal(selectedItem, caseId);
+                }
             }, 4500);
         }
 
@@ -478,15 +538,7 @@
             document.getElementById('win-modal').classList.add('active');
         }
 
-        // ==========================================
-        // ИГРА "КОРОВА" (CRASH)
-        // ==========================================
-        let gameInterval = null;
-        let isGameActive = false;
-        let currentMultiplier = 1.00;
-        let crashPoint = 1.00;
-        let currentBet = 0;
-
+        // === КРАШ ===
         function startGame() {
             const betInput = document.getElementById('bet-input').value;
             if (!betInput || isNaN(betInput) || betInput < 10) return tg.showAlert("Введи ставку от 10 тыкв.");
@@ -500,45 +552,47 @@
             currentMultiplier = 1.00;
             isGameActive = true;
 
-            // Генерируем точку краша (от 1.1 до 10.0)
-            // Чем больше множитель, тем меньше шанс (рандом)
             const rand = Math.random();
-            if (rand < 0.5) crashPoint = 1.0 + Math.random() * 0.5; // 50% шанс краша на x1.0 - x1.5
-            else if (rand < 0.8) crashPoint = 1.5 + Math.random() * 1.5; // 30% шанс до x3.0
-            else crashPoint = 3.0 + Math.random() * 7.0; // 20% шанс до x10.0
+            if (rand < 0.5) crashPoint = 1.0 + Math.random() * 0.5;
+            else if (rand < 0.8) crashPoint = 1.5 + Math.random() * 1.5;
+            else crashPoint = 3.0 + Math.random() * 7.0;
 
-            // Списываем баланс
             document.getElementById('balance-amount').innerText = balance - bet;
             db.from('users').update({ balance: balance - bet }).eq('user_id', userId);
 
-            // Меняем интерфейс
             document.getElementById('game-setup').style.display = 'none';
             document.getElementById('game-play').style.display = 'block';
-            document.getElementById('crash-multiplier').className = 'crash-multiplier';
-            document.getElementById('crash-multiplier').innerText = 'x1.00';
+            
+            const display = document.getElementById('crash-multiplier');
+            display.className = 'crash-multiplier';
+            display.innerText = 'x1.00';
+            
+            const rocket = document.getElementById('rocket');
+            rocket.className = 'rocket flying';
+            rocket.style.transform = 'translateY(0px)';
+
             document.getElementById('cashout-amount').innerText = bet;
 
-            // Запускаем рост
             gameInterval = setInterval(() => {
-                currentMultiplier += 0.02; // Скорость роста
+                currentMultiplier += 0.02;
                 
-                // Обновляем текст
-                document.getElementById('crash-multiplier').innerText = 'x' + currentMultiplier.toFixed(2);
+                display.innerText = 'x' + currentMultiplier.toFixed(2);
                 document.getElementById('cashout-amount').innerText = Math.floor(bet * currentMultiplier);
+                
+                const yOffset = Math.min((currentMultiplier - 1) * 50, 150); 
+                rocket.style.transform = `translateY(-${yOffset}px)`;
 
-                // Проверяем краш
                 if (currentMultiplier >= crashPoint) {
                     clearInterval(gameInterval);
                     isGameActive = false;
                     
-                    // Показываем краш
-                    const display = document.getElementById('crash-multiplier');
                     display.innerText = 'CRASH! x' + currentMultiplier.toFixed(2);
                     display.className = 'crash-multiplier crashed';
                     
+                    rocket.className = 'rocket crashed';
+                    
                     tg.showAlert(`💥 Краш на x${currentMultiplier.toFixed(2)}!\nТы потерял ${bet} 🎃`);
                     
-                    // Возвращаем меню через 2 секунды
                     setTimeout(() => {
                         document.getElementById('game-play').style.display = 'none';
                         document.getElementById('game-setup').style.display = 'block';
@@ -555,18 +609,15 @@
             const winAmount = Math.floor(currentBet * currentMultiplier);
             const balance = parseInt(document.getElementById('balance-amount').innerText);
             
-            // Начисляем выигрыш
             document.getElementById('balance-amount').innerText = balance + winAmount;
             db.from('users').update({ balance: balance + winAmount }).eq('user_id', userId);
 
-            // Показываем успех
             const display = document.getElementById('crash-multiplier');
             display.innerText = 'ВЫИГРАЛ! x' + currentMultiplier.toFixed(2);
             display.className = 'crash-multiplier cashed-out';
 
             tg.showAlert(`🎉 Ты забрал ${winAmount} 🎃 (x${currentMultiplier.toFixed(2)})`);
 
-            // Возвращаем меню через 2 секунды
             setTimeout(() => {
                 document.getElementById('game-play').style.display = 'none';
                 document.getElementById('game-setup').style.display = 'block';
@@ -576,4 +627,4 @@
         loadBalance();
     </script>
 </body>
-                    </html>
+    </html>

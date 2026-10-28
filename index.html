@@ -11,8 +11,13 @@
         body { background-color: #120a1f; color: #fff; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 20px; }
         .top-bar { background-color: #1f1235; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff7b00; box-shadow: 0 4px 15px rgba(255, 123, 0, 0.2); }
         .logo { font-size: 1.2rem; color: #ff7b00; text-shadow: 0 0 10px rgba(255, 123, 0, 0.5); }
-        .balance-box { background: #000; padding: 8px 15px; border-radius: 20px; border: 1px solid #ff7b00; font-weight: bold; font-size: 1.1rem; color: #ffb700; }
+        .balance-box { background: #000; padding: 8px 15px; border-radius: 20px; border: 1px solid #ff7b00; font-weight: bold; font-size: 1.1rem; color: #ffb700; cursor: pointer; }
+        
         .container { padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .nav-tab { flex: 1; text-align: center; padding: 10px; background: #1f1235; border: 1px solid #4a2c7a; border-radius: 10px; color: #888; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .nav-tab.active { background: #ff7b00; color: #fff; border-color: #ff7b00; box-shadow: 0 0 15px rgba(255,123,0,0.4); }
+        
         .section-title { color: #ff7b00; margin-bottom: 20px; font-size: 1.4rem; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
         .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .case-card { background: linear-gradient(145deg, #26163f, #1a0f2b); border: 1px solid #4a2c7a; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: space-between; }
@@ -20,43 +25,61 @@
         .case-img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,123,0,0.3)); }
         .case-card h3 { font-size: 0.95rem; margin-bottom: 8px; color: #e0d0f0; line-height: 1.2; }
         .case-card p { color: #ffb700; font-weight: bold; font-size: 1rem; background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 10px; }
+
+        .inventory-list { display: flex; flex-direction: column; gap: 10px; }
+        .inventory-item { background: #1f1235; padding: 15px; border-radius: 10px; border: 1px solid #4a2c7a; display: flex; justify-content: space-between; align-items: center; }
+        .inventory-item span { font-weight: bold; color: #ffb700; }
+        .empty-text { text-align: center; color: #888; margin-top: 20px; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
     <header class="top-bar">
         <h1 class="logo">🎃 Halloween Case</h1>
-        <div class="balance-box"><span id="balance-amount">0</span> 🎃</div>
+        <div class="balance-box" onclick="loadBalance()"><span id="balance-amount">0</span> 🎃</div>
     </header>
 
     <main class="container">
-        <h2 class="section-title">Кейсы</h2>
-        <div class="cases-grid">
-            <!-- Кейс 1 -->
-            <div class="case-card" onclick="openCase('hell', 300)">
-                <img src="https://f.2fools.app/tgs/sticker_set/f70510f3.gif" class="case-img" alt="Адский кейс">
-                <h3>Адский кейс</h3>
-                <p>300 🎃</p>
-            </div>
+        <!-- Навигация -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('cases', this)">Кейсы</div>
+            <div class="nav-tab" onclick="switchTab('inventory', this)">Инвентарь</div>
+        </div>
 
-            <!-- Кейс 2 -->
-            <div class="case-card" onclick="openCase('coffin', 250)">
-                <img src="https://f.2fools.app/tgs/sticker_set/debf8fd6.gif" class="case-img" alt="Гробный кейс">
-                <h3>Гробный кейс</h3>
-                <p>250 🎃</p>
+        <!-- Вкладка: Кейсы -->
+        <div id="tab-cases" class="tab-content active">
+            <div class="cases-grid">
+                <div class="case-card" onclick="openCase('hell', 300)">
+                    <img src="https://f.2fools.app/tgs/sticker_set/f70510f3.gif" class="case-img">
+                    <h3>Адский кейс</h3>
+                    <p>300 🎃</p>
+                </div>
+                <div class="case-card" onclick="openCase('coffin', 250)">
+                    <img src="https://f.2fools.app/tgs/sticker_set/debf8fd6.gif" class="case-img">
+                    <h3>Гробный кейс</h3>
+                    <p>250 🎃</p>
+                </div>
+                <div class="case-card" onclick="openCase('nft', 1000)">
+                    <img src="https://f.2fools.app/tgs/sticker_set/1a148ae3.gif" class="case-img">
+                    <h3>NFT юзернеймы</h3>
+                    <p>1000 🎃</p>
+                </div>
+                <div class="case-card" onclick="openCase('anon', 1500)">
+                    <img src="https://f.2fools.app/tgs/sticker_set/baa518d9.gif" class="case-img">
+                    <h3>Анонимные номера</h3>
+                    <p>1500 🎃</p>
+                </div>
             </div>
+        </div>
 
-            <!-- Кейс 3 -->
-            <div class="case-card" onclick="openCase('nft', 1000)">
-                <img src="https://f.2fools.app/tgs/sticker_set/1a148ae3.gif" class="case-img" alt="NFT юзернеймы">
-                <h3>Кейс NFT юзернеймы</h3>
-                <p>1000 🎃</p>
-            </div>
-
-            <!-- Кейс 4 -->
-            <div class="case-card" onclick="openCase('anon', 1500)">
-                <img src="https://f.2fools.app/tgs/sticker_set/baa518d9.gif" class="case-img" alt="Анонимные номера">
-                <h3>Кейс анонимные номера</h3>
-                <p>1500 🎃</p>
+        <!-- Вкладка: Инвентарь -->
+        <div id="tab-inventory" class="tab-content">
+            <h2 class="section-title">Твой инвентарь</h2>
+            <div id="inventory-list" class="inventory-list">
+                <p class="empty-text">Загрузка...</p>
             </div>
         </div>
     </main>
@@ -64,29 +87,104 @@
     <script>
         const SUPABASE_URL = "https://ptcofqwsvyytcnoerazu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_CL2wAd6YW9tj5fIq4r9b4A_iVeZtnBx";
+        const { createClient } = supabase;
+        const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+        
+        // Получаем ID (в браузере берет тестовый, в ТГ - настоящий)
+        const userId = (tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243317;
 
-        let userId = (tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243317;
-
-        const { createClient } = supabase;
-        const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
+        const ANON_NUMBERS = ["+8881002003", "+8882003004", "+8883004005", "+8884005006", "+8885006007", "+8886007008", "+8887008009", "+8888009010", "+8889010011", "+8881011022", "+8882022033", "+8883033044", "+8884044055", "+8885055066", "+8886066077", "+8887077088", "+8888088099", "+8889099010", "+8881111111", "+8882222222", "+8883333333", "+8884444444", "+8885555555", "+8886666666", "+8887777777"];
 
         async function loadBalance() {
-            if (!userId) return;
             try {
-                const { data, error } = await db.from('users').select('balance').eq('user_id', userId).single();
-                if (data) document.getElementById('balance-amount').innerText = data.balance;
+                const { data } = await db.from('users').select('balance').eq('user_id', userId).single();
+                if (data) {
+                    document.getElementById('balance-amount').innerText = data.balance;
+                } else {
+                    document.getElementById('balance-amount').innerText = "0";
+                }
             } catch (e) { console.error(e); }
         }
-        loadBalance();
 
-        function openCase(caseId, price) {
-            // Пока заглушка. Позже тут будет анимация.
-            tg.showAlert(`Открываем ${caseId} за ${price} 🎃`);
+        async function loadInventory() {
+            const list = document.getElementById('inventory-list');
+            list.innerHTML = '<p class="empty-text">Загрузка...</p>';
+            
+            try {
+                const { data } = await db.from('inventory').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+                
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<p class="empty-text">Пока пусто. Открой первый кейс!</p>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'inventory-item';
+                    div.innerHTML = `<span>${item.item_name}</span> <small style="color: #888;">${item.item_type}</small>`;
+                    list.appendChild(div);
+                });
+            } catch (e) {
+                list.innerHTML = '<p class="empty-text">Ошибка загрузки инвентаря</p>';
+                console.error(e);
+            }
         }
+
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            element.classList.add('active');
+
+            if (tabName === 'inventory') loadInventory();
+        }
+
+        async function openCase(caseId, price) {
+            const currentBalanceText = document.getElementById('balance-amount').innerText;
+            const currentBalance = parseInt(currentBalanceText);
+            
+            if (currentBalance < price) {
+                tg.showAlert("Недостаточно тыкв! Купи их в боте через /buy");
+                return;
+            }
+
+            let prize = "";
+            let type = "";
+
+            if (caseId === 'nft') {
+                prize = NFT_USERNAMES[Math.floor(Math.random() * NFT_USERNAMES.length)];
+                type = "Юзернейм";
+            } else if (caseId === 'anon') {
+                prize = ANON_NUMBERS[Math.floor(Math.random() * ANON_NUMBERS.length)];
+                type = "Номер";
+            } else {
+                prize = "Тестовый предмет";
+                type = "Подарок";
+            }
+
+            // Списываем тыквы в базе
+            const newBalance = currentBalance - price;
+            await db.from('users').update({ balance: newBalance }).eq('user_id', userId);
+
+            // Сохраняем в инвентарь
+            await db.from('inventory').insert([{ user_id: userId, item_name: prize, item_type: type }]);
+
+            // Показываем результат
+            tg.showAlert(`Ты открыл кейс и получил: ${prize} (${type})!`);
+            
+            // Обновляем баланс на экране
+            loadBalance();
+        }
+
+        // Загружаем баланс при старте
+        loadBalance();
     </script>
 </body>
 </html>

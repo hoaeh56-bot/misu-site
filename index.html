@@ -99,10 +99,10 @@
         <div id="tab-cases" class="tab-content active">
             <h2 class="section-title">Доступные кейсы</h2>
             <div class="cases-grid">
-                <div class="case-card" onclick="openCase('free', 0)">
+                <div class="case-card" id="free-case-card" onclick="openCase('free', 0)">
                     <img src="https://f.2fools.app/tgs/sticker_set/558bb616.gif" class="case-img">
                     <h3>КЕЙС БОБРА (FREE)</h3>
-                    <p>Бесплатно</p>
+                    <p id="free-case-timer">Бесплатно</p>
                 </div>
                 <div class="case-card" onclick="openCase('hell', 300)">
                     <img src="https://f.2fools.app/tgs/sticker_set/f70510f3.gif" class="case-img">
@@ -351,6 +351,8 @@
             if (!currentAction) return;
             const { action, itemId, itemName, value } = currentAction;
             
+            closeConfirm(); // Закрываем окно СРАЗУ
+
             if (action === 'sell') {
                 const currentBal = parseInt(document.getElementById('balance-amount').innerText);
                 document.getElementById('balance-amount').innerText = currentBal + value;
@@ -378,8 +380,6 @@
                 
                 tg.showAlert(`✅ Заявка на вывод отправлена!`);
             }
-
-            closeConfirm();
         }
 
         function closeWinModal() {
@@ -387,20 +387,26 @@
             loadInventory();
         }
 
-        // === ПРОВЕРКА КУЛДАУНА (12 ЧАСОВ) ===
-        async function checkFreeCooldown() {
+        async function updateFreeTimer() {
             const { data } = await db.from('users').select('last_free_case').eq('user_id', userId).single();
-            if (!data || !data.last_free_case) return true; // Если не открывал - можно
+            const timerEl = document.getElementById('free-case-timer');
+            
+            if (!data || !data.last_free_case) {
+                timerEl.innerText = "Бесплатно";
+                return;
+            }
             
             const lastTime = new Date(data.last_free_case).getTime();
             const now = new Date().getTime();
-            const hoursPassed = (now - lastTime) / (1000 * 60 * 60);
+            const diffMs = (12 * 60 * 60 * 1000) - (now - lastTime); // 12 часов в мс
             
-            return hoursPassed >= 12;
-        }
-
-        async function updateFreeCooldown() {
-            await db.from('users').update({ last_free_case: new Date().toISOString() }).eq('user_id', userId);
+            if (diffMs <= 0) {
+                timerEl.innerText = "Бесплатно";
+            } else {
+                const hours = Math.floor(diffMs / (1000 * 60 * 60));
+                const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                timerEl.innerText = `Доступно через ${hours}ч ${minutes}м`;
+            }
         }
 
         async function openCase(caseId, price) {
@@ -408,9 +414,14 @@
             if (currentBalance < price) return tg.showAlert("Недостаточно средств!");
 
             if (caseId === 'free') {
-                const canOpen = await checkFreeCooldown();
-                if (!canOpen) {
-                    return tg.showAlert("⏳ Этот кейс можно открывать раз в 12 часов!");
+                const { data } = await db.from('users').select('last_free_case').eq('user_id', userId).single();
+                if (data && data.last_free_case) {
+                    const lastTime = new Date(data.last_free_case).getTime();
+                    const now = new Date().getTime();
+                    const hoursPassed = (now - lastTime) / (1000 * 60 * 60);
+                    if (hoursPassed < 12) {
+                        return tg.showAlert("⏳ Кулдаун! Этот кейс можно открыть раз в 12 часов.");
+                    }
                 }
             }
 
@@ -441,7 +452,8 @@
                     if (random < item.weight) { selectedItem = item; break; }
                     random -= item.weight;
                 }
-                await updateFreeCooldown(); // Записываем время открытия
+                await db.from('users').update({ last_free_case: new Date().toISOString() }).eq('user_id', userId);
+                updateFreeTimer();
             }
             else {
                 if (caseId === 'hell') pool = HELL_ITEMS;
@@ -459,7 +471,6 @@
 
             let type = (caseId === 'nft') ? "Юзернейм" : (caseId === 'anon' ? "Номер" : (caseId === 'free' ? "Тыква" : "Подарок"));
             
-            // Если это бесплатный кейс, сразу начисляем баланс, а не в инвентарь
             if (caseId === 'free') {
                 const newBal = parseInt(document.getElementById('balance-amount').innerText) + selectedItem.value;
                 document.getElementById('balance-amount').innerText = newBal;
@@ -625,6 +636,7 @@
         }
 
         loadBalance();
+        updateFreeTimer();
     </script>
 </body>
-    </html>
+</html>

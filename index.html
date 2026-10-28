@@ -6,60 +6,272 @@
     <title>🎃 Halloween Case</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Красивые шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #120a1f; color: #fff; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         
-        .top-bar { background-color: #1f1235; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff7b00; box-shadow: 0 4px 15px rgba(255, 123, 0, 0.2); position: sticky; top: 0; z-index: 10; }
-        .logo { font-size: 1.2rem; color: #ff7b00; text-shadow: 0 0 10px rgba(255, 123, 0, 0.5); }
-        .balance-box { background: #000; padding: 8px 15px; border-radius: 20px; border: 1px solid #ff7b00; font-weight: bold; font-size: 1.1rem; color: #ffb700; cursor: pointer; }
-        
-        .container { padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
-        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .nav-tab { flex: 1; text-align: center; padding: 10px; background: #1f1235; border: 1px solid #4a2c7a; border-radius: 10px; color: #888; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .nav-tab.active { background: #ff7b00; color: #fff; border-color: #ff7b00; box-shadow: 0 0 15px rgba(255,123,0,0.4); }
-        
-        .section-title { color: #ff7b00; margin-bottom: 20px; font-size: 1.4rem; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
-        .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
-        .case-card { background: linear-gradient(145deg, #26163f, #1a0f2b); border: 1px solid #4a2c7a; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; }
-        .case-card:active { transform: scale(0.95); border-color: #ff7b00; box-shadow: 0 0 15px rgba(255, 123, 0, 0.4); }
-        .case-img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,123,0,0.3)); }
-        .case-card h3 { font-size: 0.95rem; margin-bottom: 8px; color: #e0d0f0; line-height: 1.2; }
-        .case-card p { color: #ffb700; font-weight: bold; font-size: 1rem; background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 10px; }
+        body { 
+            background-color: #0a0a0a; 
+            background-image: radial-gradient(circle at top right, #1f1235 0%, #0a0a0a 50%);
+            color: #fff; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            padding-bottom: 20px; 
+        }
 
+        /* Шапка */
+        .top-bar { 
+            background: rgba(10, 10, 10, 0.8); 
+            backdrop-filter: blur(10px);
+            padding: 15px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid #2b1b45;
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+        }
+        .logo { 
+            font-size: 1.1rem; 
+            font-weight: 800; 
+            color: #fff; 
+            text-shadow: 0 0 15px #ff7b00; 
+            letter-spacing: 1px;
+        }
+        .balance-box { 
+            background: #151515; 
+            padding: 8px 16px; 
+            border-radius: 8px; 
+            border: 1px solid #333;
+            font-weight: 800; 
+            font-size: 1rem; 
+            color: #fff; 
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .balance-box:hover { border-color: #ff7b00; box-shadow: 0 0 10px rgba(255,123,0,0.2); }
+
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
+
+        /* Табы */
+        .nav-tabs { display: flex; gap: 15px; margin-bottom: 30px; }
+        .nav-tab { 
+            flex: 1; 
+            text-align: center; 
+            padding: 12px; 
+            background: #151515; 
+            border: 1px solid #222; 
+            border-radius: 12px; 
+            color: #777; 
+            font-weight: 800; 
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .nav-tab.active { 
+            background: #1a1a1a; 
+            color: #fff; 
+            border-color: #ff7b00; 
+            box-shadow: inset 0 0 15px rgba(255,123,0,0.1), 0 0 15px rgba(255,123,0,0.2); 
+        }
+
+        .section-title { 
+            color: #fff; 
+            margin-bottom: 20px; 
+            font-size: 1.1rem; 
+            font-weight: 800;
+            text-align: left; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-left: 3px solid #ff7b00;
+            padding-left: 10px;
+        }
+
+        /* Сетка кейсов */
+        .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .case-card { 
+            background: #111; 
+            border: 1px solid #222; 
+            border-radius: 16px; 
+            padding: 20px 15px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            position: relative;
+            overflow: hidden;
+        }
+        /* Свечение при наведении */
+        .case-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,123,0,0.1) 0%, transparent 60%);
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+        .case-card:hover::before { opacity: 1; }
+        .case-card:active { transform: scale(0.96); border-color: #ff7b00; }
+        
+        .case-img { 
+            width: 110px; 
+            height: 110px; 
+            object-fit: contain; 
+            margin-bottom: 15px; 
+            filter: drop-shadow(0 0 15px rgba(255,123,0,0.4)); 
+            transition: 0.3s;
+        }
+        .case-card:hover .case-img { transform: translateY(-5px); filter: drop-shadow(0 0 25px rgba(255,123,0,0.7)); }
+        
+        .case-card h3 { 
+            font-size: 0.85rem; 
+            font-weight: 600;
+            margin-bottom: 12px; 
+            color: #ccc; 
+            line-height: 1.3; 
+        }
+        .case-card p { 
+            color: #fff; 
+            font-weight: 800; 
+            font-size: 1rem; 
+            background: #1a1a1a; 
+            padding: 6px 14px; 
+            border-radius: 8px; 
+            border: 1px solid #333;
+        }
+
+        /* Инвентарь */
         .inventory-list { display: flex; flex-direction: column; gap: 10px; }
-        .inventory-item { background: #1f1235; padding: 15px; border-radius: 10px; border: 1px solid #4a2c7a; display: flex; justify-content: space-between; align-items: center; }
-        .inventory-item span { font-weight: bold; color: #ffb700; }
-        .empty-text { text-align: center; color: #888; margin-top: 20px; }
+        .inventory-item { 
+            background: #111; 
+            padding: 15px; 
+            border-radius: 12px; 
+            border: 1px solid #222; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .inventory-item span { font-weight: 800; color: #fff; }
+        .inventory-item small { color: #ff7b00; font-weight: 600; font-size: 0.8rem; }
+        .empty-text { text-align: center; color: #555; margin-top: 40px; font-weight: 600; }
 
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .tab-content.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Модальное окно */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); 
+            display: none; justify-content: center; align-items: center; 
+            z-index: 1000; padding: 20px; backdrop-filter: blur(8px); 
+        }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: #1f1235; border: 2px solid #ff7b00; border-radius: 20px; padding: 25px 20px; width: 100%; max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(255,123,0,0.3); }
-        .modal-title { color: #ff7b00; margin-bottom: 15px; text-align: center; font-size: 1.3rem; text-transform: uppercase; }
+        .modal-content { 
+            background: #0f0f0f; 
+            border: 1px solid #333; 
+            border-radius: 20px; 
+            padding: 25px; 
+            width: 100%; max-width: 400px; max-height: 85vh; 
+            display: flex; flex-direction: column; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 20px rgba(255,123,0,0.1); 
+        }
+        .modal-title { 
+            color: #fff; 
+            margin-bottom: 20px; 
+            text-align: center; 
+            font-size: 1.2rem; 
+            font-weight: 800; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         
-        .modal-items-scroll { overflow-y: auto; flex: 1; margin-bottom: 15px; padding-right: 5px; }
-        .modal-items-scroll::-webkit-scrollbar { width: 5px; }
-        .modal-items-scroll::-webkit-scrollbar-thumb { background: #ff7b00; border-radius: 5px; }
+        .modal-items-scroll { overflow-y: auto; flex: 1; margin-bottom: 20px; padding-right: 5px; }
+        .modal-items-scroll::-webkit-scrollbar { width: 4px; }
+        .modal-items-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         
         .modal-content ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .modal-content li { background: #120a1f; padding: 10px; border-radius: 10px; border: 1px solid #4a2c7a; font-weight: bold; color: #e0d0f0; text-align: center; font-size: 0.9rem; word-break: break-all; }
+        .modal-content li { 
+            background: #151515; 
+            padding: 12px; 
+            border-radius: 10px; 
+            border: 1px solid #222; 
+            font-weight: 600; 
+            color: #ccc; 
+            text-align: center; 
+            font-size: 0.85rem; 
+            word-break: break-all; 
+        }
         
-        .modal-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-open-case { background: linear-gradient(135deg, #ff7b00, #ff4500); color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; flex: 1; text-transform: uppercase; font-size: 1rem; box-shadow: 0 4px 10px rgba(255,69,0,0.4); }
-        .btn-fast-case { background: #4a2c7a; color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; flex: 1; text-transform: uppercase; font-size: 1rem; }
-        .close-btn { background: #2b1b45; color: #aaa; border: 1px solid #4a2c7a; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .modal-actions { display: flex; gap: 10px; }
+        .btn-open-case { 
+            background: #fff; 
+            color: #000; 
+            border: none; 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            flex: 1; 
+            text-transform: uppercase; 
+            font-size: 0.9rem; 
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+            transition: 0.2s;
+        }
+        .btn-open-case:active { transform: scale(0.97); }
+        
+        .btn-fast-case { 
+            background: transparent; 
+            color: #fff; 
+            border: 1px solid #333; 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            flex: 1; 
+            text-transform: uppercase; 
+            font-size: 0.9rem; 
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .btn-fast-case:active { background: #1a1a1a; }
+        
+        .close-btn { 
+            background: transparent; 
+            color: #666; 
+            border: none; 
+            padding: 15px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 5px; 
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
     <header class="top-bar">
-        <h1 class="logo">🎃 Halloween Case</h1>
-        <div class="balance-box" onclick="loadBalance()"><span id="balance-amount">0</span> 🎃</div>
+        <h1 class="logo">HALLOWEEN CASE</h1>
+        <div class="balance-box" onclick="loadBalance()">
+            <span id="balance-amount">0</span> 🎃
+        </div>
     </header>
 
     <main class="container">
@@ -69,25 +281,26 @@
         </div>
 
         <div id="tab-cases" class="tab-content active">
+            <h2 class="section-title">Доступные кейсы</h2>
             <div class="cases-grid">
                 <div class="case-card" onclick="viewContents('hell')">
                     <img src="https://f.2fools.app/tgs/sticker_set/f70510f3.gif" class="case-img">
-                    <h3>Адский кейс</h3>
+                    <h3>АДСКИЙ КЕЙС</h3>
                     <p>300 🎃</p>
                 </div>
                 <div class="case-card" onclick="viewContents('coffin')">
                     <img src="https://f.2fools.app/tgs/sticker_set/debf8fd6.gif" class="case-img">
-                    <h3>Гробный кейс</h3>
+                    <h3>ГРОБНЫЙ КЕЙС</h3>
                     <p>250 🎃</p>
                 </div>
                 <div class="case-card" onclick="viewContents('nft')">
                     <img src="https://f.2fools.app/tgs/sticker_set/1a148ae3.gif" class="case-img">
-                    <h3>NFT юзернеймы</h3>
+                    <h3>NFT ЮЗЕРНЕЙМЫ</h3>
                     <p>1000 🎃</p>
                 </div>
                 <div class="case-card" onclick="viewContents('anon')">
                     <img src="https://f.2fools.app/tgs/sticker_set/baa518d9.gif" class="case-img">
-                    <h3>Анонимные номера</h3>
+                    <h3>АНОНИМНЫЕ НОМЕРА</h3>
                     <p>1500 🎃</p>
                 </div>
             </div>
@@ -101,6 +314,7 @@
         </div>
     </main>
 
+    <!-- Модальное окно -->
     <div class="modal-overlay" id="content-modal">
         <div class="modal-content">
             <h3 class="modal-title" id="modal-title">Содержимое</h3>
@@ -129,8 +343,8 @@
         // ЮЗЕРНЕЙМЫ
         const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
         
-        // НОМЕРА (только +888 и 7 цифр)
-        const ANON_NUMBERS = ["+8881002003", "+8887777777", "+8881234567", "+8889876543", "+8885556667", "+8881112223", "+8883334445", "+8880009991", "+8882468135", "+8881357924"];
+        // ДЛЯ ПРЕВЬЮ В ОКНЕ (чисто визуально)
+        const ANON_PREVIEW = ["+888xxx", "+888xxx", "+888xxx", "+888xxx"];
         
         const HELL_ITEMS = ["🔥 Череп", "🩸 Глаз", "🔮 Книга", "🦇 Мышь", "🔥 Пламя"];
         const COFFIN_ITEMS = ["⚰️ Гроб", "💀 Кость", "🕷 Паук", "🕸 Сеть", "🌫 Туман"];
@@ -152,14 +366,14 @@
             try {
                 const { data } = await db.from('inventory').select('*').eq('user_id', userId).order('created_at', { ascending: false });
                 if (!data || data.length === 0) {
-                    list.innerHTML = '<p class="empty-text">Пока пусто. Открой первый кейс!</p>';
+                    list.innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
                     return;
                 }
                 list.innerHTML = '';
                 data.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'inventory-item';
-                    div.innerHTML = `<span>${item.item_name}</span> <small style="color: #888;">${item.item_type}</small>`;
+                    div.innerHTML = `<span>${item.item_name}</span> <small>${item.item_type}</small>`;
                     list.appendChild(div);
                 });
             } catch (e) {
@@ -182,7 +396,7 @@
             let price = 0;
 
             if (caseId === 'nft') { title = "NFT Юзернеймы"; items = NFT_USERNAMES; price = 1000; }
-            else if (caseId === 'anon') { title = "Анонимные номера"; items = ANON_NUMBERS; price = 1500; }
+            else if (caseId === 'anon') { title = "Анонимные номера"; items = ANON_PREVIEW; price = 1500; }
             else if (caseId === 'hell') { title = "Адский кейс"; items = HELL_ITEMS; price = 300; }
             else if (caseId === 'coffin') { title = "Гробный кейс"; items = COFFIN_ITEMS; price = 250; }
 
@@ -190,11 +404,19 @@
             const list = document.getElementById('modal-list');
             list.innerHTML = '';
             
-            items.forEach(item => {
+            if (caseId === 'anon') {
+                // Для анонимных выводим просто текст
                 const li = document.createElement('li');
-                li.innerText = item;
+                li.style.gridColumn = "span 2";
+                li.innerText = "Случайный номер формата +888 XXXXXXX";
                 list.appendChild(li);
-            });
+            } else {
+                items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerText = item;
+                    list.appendChild(li);
+                });
+            }
 
             document.getElementById('content-modal').classList.add('active');
         }
@@ -212,7 +434,7 @@
 
             const currentBalance = parseInt(document.getElementById('balance-amount').innerText);
             if (currentBalance < price) {
-                tg.showAlert("Недостаточно тыкв! Купи их в боте через /buy");
+                tg.showAlert("Недостаточно средств!");
                 return;
             }
 
@@ -221,16 +443,22 @@
             let prize = "";
             let type = "";
 
-            if (caseId === 'nft') { prize = NFT_USERNAMES[Math.floor(Math.random() * NFT_USERNAMES.length)]; type = "Юзернейм"; }
-            else if (caseId === 'anon') { 
-                // Генерируем номер: +888 и 7 случайных цифр
+            if (caseId === 'nft') { 
+                prize = NFT_USERNAMES[Math.floor(Math.random() * NFT_USERNAMES.length)]; 
+                type = "Юзернейм"; 
+            } else if (caseId === 'anon') { 
+                // Чистый рандом: +888 и 7 цифр
                 let randomDigits = "";
                 for (let i = 0; i < 7; i++) randomDigits += Math.floor(Math.random() * 10);
                 prize = "+888" + randomDigits; 
                 type = "Номер"; 
+            } else if (caseId === 'hell') { 
+                prize = HELL_ITEMS[Math.floor(Math.random() * HELL_ITEMS.length)]; 
+                type = "Подарок"; 
+            } else if (caseId === 'coffin') { 
+                prize = COFFIN_ITEMS[Math.floor(Math.random() * COFFIN_ITEMS.length)]; 
+                type = "Подарок"; 
             }
-            else if (caseId === 'hell') { prize = HELL_ITEMS[Math.floor(Math.random() * HELL_ITEMS.length)]; type = "Подарок"; }
-            else if (caseId === 'coffin') { prize = COFFIN_ITEMS[Math.floor(Math.random() * COFFIN_ITEMS.length)]; type = "Подарок"; }
 
             const newBalance = currentBalance - price;
             await db.from('users').update({ balance: newBalance }).eq('user_id', userId);
@@ -239,10 +467,11 @@
             if (isFast) {
                 tg.showAlert(`Выпало: ${prize}`);
             } else {
-                tg.showAlert(`Крутим...`);
+                // Красивое "кручение" в алерте (МисаГрам не поддерживает кастомные анимации в оверлее, поэтому алерты)
+                tg.showAlert(`Открываем...`);
                 setTimeout(() => {
-                    tg.showAlert(`Поздравляем! Выпало: ${prize}`);
-                }, 1000);
+                    tg.showAlert(`🎉 Поздравляем!\n\nТвой выигрыш: ${prize}`);
+                }, 1200);
             }
             
             loadBalance();

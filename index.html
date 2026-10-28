@@ -130,25 +130,21 @@
             </div>
         </div>
 
-        <!-- ВКЛАДКА ИГРЫ КОРОВА -->
+        <!-- ВКЛАДКА ИГРЫ -->
         <div id="tab-game" class="tab-content">
-            <h2 class="section-title">Корова (Chicken Road)</h2>
-            
+            <h2 class="section-title">Корова</h2>
             <div id="game-setup">
                 <p style="margin-bottom: 10px; color: #aaa;">Введи ставку (в тыквах):</p>
                 <input type="number" id="bet-input" placeholder="100" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #111; color: #fff; font-size: 16px; margin-bottom: 15px;">
                 <button class="btn-play" onclick="startGame()">НАЧАТЬ ИГРУ</button>
             </div>
-
             <div id="game-play" style="display: none;">
                 <div class="game-area" id="game-area">
                     <div class="road"><div class="road-line"></div></div>
-                    <!-- Сюда будут добавляться заборы и машины -->
                     <div class="chicken" id="chicken">🐔</div>
                 </div>
-                <div style="text-align: center; font-size: 2rem; margin-bottom: 15px; font-weight: 800;" id="multiplier-display">x1.00</div>
+                <div style="text-align: center; font-size: 2rem; margin-bottom: 15px; font-weight: 800;" id="multiplier-display">x1.0</div>
                 <div style="text-align: center; color: #ffb700; margin-bottom: 15px;" id="prize-display">Забери: <span>0</span> 🎃</div>
-                
                 <button class="btn-jump" id="btn-jump" onclick="jump()">ПРЫЖОК</button>
                 <button class="btn-cashout" id="btn-cashout" onclick="cashout()">ЗАБРАТЬ</button>
             </div>
@@ -212,18 +208,281 @@
         const paramId = urlParams.get('user_id');
         const userId = paramId ? parseInt(paramId) : ((tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243205);
 
-        // ... (сюда вставляются массивы предметов SUCHIY_ITEMS, BOBER_ITEMS, HELL_ITEMS, COFFIN_ITEMS, NFT_USERNAMES - они не меняются)
-        const SUCHIY_ITEMS = [ /* ... */ ];
-        const BOBER_ITEMS = [ /* ... */ ];
-        const HELL_ITEMS = [ /* ... */ ];
-        const COFFIN_ITEMS = [ /* ... */ ];
-        const NFT_USERNAMES = [ /* ... */ ];
+        // ВСЕ МАССИВЫ НА МЕСТЕ
+        const SUCHIY_ITEMS = [
+            { name: "Neko helmet", url: "https://f.2fools.app/tgs/sticker_set/5bb57e.gif", value: 150, weight: 40 },
+            { name: "Candy", url: "https://f.2fools.app/tgs/sticker_set/b205dfeb.gif", value: 200, weight: 30 },
+            { name: "Peach", url: "https://f.2fools.app/tgs/sticker_set/43bee242.gif", value: 250, weight: 20 },
+            { name: "Perfume", url: "https://f.2fools.app/tgs/sticker_set/cf9da734.gif", value: 300, weight: 10 }
+        ];
+
+        const BOBER_ITEMS = [
+            { name: "Crazy Cap", url: "https://f.2fools.app/tgs/sticker_set/f1cb2a76.gif", value: 400, weight: 35 },
+            { name: "Switches Watch", url: "https://f.2fools.app/tgs/sticker_set/e3f75839.gif", value: 300, weight: 25 },
+            { name: "Toy bear", url: "https://f.2fools.app/tgs/sticker_set/fcdbafe0.gif", value: 500, weight: 20 },
+            { name: "Pepe", url: "https://f.2fools.app/tgs/sticker_set/20af6852.gif", value: 2000, weight: 1, legendary: true }
+        ];
+
+        const HELL_ITEMS = [
+            { name: "Candle", url: "https://f.2fools.app/tgs/sticker_set/1f7df42a.gif", value: 100, weight: 25 },
+            { name: "Witch's Hat", url: "https://f.2fools.app/tgs/sticker_set/44d07e3a.gif", value: 150, weight: 20 },
+            { name: "Scared Cat", url: "https://f.2fools.app/tgs/sticker_set/6073f383.gif", value: 150, weight: 15 },
+            { name: "Broom", url: "https://f.2fools.app/tgs/sticker_set/44e096b9.gif", value: 150, weight: 10 },
+            { name: "Pumpkin", url: "https://f.2fools.app/tgs/sticker_set/453aefb8.gif", value: 150, weight: 10 },
+            { name: "Locket", url: "https://f.2fools.app/tgs/sticker_set/1fe865a8.gif", value: 150, weight: 5 },
+            { name: "halloween eye", url: "https://f.2fools.app/tgs/sticker_set/1f633827.gif", value: 150, weight: 5 },
+            { name: "Pot", url: "https://f.2fools.app/tgs/sticker_set/44b5c237.gif", value: 150, weight: 5 },
+            { name: "Halloween pop", url: "https://f.2fools.app/tgs/sticker_set/1f313026.gif", value: 150, weight: 4 },
+            { name: "Mask Vurses", url: "https://f.2fools.app/tgs/sticker_set/860a7d97.gif", value: 300, weight: 1 }
+        ];
+
+        const COFFIN_ITEMS = [
+            { name: "Mushroom", url: "https://f.2fools.app/tgs/sticker_set/8640d690.gif", value: 200, weight: 40 },
+            { name: "magic ball", url: "https://f.2fools.app/tgs/sticker_set/6083fc02.gif", value: 200, weight: 20 },
+            { name: "Halloween flower", url: "https://f.2fools.app/tgs/sticker_set/85d68612.gif", value: 200, weight: 15 },
+            { name: "Lips", url: "https://f.2fools.app/tgs/sticker_set/61b3290d.gif", value: 200, weight: 10 },
+            { name: "Ice gem", url: "https://f.2fools.app/tgs/sticker_set/8705b31d.gif", value: 200, weight: 5 },
+            { name: "Frog", url: "https://f.2fools.app/tgs/sticker_set/4483ba36.gif", value: 200, weight: 5 },
+            { name: "magic potion", url: "https://f.2fools.app/tgs/sticker_set/6148b78f.gif", value: 200, weight: 3 },
+            { name: "Wodoo", url: "https://f.2fools.app/tgs/sticker_set/1f8e0ca9.gif", value: 250, weight: 1.5 },
+            { name: "Tombstone", url: "https://f.2fools.app/tgs/sticker_set/452496bd.gif", value: 750, weight: 0.4 },
+            { name: "Coffin", url: "https://beta.2fools.app/packs/sticker_set", value: 1000, weight: 0.1 }
+        ];
+
+        const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
 
         let currentAction = null; 
 
-        // ... (функции loadBalance, loadInventory, switchTab, askAction, closeConfirm, confirmAction, closeWinModal, openCase, showWinModal остаются без изменений)
-        
-        // === ЛОГИКА ИГРЫ КОРОВА ===
+        async function loadBalance() {
+            try {
+                const { data } = await db.from('users').select('balance').eq('user_id', userId).single();
+                if (data) document.getElementById('balance-amount').innerText = data.balance;
+                else document.getElementById('balance-amount').innerText = "0";
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadInventory() {
+            const list = document.getElementById('inventory-list');
+            list.innerHTML = '<p class="empty-text">Загрузка...</p>';
+            
+            try {
+                const { data } = await db.from('inventory').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
+                    return;
+                }
+                list.innerHTML = '';
+                
+                const allItems = [...HELL_ITEMS, ...COFFIN_ITEMS, ...SUCHIY_ITEMS, ...BOBER_ITEMS];
+                
+                data.forEach(item => {
+                    let value = 0;
+                    let imgUrl = "";
+                    
+                    if (item.item_type === "Номер") value = 1500;
+                    else if (item.item_type === "Юзернейм") value = 1000;
+                    else {
+                        const found = allItems.find(i => i.name === item.item_name);
+                        if (found) { value = found.value; imgUrl = found.url; }
+                        else value = 50;
+                    }
+
+                    const itemId = Number(item.id);
+
+                    const div = document.createElement('div');
+                    div.className = 'inventory-item';
+                    div.id = `inv-item-${itemId}`;
+                    div.innerHTML = `
+                        <div class="inv-info">
+                            ${imgUrl ? `<img src="${imgUrl}">` : ''}
+                            <div>
+                                <span>${item.item_name}</span>
+                                <small>${item.item_type} | ${value} 🎃</small>
+                            </div>
+                        </div>
+                        <div class="inv-actions">
+                            <button class="btn-sell" onclick="askAction('sell', ${itemId}, '${item.item_name}', ${value})">Продать</button>
+                            <button class="btn-withdraw" onclick="askAction('withdraw', ${itemId}, '${item.item_name}', 0)">Вывод</button>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            element.classList.add('active');
+            if (tabName === 'inventory') loadInventory();
+        }
+
+        function askAction(action, itemId, itemName, value) {
+            currentAction = { action, itemId, itemName, value };
+            const text = action === 'sell' ? `Продать "${itemName}" за ${value} 🎃?` : `Запросить вывод "${itemName}"?`;
+            document.getElementById('confirm-text').innerText = text;
+            document.getElementById('confirm-yes-btn').onclick = () => confirmAction();
+            document.getElementById('confirm-modal').classList.add('active');
+        }
+
+        function closeConfirm() {
+            document.getElementById('confirm-modal').classList.remove('active');
+            currentAction = null;
+        }
+
+        async function confirmAction() {
+            if (!currentAction) return;
+            const { action, itemId, itemName, value } = currentAction;
+            const btnYes = document.getElementById('confirm-yes-btn');
+            btnYes.innerText = "Ждите...";
+            btnYes.disabled = true;
+
+            if (action === 'sell') {
+                const currentBal = parseInt(document.getElementById('balance-amount').innerText);
+                document.getElementById('balance-amount').innerText = currentBal + value;
+                
+                await db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
+                await db.from('inventory').delete().eq('id', itemId);
+                
+                const itemEl = document.getElementById(`inv-item-${itemId}`);
+                if (itemEl) itemEl.remove();
+                
+                tg.showAlert(`✅ Предмет продан за ${value} 🎃`);
+                
+                if (document.getElementById('inventory-list').children.length === 0) {
+                    document.getElementById('inventory-list').innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
+                }
+                
+            } else if (action === 'withdraw') {
+                const { error } = await db.from('withdrawals').insert([{ user_id: userId, item_name: itemName }]);
+                if (!error) {
+                    await db.from('inventory').delete().eq('id', itemId);
+                    const itemEl = document.getElementById(`inv-item-${itemId}`);
+                    if (itemEl) itemEl.remove();
+                    tg.showAlert(`✅ Заявка на вывод отправлена!`);
+                    if (document.getElementById('inventory-list').children.length === 0) {
+                        document.getElementById('inventory-list').innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
+                    }
+                } else {
+                    tg.showAlert(`❌ Ошибка вывода: ${error.message}`);
+                }
+            }
+
+            btnYes.innerText = "Да";
+            btnYes.disabled = false;
+            closeConfirm();
+        }
+
+        function closeWinModal() {
+            document.getElementById('win-modal').classList.remove('active');
+            loadInventory();
+        }
+
+        async function openCase(caseId, price) {
+            const currentBalance = parseInt(document.getElementById('balance-amount').innerText);
+            if (currentBalance < price) return tg.showAlert("Недостаточно средств!");
+
+            document.getElementById('balance-amount').innerText = currentBalance - price;
+            await db.from('users').update({ balance: currentBalance - price }).eq('user_id', userId);
+
+            let pool = [];
+            let selectedItem = null;
+
+            if (caseId === 'nft') {
+                const name = NFT_USERNAMES[Math.floor(Math.random() * NFT_USERNAMES.length)];
+                selectedItem = { name: name, url: "", value: 1000 };
+                pool = NFT_USERNAMES.map(n => ({ name: n, url: "", value: 1000 }));
+            } 
+            else if (caseId === 'anon') {
+                let rnd = "";
+                for (let j = 0; j < 7; j++) rnd += Math.floor(Math.random() * 10);
+                selectedItem = { name: "+888" + rnd, url: "", value: 1500 };
+                pool = [{ name: "+888XXXXXXX", url: "", value: 1500 }];
+            }
+            else {
+                if (caseId === 'hell') pool = HELL_ITEMS;
+                else if (caseId === 'coffin') pool = COFFIN_ITEMS;
+                else if (caseId === 'suchiy') pool = SUCHIY_ITEMS;
+                else if (caseId === 'bober') pool = BOBER_ITEMS;
+
+                const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
+                let random = Math.random() * totalWeight;
+                for (const item of pool) {
+                    if (random < item.weight) { selectedItem = item; break; }
+                    random -= item.weight;
+                }
+            }
+
+            let type = (caseId === 'nft') ? "Юзернейм" : (caseId === 'anon' ? "Номер" : "Подарок");
+            await db.from('inventory').insert([{ user_id: userId, item_name: selectedItem.name, item_type: type }]);
+
+            const strip = document.getElementById('roulette-strip');
+            strip.innerHTML = '';
+            strip.style.transition = 'none';
+            strip.style.transform = 'translateX(0)';
+
+            const displayPool = [];
+            for (let i = 0; i < 40; i++) displayPool.push(pool[Math.floor(Math.random() * pool.length)]);
+            const winnerIndex = 35; 
+            displayPool[winnerIndex] = selectedItem; 
+
+            displayPool.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'roulette-item';
+                if (item.url) div.innerHTML = `<img src="${item.url}"><span>${item.name}</span>`;
+                else div.innerText = item.name;
+                strip.appendChild(div);
+            });
+
+            document.getElementById('roulette-modal').classList.add('active');
+            
+            setTimeout(() => {
+                const itemWidth = 120;
+                const screenWidth = window.innerWidth > 500 ? 500 : window.innerWidth;
+                const targetX = -(winnerIndex * itemWidth) + (screenWidth / 2) - (itemWidth / 2);
+                strip.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)';
+                strip.style.transform = `translateX(${targetX}px)`;
+            }, 100);
+
+            setTimeout(() => {
+                document.getElementById('roulette-modal').classList.remove('active');
+                showWinModal(selectedItem, caseId);
+            }, 4500);
+        }
+
+        function showWinModal(item, caseId) {
+            document.getElementById('win-name').innerText = item.name;
+            document.getElementById('win-price').innerText = item.value + " 🎃";
+            
+            const img = document.getElementById('win-img');
+            if (item.url) { img.src = item.url; img.style.display = 'block'; } 
+            else { img.style.display = 'none'; }
+
+            if (item.legendary) img.classList.add('legendary');
+            else img.classList.remove('legendary');
+
+            const sellBtn = document.getElementById('win-sell-btn');
+            document.getElementById('win-sell-price').innerText = item.value;
+
+            sellBtn.onclick = async () => {
+                const currentBal = parseInt(document.getElementById('balance-amount').innerText);
+                document.getElementById('balance-amount').innerText = currentBal + item.value;
+                await db.from('users').update({ balance: currentBal + item.value }).eq('user_id', userId);
+                
+                const { data } = await db.from('inventory').select('id').eq('user_id', userId).order('created_at', { ascending: false }).limit(1);
+                if (data && data.length > 0) {
+                    await db.from('inventory').delete().eq('id', data[0].id);
+                }
+                
+                tg.showAlert(`✅ Продано за ${item.value} 🎃`);
+                closeWinModal();
+            };
+
+            document.getElementById('win-modal').classList.add('active');
+        }
+
+        // === ИГРА КОРОВА ===
         let isPlaying = false;
         let currentMultiplier = 1.0;
         let currentBet = 0;
@@ -244,80 +503,49 @@
             currentMultiplier = 1.0;
             isPlaying = true;
 
-            // Списываем ставку
             document.getElementById('balance-amount').innerText = balance - bet;
             db.from('users').update({ balance: balance - bet }).eq('user_id', userId);
 
-            // Настраиваем UI
             document.getElementById('game-setup').style.display = 'none';
             document.getElementById('game-play').style.display = 'block';
             
             const area = document.getElementById('game-area');
-            // Очищаем старые объекты, оставляя только курицу
             area.innerHTML = '<div class="road"><div class="road-line"></div></div><div class="chicken" id="chicken" style="bottom: 20px; left: 20px;">🐔</div>';
 
-            spawnObstacles();
-            updateGameUI();
-            
-            // Включаем кнопки
-            document.getElementById('btn-jump').disabled = false;
-            document.getElementById('btn-cashout').disabled = false;
-        }
-
-        function spawnObstacles() {
-            const area = document.getElementById('game-area');
-            
-            // Генерируем заборы (где нужно прыгать)
             for (let i = 0; i < MAX_STEPS; i++) {
                 const fence = document.createElement('div');
                 fence.className = 'fence';
-                fence.style.left = (100 + i * 120) + 'px'; // Расстояние между заборами
-                fence.style.bottom = '20px';
-                fence.innerText = 'x' + (1 + (i + 1) * 0.2).toFixed(1); // Отображаем множитель на заборе
+                fence.style.left = (100 + i * 120) + 'px';
+                fence.innerText = 'x' + (1 + (i + 1) * 0.2).toFixed(1);
                 area.appendChild(fence);
-            }
 
-            // Генерируем машины (они едут между заборами)
-            // В реальной игре они должны двигаться, но для простоты МисаГрама сделаем их статичными препятствиями
-            for (let i = 0; i < MAX_STEPS; i++) {
-                if (Math.random() > 0.5) { // 50% шанс, что на пути будет машина
+                if (Math.random() > 0.5) { 
                     const car = document.createElement('div');
                     car.className = 'car';
                     car.innerText = '🚗';
                     car.style.left = (80 + i * 120) + 'px';
-                    car.style.bottom = '20px';
-                    car.style.color = 'red'; // Чтобы выделялась
+                    car.style.color = 'red';
                     area.appendChild(car);
                 }
             }
+
+            updateGameUI();
+            document.getElementById('btn-jump').disabled = false;
+            document.getElementById('btn-cashout').disabled = false;
         }
 
         function jump() {
             if (!isPlaying) return;
             if (currentStep >= MAX_STEPS) return;
 
-            const chicken = document.getElementById('chicken');
-            const area = document.getElementById('game-area');
-            
-            // Проверяем, есть ли машина на следующем шаге
-            const cars = area.querySelectorAll('.car');
-            let hitCar = false;
-            
-            // В упрощенной версии просто проверяем по индексу (в реальной нужно проверять коллизии)
-            // Для простоты: если на следующей позиции есть машина, игрок проигрывает
-            if (Math.random() < 0.2) { // 20% шанс врезаться в машину при прыжке
-                hitCar = true;
-            }
-
-            if (hitCar) {
+            if (Math.random() < 0.2) { 
                 gameOver();
                 return;
             }
 
-            // Успешный прыжок
             currentStep++;
-            currentMultiplier += 0.2; // Каждый шаг +0.2x
-            chicken.style.left = (20 + currentStep * 120) + 'px';
+            currentMultiplier += 0.2; 
+            document.getElementById('chicken').style.left = (20 + currentStep * 120) + 'px';
 
             updateGameUI();
 
@@ -361,4 +589,4 @@
         loadBalance();
     </script>
 </body>
-</html>
+    </html>

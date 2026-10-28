@@ -7,22 +7,17 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background-color: #0a0a0a; background-image: radial-gradient(circle at top right, #1f1235 0%, #0a0a0a 50%); color: #fff; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 20px; overflow-x: hidden; }
-        
         .top-bar { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2b1b45; position: sticky; top: 0; z-index: 10; }
         .logo { font-size: 1.1rem; font-weight: 800; color: #fff; text-shadow: 0 0 15px #ff7b00; letter-spacing: 1px; }
-        .balance-box { background: #151515; padding: 8px 16px; border-radius: 8px; border: 1px solid #333; font-weight: 800; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        
+        .balance-box { background: #151515; padding: 8px 16px; border-radius: 8px; border: 1px solid #333; font-weight: 800; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 5px; }
         .container { padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
         .nav-tabs { display: flex; gap: 15px; margin-bottom: 30px; }
         .nav-tab { flex: 1; text-align: center; padding: 12px; background: #151515; border: 1px solid #222; border-radius: 12px; color: #777; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; }
         .nav-tab.active { background: #1a1a1a; color: #fff; border-color: #ff7b00; box-shadow: inset 0 0 15px rgba(255,123,0,0.1), 0 0 15px rgba(255,123,0,0.2); }
-        
         .section-title { color: #fff; margin-bottom: 20px; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-left: 3px solid #ff7b00; padding-left: 10px; }
-        
         .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .case-card { background: #111; border: 1px solid #222; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
         .case-card:active { transform: scale(0.96); border-color: #ff7b00; }
@@ -48,9 +43,7 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(10px); }
         .modal-overlay.active { display: flex; }
         .modal-content { background: #0f0f0f; border: 1px solid #333; border-radius: 24px; padding: 25px 20px; width: 100%; max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px rgba(255,123,0,0.15); }
-        
         .modal-title { color: #fff; margin-bottom: 20px; text-align: center; font-size: 1.2rem; font-weight: 800; text-transform: uppercase; }
-        
         .confirm-text { text-align: center; color: #aaa; margin-bottom: 20px; font-size: 0.9rem; }
         .modal-actions { display: flex; gap: 10px; }
         .btn-yes { background: #28a745; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; flex: 1; text-transform: uppercase; font-size: 0.9rem; }
@@ -58,7 +51,8 @@
 
         .roulette-container { overflow: hidden; width: 100%; height: 120px; position: relative; border-top: 1px solid #333; border-bottom: 1px solid #333; margin-bottom: 20px; background: #151515; }
         .roulette-strip { display: flex; height: 100%; width: max-content; align-items: center; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); }
-        .roulette-item { width: 100px; height: 100px; margin: 0 10px; border-radius: 10px; background: #1a1a1a; border: 1px solid #333; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 0.8rem; font-weight: 600; padding: 10px; flex-shrink: 0; }
+        .roulette-item { width: 100px; height: 100px; margin: 0 10px; border-radius: 10px; background: #1a1a1a; border: 1px solid #333; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 0.65rem; font-weight: 600; padding: 5px; flex-shrink: 0; }
+        .roulette-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 5px; }
         .roulette-pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: #ff7b00; box-shadow: 0 0 10px #ff7b00; z-index: 2; }
         .roulette-pointer::before { content: ''; position: absolute; top: -10px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid #ff7b00; }
     </style>
@@ -144,10 +138,35 @@
         const paramId = urlParams.get('user_id');
         const userId = paramId ? parseInt(paramId) : ((tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243205);
 
+        // ПОДАРКИ ДЛЯ АДСКОГО КЕЙСА
+        const HELL_ITEMS = [
+            { name: "Candle", url: "https://f.2fools.app/tgs/sticker_set/1f7df42a.gif", value: 100, weight: 25 },
+            { name: "Witch's Hat", url: "https://f.2fools.app/tgs/sticker_set/44d07e3a.gif", value: 150, weight: 20 },
+            { name: "Scared Cat", url: "https://f.2fools.app/tgs/sticker_set/6073f383.gif", value: 150, weight: 15 },
+            { name: "Broom", url: "https://f.2fools.app/tgs/sticker_set/44e096b9.gif", value: 150, weight: 10 },
+            { name: "Pumpkin", url: "https://f.2fools.app/tgs/sticker_set/453aefb8.gif", value: 150, weight: 10 },
+            { name: "Locket", url: "https://f.2fools.app/tgs/sticker_set/1fe865a8.gif", value: 150, weight: 5 },
+            { name: "halloween eye", url: "https://f.2fools.app/tgs/sticker_set/1f633827.gif", value: 150, weight: 5 },
+            { name: "Pot", url: "https://f.2fools.app/tgs/sticker_set/44b5c237.gif", value: 150, weight: 5 },
+            { name: "Halloween pop", url: "https://f.2fools.app/tgs/sticker_set/1f313026.gif", value: 150, weight: 4 },
+            { name: "Mask Vurses", url: "https://f.2fools.app/tgs/sticker_set/860a7d97.gif", value: 300, weight: 1 }
+        ];
+
+        // ПОДАРКИ ДЛЯ ГРОБНОГО КЕЙСА
+        const COFFIN_ITEMS = [
+            { name: "Mushroom", url: "https://f.2fools.app/tgs/sticker_set/8640d690.gif", value: 200, weight: 40 },
+            { name: "magic ball", url: "https://f.2fools.app/tgs/sticker_set/6083fc02.gif", value: 200, weight: 20 },
+            { name: "Halloween flower", url: "https://f.2fools.app/tgs/sticker_set/85d68612.gif", value: 200, weight: 15 },
+            { name: "Lips", url: "https://f.2fools.app/tgs/sticker_set/61b3290d.gif", value: 200, weight: 10 },
+            { name: "Ice gem", url: "https://f.2fools.app/tgs/sticker_set/8705b31d.gif", value: 200, weight: 5 },
+            { name: "Frog", url: "https://f.2fools.app/tgs/sticker_set/4483ba36.gif", value: 200, weight: 5 },
+            { name: "magic potion", url: "https://f.2fools.app/tgs/sticker_set/6148b78f.gif", value: 200, weight: 3 },
+            { name: "Wodoo", url: "https://f.2fools.app/tgs/sticker_set/1f8e0ca9.gif", value: 250, weight: 1.5 },
+            { name: "Tombstone", url: "https://f.2fools.app/tgs/sticker_set/452496bd.gif", value: 750, weight: 0.4 },
+            { name: "Coffin", url: "https://beta.2fools.app/packs/sticker_set", value: 1000, weight: 0.1 }
+        ];
+
         const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
-        const ANON_PREVIEW = ["+8881234567", "+8889876543", "+8885556667", "+8881112223", "+8883334445", "+8880009991"];
-        const HELL_ITEMS = ["Демонический череп", "Кровавый глаз", "Проклятая книга", "Адская мышь", "Адское пламя"];
-        const COFFIN_ITEMS = ["Деревянный гроб", "Старая кость", "Паук-мутант", "Призрачная сеть", "Туман"];
 
         let currentAction = null; 
 
@@ -174,7 +193,11 @@
                     let value = 0;
                     if (item.item_type === "Номер") value = 1500;
                     else if (item.item_type === "Юзернейм") value = 1000;
-                    else value = 50;
+                    else {
+                        const allItems = [...HELL_ITEMS, ...COFFIN_ITEMS];
+                        const found = allItems.find(i => i.name === item.item_name);
+                        value = found ? found.value : 50;
+                    }
 
                     const itemId = Number(item.id);
 
@@ -192,10 +215,7 @@
                     `;
                     list.appendChild(div);
                 });
-            } catch (e) {
-                list.innerHTML = '<p class="empty-text">Ошибка загрузки</p>';
-                console.error(e);
-            }
+            } catch (e) { console.error(e); }
         }
 
         function switchTab(tabName, element) {
@@ -208,10 +228,7 @@
 
         function askAction(action, itemId, itemName, value) {
             currentAction = { action, itemId, itemName, value };
-            const text = action === 'sell' 
-                ? `Продать "${itemName}" за ${value} 🎃?` 
-                : `Запросить вывод "${itemName}"?`;
-            
+            const text = action === 'sell' ? `Продать "${itemName}" за ${value} 🎃?` : `Запросить вывод "${itemName}"?`;
             document.getElementById('confirm-text').innerText = text;
             document.getElementById('confirm-yes-btn').onclick = () => confirmAction();
             document.getElementById('confirm-modal').classList.add('active');
@@ -225,7 +242,6 @@
         async function confirmAction() {
             if (!currentAction) return;
             const { action, itemId, itemName, value } = currentAction;
-
             const btnYes = document.getElementById('confirm-yes-btn');
             btnYes.innerText = "Ждите...";
             btnYes.disabled = true;
@@ -233,29 +249,29 @@
             if (action === 'sell') {
                 const currentBal = parseInt(document.getElementById('balance-amount').innerText);
                 
-                // 1. Обновляем баланс
-                const { error: err1 } = await db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
+                // Мгновенное обновление в интерфейсе
+                document.getElementById('balance-amount').innerText = currentBal + value;
                 
-                // 2. Удаляем предмет
+                await db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
                 const { error: err2 } = await db.from('inventory').delete().eq('id', itemId);
                 
-                if (!err1 && !err2) {
+                if (!err2) {
                     tg.showAlert(`✅ Предмет продан за ${value} 🎃`);
-                    loadBalance();
                     loadInventory();
                 } else {
-                    let errorText = "";
-                    if (err1) errorText += `Баланс: ${err1.message}\n`;
-                    if (err2) errorText += `Удаление: ${err2.message}`;
-                    tg.showAlert(`❌ ОШИБКА БАЗЫ:\n${errorText}`);
+                    tg.showAlert(`❌ Ошибка удаления: ${err2.message}`);
                 }
             } else if (action === 'withdraw') {
-                // Отправляем данные боту
-                tg.sendData(JSON.stringify({ action: "withdraw", item_name: itemName, user_id: userId }));
-                // Удаляем с сайта
-                await db.from('inventory').delete().eq('id', itemId);
-                tg.showAlert(`✅ Заявка отправлена!`);
-                loadInventory();
+                // Отправляем заявку в базу данных
+                const { error } = await db.from('withdrawals').insert([{ user_id: userId, item_name: itemName }]);
+                
+                if (!error) {
+                    await db.from('inventory').delete().eq('id', itemId);
+                    tg.showAlert(`✅ Заявка на вывод "${itemName}" создана!\nБот пришлет уведомление админу.`);
+                    loadInventory();
+                } else {
+                    tg.showAlert(`❌ Ошибка вывода: ${error.message}`);
+                }
             }
 
             btnYes.innerText = "Да";
@@ -265,42 +281,65 @@
 
         async function openCase(caseId, price) {
             const currentBalance = parseInt(document.getElementById('balance-amount').innerText);
-            if (currentBalance < price) {
-                tg.showAlert("Недостаточно средств!");
-                return;
-            }
+            if (currentBalance < price) return tg.showAlert("Недостаточно средств!");
 
+            document.getElementById('balance-amount').innerText = currentBalance - price;
             await db.from('users').update({ balance: currentBalance - price }).eq('user_id', userId);
-            loadBalance();
 
             let pool = [];
-            if (caseId === 'nft') pool = NFT_USERNAMES;
+            let selectedItem = null;
+
+            if (caseId === 'nft') {
+                const name = NFT_USERNAMES[Math.floor(Math.random() * NFT_USERNAMES.length)];
+                selectedItem = { name: name, url: "", value: 1000 };
+                pool = NFT_USERNAMES.map(n => ({ name: n, url: "", value: 1000 }));
+            } 
             else if (caseId === 'anon') {
-                for (let i = 0; i < 50; i++) {
-                    let rnd = "";
-                    for (let j = 0; j < 7; j++) rnd += Math.floor(Math.random() * 10);
-                    pool.push("+888" + rnd);
+                let rnd = "";
+                for (let j = 0; j < 7; j++) rnd += Math.floor(Math.random() * 10);
+                selectedItem = { name: "+888" + rnd, url: "", value: 1500 };
+                pool = [{ name: "+888XXXXXXX", url: "", value: 1500 }];
+            }
+            else if (caseId === 'hell') {
+                pool = HELL_ITEMS;
+                const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
+                let random = Math.random() * totalWeight;
+                for (const item of pool) {
+                    if (random < item.weight) { selectedItem = item; break; }
+                    random -= item.weight;
                 }
             }
-            else if (caseId === 'hell') pool = HELL_ITEMS;
-            else if (caseId === 'coffin') pool = COFFIN_ITEMS;
+            else if (caseId === 'coffin') {
+                pool = COFFIN_ITEMS;
+                const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
+                let random = Math.random() * totalWeight;
+                for (const item of pool) {
+                    if (random < item.weight) { selectedItem = item; break; }
+                    random -= item.weight;
+                }
+            }
 
-            const prize = pool[Math.floor(Math.random() * pool.length)];
-            let type = (caseId === 'nft' || caseId === 'anon') ? "Юзернейм" : "Подарок";
-            if (caseId === 'anon') type = "Номер";
-            
-            await db.from('inventory').insert([{ user_id: userId, item_name: prize, item_type: type }]);
+            let type = (caseId === 'nft') ? "Юзернейм" : (caseId === 'anon' ? "Номер" : "Подарок");
+            await db.from('inventory').insert([{ user_id: userId, item_name: selectedItem.name, item_type: type }]);
 
             const strip = document.getElementById('roulette-strip');
             strip.innerHTML = '';
             strip.style.transition = 'none';
             strip.style.transform = 'translateX(0)';
 
-            const displayPool = [...pool, ...pool, ...pool, ...pool, prize, ...pool];
+            const displayPool = [];
+            for (let i = 0; i < 40; i++) displayPool.push(pool[Math.floor(Math.random() * pool.length)]);
+            const winnerIndex = 35; 
+            displayPool[winnerIndex] = selectedItem; 
+
             displayPool.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'roulette-item';
-                div.innerText = item;
+                if (item.url) {
+                    div.innerHTML = `<img src="${item.url}"><span>${item.name}</span>`;
+                } else {
+                    div.innerText = item.name;
+                }
                 strip.appendChild(div);
             });
 
@@ -308,10 +347,8 @@
             
             setTimeout(() => {
                 const itemWidth = 120;
-                const winnerIndex = displayPool.lastIndexOf(prize);
                 const screenWidth = window.innerWidth > 500 ? 500 : window.innerWidth;
-                const centerOffset = screenWidth / 2;
-                const targetX = -(winnerIndex * itemWidth) + centerOffset - (itemWidth / 2);
+                const targetX = -(winnerIndex * itemWidth) + (screenWidth / 2) - (itemWidth / 2);
 
                 strip.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)';
                 strip.style.transform = `translateX(${targetX}px)`;
@@ -319,7 +356,7 @@
 
             setTimeout(() => {
                 document.getElementById('roulette-modal').classList.remove('active');
-                tg.showAlert(`🎉 Твой выигрыш: ${prize}`);
+                tg.showAlert(`🎉 Твой выигрыш: ${selectedItem.name}`);
                 loadInventory();
             }, 4500);
         }
@@ -327,4 +364,4 @@
         loadBalance();
     </script>
 </body>
-</html>
+    </html>

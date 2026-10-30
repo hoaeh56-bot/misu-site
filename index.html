@@ -13,6 +13,7 @@
         
         .top-bar { padding: 15px 20px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; }
         
+        /* Главный экран */
         .balance-section { text-align: center; padding: 20px 0; }
         .balance-amount { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; }
         .balance-amount span:first-child { font-size: 1.5rem; color: #888; font-weight: 500; }
@@ -20,13 +21,14 @@
 
         .action-buttons { display: flex; justify-content: center; gap: 30px; margin: 20px 0 30px 0; }
         .action-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
-        .action-btn .icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; background: #e3f2fd; color: #1976d2; }
+        .action-btn .icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: #e3f2fd; }
+        .action-btn .icon svg { width: 24px; height: 24px; fill: #1976d2; }
         .action-btn span { font-size: 0.85rem; color: #1976d2; font-weight: 500; }
 
         .assets-title { padding: 0 20px; font-size: 1rem; font-weight: 600; color: #1976d2; display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .assets-title span:last-child { color: #888; font-weight: 500; }
         
-        .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f0f0f0; }
+        .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: 0.2s; }
+        .asset-item:active { background: #f9f9f9; }
         .asset-icon { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.2rem; font-weight: 700; }
         .asset-info { flex: 1; display: flex; flex-direction: column; }
         .asset-name { font-size: 1rem; font-weight: 600; }
@@ -36,87 +38,116 @@
         .asset-amount { font-size: 1rem; font-weight: 600; }
         .asset-usd { font-size: 0.8rem; color: #888; }
 
+        /* Биржа */
+        .exchange-screen { display: none; padding: 20px; }
+        .exchange-header { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
+        .exchange-coin { padding: 10px 15px; background: #f0f0f0; border-radius: 20px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .exchange-coin.active { background: #1976d2; color: #fff; }
+        
+        .chart-container { height: 200px; background: #f9f9f9; border-radius: 15px; margin-bottom: 20px; position: relative; overflow: hidden; }
+        .chart-svg { width: 100%; height: 100%; }
+        
+        .buy-panel { background: #f9f9f9; padding: 20px; border-radius: 15px; }
+        .buy-input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; outline: none; }
+        .buy-info { display: flex; justify-content: space-between; margin-bottom: 15px; color: #888; font-size: 0.9rem; }
+        .btn-buy { width: 100%; padding: 15px; background: #4caf50; color: #fff; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
+
+        /* Нижнее меню */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #f0f0f0; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #888; font-size: 0.75rem; cursor: pointer; }
         .nav-item.active { color: #1976d2; }
         .nav-item .icon { font-size: 1.2rem; }
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); display: none; z-index: 1000; flex-direction: column; }
-        .modal-overlay.active { display: flex; }
-        .modal-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .modal-header span { font-size: 1.2rem; font-weight: 600; }
-        .close-btn { font-size: 1.5rem; color: #888; cursor: pointer; }
-        
-        .settings-group { margin-top: 20px; }
-        .settings-group-title { padding: 10px 20px; font-size: 0.9rem; color: #888; font-weight: 600; }
-        .settings-item { padding: 15px 20px; font-size: 1rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
-        .settings-item span { color: #1976d2; }
     </style>
 </head>
 <body>
     <div class="top-bar">Crypto Bot</div>
 
+    <!-- Кошелек -->
     <div class="main-screen" id="main-screen">
         <div class="balance-section">
             <div class="balance-amount"><span>$</span><span id="total-balance">0.00</span><span style="font-size: 1.5rem; color: #888; font-weight: 500; margin-left: 5px;">USDT</span></div>
-            <div class="balance-usd" id="total-usd">Общий баланс в USD</div>
+            <div class="balance-usd">Общий баланс в USD</div>
         </div>
 
         <div class="action-buttons">
-            <div class="action-btn" onclick="tg.showAlert('Пополнение в разработке')">
-                <div class="icon">↓</div><span>Пополнить</span>
+            <div class="action-btn" onclick="tg.showAlert('В разработке')">
+                <div class="icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
+                <span>Пополнить</span>
             </div>
-            <div class="action-btn" onclick="tg.showAlert('Вывод в разработке')">
-                <div class="icon">↑</div><span>Вывести</span>
+            <div class="action-btn" onclick="tg.showAlert('В разработке')">
+                <div class="icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+                <span>Вывести</span>
             </div>
-            <div class="action-btn" onclick="tg.showAlert('История в разработке')">
-                <div class="icon">📅</div><span>История</span>
+            <div class="action-btn" onclick="switchTab('history')">
+                <div class="icon"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div>
+                <span>История</span>
             </div>
         </div>
 
-        <div class="assets-title">
-            <span>Мои активы →</span>
-            <span>Скрыть мелкие балансы</span>
-        </div>
+        <div class="assets-title"><span>Мои активы →</span><span>Скрыть мелкие балансы</span></div>
 
-        <div class="asset-item">
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')">
             <div class="asset-icon" style="background: #26a17b;">₮</div>
-            <div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$0.9991 +0.02%</div></div>
+            <div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$1.00 +0.00%</div></div>
             <div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div>
         </div>
-        <div class="asset-item">
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
             <div class="asset-icon" style="background: #0088cc;">💎</div>
             <div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price red">$1.15 -5.11%</div></div>
             <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div>
         </div>
-        <div class="asset-item">
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')">
             <div class="asset-icon" style="background: #9945ff;">S</div>
             <div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price red">$93.99 -6.66%</div></div>
             <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div>
         </div>
-        <div class="asset-item">
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')">
             <div class="asset-icon" style="background: #ff0000;">T</div>
             <div class="asset-info"><div class="asset-name">TRON</div><div class="asset-price">$0.12 +1.20%</div></div>
             <div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">$0.00</div></div>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active"><div class="icon">💼</div><span>Кошелек</span></div>
-        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">📊</div><span>Биржа</span></div>
-        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">↔️</div><span>Обмен</span></div>
-        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">🤝</div><span>P2P</span></div>
-        <div class="nav-item" onclick="openSettings()"><div class="icon">⚙️</div><span>Ещё</span></div>
+    <!-- Биржа -->
+    <div class="exchange-screen" id="exchange-screen">
+        <div class="exchange-header">
+            <div class="exchange-coin active" onclick="selectCoin('USDT')">USDT</div>
+            <div class="exchange-coin" onclick="selectCoin('GRAM')">GRAM</div>
+            <div class="exchange-coin" onclick="selectCoin('SOL')">SOL</div>
+            <div class="exchange-coin" onclick="selectCoin('TRX')">TRX</div>
+        </div>
+        
+        <div class="chart-container">
+            <svg class="chart-svg" id="chart-svg" viewBox="0 0 100 50" preserveAspectRatio="none"></svg>
+        </div>
+
+        <div class="buy-panel">
+            <div class="buy-info">
+                <span>Цена:</span>
+                <span id="current-price">$1.00</span>
+            </div>
+            <input type="number" class="buy-input" id="buy-amount" placeholder="Количество" oninput="calculateCost()">
+            <div class="buy-info">
+                <span>К оплате:</span>
+                <span id="cost-stars">0 ⭐</span>
+            </div>
+            <button class="btn-buy" onclick="buyCrypto()">Купить</button>
+        </div>
     </div>
 
-    <div class="modal-overlay" id="settings-modal">
-        <div class="modal-header"><span>Настройки</span><div class="close-btn" onclick="closeSettings()">×</div></div>
-        <div class="settings-group">
-            <div class="settings-group-title">Помощь</div>
-            <div class="settings-item" onclick="tg.showAlert('Поддержка: @sardelka @anime')">
-                <span>Написать в поддержку</span><span>↗</span>
-            </div>
-        </div>
+    <!-- История -->
+    <div class="exchange-screen" id="history-screen">
+        <h2 style="margin-bottom: 20px;">История</h2>
+        <p style="color: #888; text-align: center;">Пока пусто</p>
+    </div>
+
+    <!-- Нижнее меню -->
+    <div class="bottom-nav">
+        <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="icon">💼</div><span>Кошелек</span></div>
+        <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="icon">📊</div><span>Биржа</span></div>
+        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">↔️</div><span>Обмен</span></div>
+        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">🤝</div><span>P2P</span></div>
+        <div class="nav-item" onclick="tg.showAlert('Настройки в разработке')"><div class="icon">⚙️</div><span>Ещё</span></div>
     </div>
 
     <script>
@@ -131,30 +162,131 @@
         
         const urlParams = new URLSearchParams(window.location.search);
         const paramId = urlParams.get('user_id');
-        const userId = paramId ? parseInt(paramId) : ((tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 0);
+        const userId = paramId ? parseInt(paramId) : 0;
+
+        // Курсы и графики
+        let currentCoin = 'USDT';
+        let currentPrices = {
+            'USDT': 1.00,
+            'GRAM': 1.15,
+            'SOL': 93.99,
+            'TRX': 0.12
+        };
+        let chartData = [];
+        let chartInterval;
+
+        function switchTab(tab) {
+            document.getElementById('main-screen').style.display = 'none';
+            document.getElementById('exchange-screen').style.display = 'none';
+            document.getElementById('history-screen').style.display = 'none';
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            if (tab === 'wallet') {
+                document.getElementById('main-screen').style.display = 'block';
+                document.getElementById('nav-wallet').classList.add('active');
+            } else if (tab === 'exchange') {
+                document.getElementById('exchange-screen').style.display = 'block';
+                document.getElementById('nav-exchange').classList.add('active');
+                startChart();
+            } else if (tab === 'history') {
+                document.getElementById('history-screen').style.display = 'block';
+            }
+        }
+
+        function selectCoin(coin) {
+            currentCoin = coin;
+            document.querySelectorAll('.exchange-coin').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.exchange-coin').forEach(el => {
+                if (el.innerText === coin) el.classList.add('active');
+            });
+            startChart();
+            calculateCost();
+        }
+
+        function startChart() {
+            clearInterval(chartInterval);
+            chartData = Array(20).fill(currentPrices[currentCoin]);
+            
+            chartInterval = setInterval(() => {
+                // Рандомно меняем цену
+                let change = (Math.random() - 0.5) * (currentPrices[currentCoin] * 0.02);
+                currentPrices[currentCoin] += change;
+                
+                // Ограничения (чтобы не улетало в космос)
+                if (currentPrices[currentCoin] < 0.01) currentPrices[currentCoin] = 0.01;
+                
+                chartData.push(currentPrices[currentCoin]);
+                if (chartData.length > 20) chartData.shift();
+                
+                drawChart();
+                document.getElementById('current-price').innerText = `$${currentPrices[currentCoin].toFixed(2)}`;
+            }, 2000);
+        }
+
+        function drawChart() {
+            const svg = document.getElementById('chart-svg');
+            const min = Math.min(...chartData);
+            const max = Math.max(...chartData);
+            const range = max - min || 1;
+
+            let points = '';
+            chartData.forEach((val, i) => {
+                const x = (i / (chartData.length - 1)) * 100;
+                const y = 50 - ((val - min) / range) * 40; // 40 чтобы был отступ
+                points += `${x},${y} `;
+            });
+
+            const isUp = chartData[chartData.length - 1] >= chartData[0];
+            const color = isUp ? '#4caf50' : '#f44336';
+
+            svg.innerHTML = `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>`;
+        }
+
+        function calculateCost() {
+            const amount = parseFloat(document.getElementById('buy-amount').value) || 0;
+            const price = currentPrices[currentCoin];
+            const usdCost = amount * price;
+            // Курс: 1 доллар = 100 звезд
+            const starsCost = Math.ceil(usdCost * 100);
+            document.getElementById('cost-stars').innerText = `${starsCost} ⭐`;
+            return { amount, starsCost };
+        }
+
+        function buyCrypto() {
+            const { amount, starsCost } = calculateCost();
+            if (amount <= 0) return tg.showAlert('Введите количество');
+            
+            // Отправляем боту запрос на счет
+            tg.sendData(JSON.stringify({
+                action: "buy_crypto",
+                coin: currentCoin,
+                amount: amount,
+                stars: starsCost
+            }));
+            
+            tg.showAlert(`Счет на ${starsCost} звезд отправлен в бота!`);
+        }
 
         async function loadWallet() {
             if (!userId) return;
             try {
                 const { data } = await db.from('users').select('*').eq('user_id', userId).single();
                 if (data) {
-                    document.getElementById('usdt-balance').innerText = `${data.usdt_balance} USDT`;
-                    document.getElementById('usdt-usd').innerText = `$${(data.usdt_balance * 0.9991).toFixed(2)}`;
-                    document.getElementById('gram-balance').innerText = `${data.gram_balance} GRAM`;
-                    document.getElementById('gram-usd').innerText = `$${(data.gram_balance * 1.15).toFixed(2)}`;
-                    document.getElementById('sol-balance').innerText = `${data.sol_balance} SOL`;
-                    document.getElementById('sol-usd').innerText = `$${(data.sol_balance * 93.99).toFixed(2)}`;
-                    document.getElementById('trx-balance').innerText = `${data.trx_balance} TRX`;
-                    document.getElementById('trx-usd').innerText = `$${(data.trx_balance * 0.12).toFixed(2)}`;
+                    document.getElementById('usdt-balance').innerText = `${data.usdt_balance || 0} USDT`;
+                    document.getElementById('usdt-usd').innerText = `$${((data.usdt_balance || 0) * 1.00).toFixed(2)}`;
+                    document.getElementById('gram-balance').innerText = `${data.gram_balance || 0} GRAM`;
+                    document.getElementById('gram-usd').innerText = `$${((data.gram_balance || 0) * 1.15).toFixed(2)}`;
+                    document.getElementById('sol-balance').innerText = `${data.sol_balance || 0} SOL`;
+                    document.getElementById('sol-usd').innerText = `$${((data.sol_balance || 0) * 93.99).toFixed(2)}`;
+                    document.getElementById('trx-balance').innerText = `${data.trx_balance || 0} TRX`;
+                    document.getElementById('trx-usd').innerText = `$${((data.trx_balance || 0) * 0.12).toFixed(2)}`;
                     
-                    const total = (data.usdt_balance * 0.9991) + (data.gram_balance * 1.15) + (data.sol_balance * 93.99) + (data.trx_balance * 0.12);
+                    const total = ((data.usdt_balance||0) * 1.00) + ((data.gram_balance||0) * 1.15) + ((data.sol_balance||0) * 93.99) + ((data.trx_balance||0) * 0.12);
                     document.getElementById('total-balance').innerText = total.toFixed(2);
                 }
             } catch (e) { console.error(e); }
         }
-
-        function openSettings() { document.getElementById('settings-modal').classList.add('active'); }
-        function closeSettings() { document.getElementById('settings-modal').classList.remove('active'); }
 
         loadWallet();
     </script>

@@ -33,7 +33,7 @@
 
         /* КОШЕЛЕК */
         .balance-section { text-align: center; padding: 20px 0; }
-        .balance-amount { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; }
+        .balance-amount { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; cursor: pointer; }
         .balance-amount span:first-child { font-size: 1.5rem; color: var(--text-secondary); font-weight: 500; }
         .balance-usd { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; margin-top: 5px; }
         .action-buttons { display: flex; justify-content: center; gap: 30px; margin: 20px 0 30px 0; }
@@ -41,7 +41,11 @@
         .action-btn .icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--accent-light); }
         .action-btn .icon svg { width: 24px; height: 24px; fill: var(--accent); }
         .action-btn span { font-size: 0.85rem; color: var(--accent); font-weight: 500; }
-        .assets-title { padding: 0 20px; font-size: 1rem; font-weight: 600; color: var(--accent); display: flex; justify-content: space-between; margin-bottom: 15px; }
+        
+        /* ЗАГОЛОВОК АКТИВОВ + КНОПКА СКРЫТЬ */
+        .assets-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 15px; }
+        .assets-title { font-size: 1rem; font-weight: 600; color: var(--accent); }
+        .btn-hide-balances { background: transparent; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 5px; }
 
         .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; }
         .asset-icon { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; }
@@ -90,26 +94,6 @@
         .theme-btn { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
         .theme-btn.active { border-color: var(--accent); color: var(--accent); }
 
-        /* ВИП */
-        .vip-panel { background: linear-gradient(135deg, #ffd700, #ff8c00); border-radius: 20px; padding: 20px; margin: 20px; color: #000; text-align: center; display: none; }
-        .vip-panel.active { display: block; }
-        .vip-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; }
-        .vip-sub { font-size: 0.9rem; opacity: 0.8; margin-bottom: 15px; }
-        .btn-buy-vip { background: #000; color: #ffd700; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; width: 100%; }
-        .vip-active-panel { display: none; background: #ffd700; color: #000; border-radius: 15px; padding: 15px; text-align: center; font-weight: 700; margin-top: 15px; }
-        .vip-active-panel.active { display: block; }
-
-        /* МОДАЛКА ПОДТВЕРЖДЕНИЯ */
-        .confirm-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .confirm-overlay.active { display: flex; }
-        .confirm-card { background: var(--bg); padding: 30px; border-radius: 20px; text-align: center; width: 80%; max-width: 350px; }
-        .confirm-card h3 { margin-bottom: 15px; }
-        .confirm-card p { margin-bottom: 20px; color: var(--text-secondary); }
-        .confirm-actions { display: flex; gap: 10px; }
-        .btn-confirm { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
-        .btn-yes { background: #4caf50; color: #fff; }
-        .btn-no { background: #f44336; color: #fff; }
-
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 0.7rem; cursor: pointer; width: 20%; }
         .nav-item.active { color: var(--accent); }
@@ -136,38 +120,35 @@
 <body>
     <div class="top-bar">Crypto Bot</div>
 
-    <!-- ЭКРАН РЕГИСТРАЦИИ ПИН-КОДА -->
-    <div class="screen active" id="screen-pin">
+    <!-- PIN-КОД -->
+    <div class="screen" id="screen-pin">
         <div class="pin-screen">
             <div class="pin-title">Добро пожаловать!</div>
-            <div class="pin-subtitle">Придумайте ПИН-код из 4 цифр для защиты кошелька</div>
+            <div class="pin-subtitle">Придумайте ПИН-код из 4 цифр</div>
             <input type="password" maxlength="4" inputmode="numeric" class="pin-input" id="pin-input" placeholder="****">
             <button class="pin-btn" onclick="savePin()">Создать ПИН-код</button>
         </div>
     </div>
 
-    <!-- ЭКРАН ВВОДА ПИН-КОДА -->
-    <div class="screen" id="screen-login">
-        <div class="pin-screen">
-            <div class="pin-title">Введите ПИН-код</div>
-            <div class="pin-subtitle">Для доступа к кошельку</div>
-            <input type="password" maxlength="4" inputmode="numeric" class="pin-input" id="login-pin-input" placeholder="****">
-            <button class="pin-btn" onclick="checkPin()">Войти</button>
-        </div>
-    </div>
-
     <!-- КОШЕЛЕК -->
-    <div class="screen" id="screen-wallet">
+    <div class="screen active" id="screen-wallet">
         <div class="balance-section">
-            <div class="balance-amount"><span>$</span><span id="total-balance">0.00</span><span style="font-size: 1.5rem; color: var(--text-secondary); font-weight: 500; margin-left: 5px;">USDT</span></div>
-            <div class="balance-usd">Общий баланс в USD</div>
+            <div class="balance-amount" id="total-balance-container" onclick="toggleCurrency()">
+                <span id="currency-symbol">$</span><span id="total-balance">0.00</span><span id="currency-label" style="font-size: 1.5rem; color: var(--text-secondary); font-weight: 500; margin-left: 5px;">USDT</span>
+            </div>
+            <div class="balance-usd" id="total-usd">Общий баланс</div>
         </div>
         <div class="action-buttons">
             <div class="action-btn" onclick="switchTab('exchange')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><span>Пополнить</span></div>
             <div class="action-btn" onclick="switchTab('transfer')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><span>Перевод</span></div>
             <div class="action-btn" onclick="switchTab('history')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><span>История</span></div>
         </div>
-        <div class="assets-title"><span>Мои активы →</span><span>Скрыть мелкие балансы</span></div>
+
+        <!-- ЗАГОЛОВОК АКТИВОВ + КНОПКА СКРЫТЬ -->
+        <div class="assets-header">
+            <div class="assets-title">Мои активы →</div>
+            <button class="btn-hide-balances" id="btn-hide" onclick="toggleHideBalances()">Скрыть балансы</button>
+        </div>
 
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')">
             <div class="asset-icon" style="background: #26a17b;">
@@ -248,7 +229,7 @@
             </div>
             <div class="transfer-input-group"><label>Адрес получателя:</label><input type="text" class="transfer-input" id="transfer-address" placeholder="Введите адрес (T...)"></div>
             <div class="transfer-input-group"><label>Сумма:</label><input type="number" class="transfer-input" id="transfer-amount" placeholder="0.00"></div>
-            <div class="transfer-input-group" style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin-top: -10px;">Комиссия сети: 1% (VIP — 0%)</div>
+            <div class="transfer-input-group" style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin-top: -10px;">Комиссия сети: 1%</div>
             <button class="btn-buy" onclick="makeTransfer()">Перевести</button>
         </div>
     </div>
@@ -261,7 +242,7 @@
         </div>
     </div>
 
-    <!-- НАСТРОЙКИ (С VIP И ЧАЕВЫМИ) -->
+    <!-- НАСТРОЙКИ -->
     <div class="screen" id="screen-settings">
         <div class="settings-panel">
             <h2 style="margin-bottom: 20px;">Настройки</h2>
@@ -272,17 +253,6 @@
                 <button class="btn-copy" onclick="copyAddress()">Копировать</button>
             </div>
 
-            <!-- VIP БЛОК -->
-            <div class="vip-panel" id="vip-panel">
-                <div class="vip-title">👑 VIP Подписка</div>
-                <div class="vip-sub">Золотая подсветка, 0% комиссии на переводы, эксклюзивный стиль</div>
-                <button class="btn-buy-vip" onclick="openVipConfirm()">Купить за 5 USDT</button>
-            </div>
-            <div class="vip-active-panel" id="vip-active-panel">
-                👑 VIP активен до: <span id="vip-until"></span>
-            </div>
-
-            <!-- ЧАЕВЫЕ -->
             <div class="settings-item" style="background: var(--card); padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid var(--accent);">
                 <span style="font-weight: 600; color: var(--accent);">Оставить чаевые создателю 🍺</span>
                 <div style="font-size: 0.9rem; color: var(--text-secondary); margin: 5px 0;">Если хотите поддержать проект, переведите USDT на этот адрес:</div>
@@ -293,18 +263,6 @@
             <div class="settings-item" style="margin-top: 20px;">
                 <span style="font-weight: 600;">Тема оформления:</span>
                 <div class="theme-toggle"><button class="theme-btn active" id="theme-light" onclick="setTheme('light')">Светлая</button><button class="theme-btn" id="theme-halloween" onclick="setTheme('halloween')">Хэллоуин</button></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- МОДАЛКА ПОДТВЕРЖДЕНИЯ VIP -->
-    <div class="confirm-overlay" id="vip-confirm-overlay">
-        <div class="confirm-card">
-            <h3>Подтверждение оплаты</h3>
-            <p>Списать 5 USDT с баланса для покупки VIP на 30 дней?</p>
-            <div class="confirm-actions">
-                <button class="btn-confirm btn-yes" onclick="buyVip()">Подтвердить</button>
-                <button class="btn-confirm btn-no" onclick="closeVipConfirm()">Отмена</button>
             </div>
         </div>
     </div>
@@ -331,13 +289,13 @@
         </div>
     </div>
 
-    <!-- НИЖНЕЕ МЕНЮ (БЕЗ АУКЦИОНА И КОЛЛЕКЦИИ) -->
+    <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div><span>Кошелек</span></div>
         <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div><span>Биржа</span></div>
         <div class="nav-item" onclick="switchTab('settings')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div><span>Ещё</span></div>
-                </div>
-                <script>
+                                                                                                  </div>
+                                                                                                      <script>
         const SUPABASE_URL = "https://ptcofqwsvyytcnoerazu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_CL2wAd6YW9tj5fIq4r9b4A_iVeZtnBx";
         const { createClient } = supabase;
@@ -356,58 +314,40 @@
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
         let chartInterval;
         let tradeMode = 'buy';
+        
+        // === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ БАЛАНСА ===
+        let balances = { usdt: 0, gram: 0, sol: 0, trx: 0 };
+        let isBalancesHidden = false;
+        let isRubMode = false;
+        const CUSTOM_RUB_RATE = 100; // Свой курс: 1 USDT = 100 рублей
 
-        // === PIN-КОД ЛОГИКА ===
+        // === PIN-КОД ===
         async function checkAuth() {
             if (!userId) return;
-            
             try {
                 const { data } = await db.from('users').select('pin_code').eq('user_id', userId).single();
-                
                 if (data && data.pin_code) {
-                    // ПИН есть, показываем экран входа
+                    // Если пин есть, пропускаем экран (в следующий раз)
                     document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-                    document.getElementById('screen-login').classList.add('active');
+                    document.getElementById('screen-wallet').classList.add('active');
+                    loadWallet();
                 } else {
-                    // ПИНа нет, показываем регистрацию
+                    // Если пин нет, показываем экран регистрации
                     document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
                     document.getElementById('screen-pin').classList.add('active');
                 }
-            } catch (e) {
-                console.error(e);
-            }
+            } catch (e) { console.error(e); }
         }
 
         async function savePin() {
             const pin = document.getElementById('pin-input').value;
             if (pin.length !== 4 || isNaN(pin)) return tg.showAlert('Введите 4 цифры');
-            
             try {
-                // Создаем пользователя, если нет, и сохраняем ПИН
                 await db.from('users').upsert({ user_id: userId, pin_code: pin }, { onConflict: 'user_id' });
-                
                 tg.showAlert('ПИН-код создан!');
-                
                 document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
                 document.getElementById('screen-wallet').classList.add('active');
                 loadWallet();
-            } catch (e) { tg.showAlert('Ошибка: ' + e.message); }
-        }
-
-        async function checkPin() {
-            const pin = document.getElementById('login-pin-input').value;
-            if (pin.length !== 4) return tg.showAlert('Введите 4 цифры');
-            
-            try {
-                const { data } = await db.from('users').select('pin_code').eq('user_id', userId).single();
-                
-                if (data && data.pin_code === pin) {
-                    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-                    document.getElementById('screen-wallet').classList.add('active');
-                    loadWallet();
-                } else {
-                    tg.showAlert('Неверный ПИН-код');
-                }
             } catch (e) { tg.showAlert('Ошибка: ' + e.message); }
         }
 
@@ -432,6 +372,72 @@
                 document.getElementById('screen-settings').classList.add('active');
                 loadSettings();
             }
+        }
+
+        // === СКРЫТИЕ БАЛАНСОВ ===
+        function toggleHideBalances() {
+            isBalancesHidden = !isBalancesHidden;
+            document.getElementById('btn-hide').innerText = isBalancesHidden ? 'Показать балансы' : 'Скрыть балансы';
+            updateDisplay();
+        }
+
+        // === ПЕРЕКЛЮЧЕНИЕ ВАЛЮТЫ ($ / ₽) ===
+        function toggleCurrency() {
+            isRubMode = !isRubMode;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            // Рассчитываем общую сумму в USDT
+            const totalUsdt = (balances.usdt * 1.00) + (balances.gram * 1.15) + (balances.sol * 93.99) + (balances.trx * 0.12);
+            
+            // Обновляем шапку
+            const totalEl = document.getElementById('total-balance');
+            const symEl = document.getElementById('currency-symbol');
+            const labelEl = document.getElementById('currency-label');
+            const usdEl = document.getElementById('total-usd');
+
+            if (isBalancesHidden) {
+                totalEl.innerText = '****';
+                symEl.innerText = '';
+                labelEl.innerText = '';
+                usdEl.innerText = 'Скрыто';
+            } else {
+                if (isRubMode) {
+                    symEl.innerText = '';
+                    totalEl.innerText = (totalUsdt * CUSTOM_RUB_RATE).toFixed(2);
+                    labelEl.innerText = '₽';
+                    usdEl.innerText = `По курсу ${CUSTOM_RUB_RATE} ₽ за 1 USDT`;
+                } else {
+                    symEl.innerText = '$';
+                    totalEl.innerText = totalUsdt.toFixed(2);
+                    labelEl.innerText = 'USDT';
+                    usdEl.innerText = 'Общий баланс';
+                }
+            }
+
+            // Обновляем активы
+            const updateAsset = (id, amount, name, price) => {
+                const el = document.getElementById(id);
+                const usdEl = document.getElementById(id + '-usd');
+                if (isBalancesHidden) {
+                    el.innerText = '**** ' + name;
+                    usdEl.innerText = '****';
+                } else {
+                    if (isRubMode) {
+                        el.innerText = `${(amount * price * CUSTOM_RUB_RATE).toFixed(2)} ₽`;
+                        usdEl.innerText = `${amount} ${name}`;
+                    } else {
+                        el.innerText = `${amount} ${name}`;
+                        usdEl.innerText = `$${(amount * price).toFixed(2)}`;
+                    }
+                }
+            };
+
+            updateAsset('usdt-balance', balances.usdt, 'USDT', 1.00);
+            updateAsset('gram-balance', balances.gram, 'GRAM', 1.15);
+            updateAsset('sol-balance', balances.sol, 'SOL', 93.99);
+            updateAsset('trx-balance', balances.trx, 'TRX', 0.12);
         }
 
         // === БИРЖА ===
@@ -548,7 +554,7 @@
             finally { btn.innerText = oldText; btn.disabled = false; }
         }
 
-        // === ПЕРЕВОДЫ С КОМИССИЕЙ ===
+        // === ПЕРЕВОДЫ ===
         function selectTransferCoin(coin, element) {
             transferCoin = coin;
             document.querySelectorAll('.transfer-coin-btn').forEach(el => el.classList.remove('active'));
@@ -573,30 +579,24 @@
                 const balanceField = `${transferCoin.toLowerCase()}_balance`;
                 const senderBalance = parseFloat(sender[balanceField]) || 0;
                 
-                // Проверка на VIP (0% комиссии) и обычного юзера (1% комиссии)
-                const isVip = sender.vip_until && new Date(sender.vip_until) > new Date();
-                const commissionPercent = isVip ? 0 : 1; // 1% для обычных, 0% для VIP
-                const commission = amount * (commissionPercent / 100);
+                const commission = amount * 0.01; // 1% комиссия
                 const totalToDeduct = amount + commission;
 
                 if (senderBalance < totalToDeduct) { btn.innerText = "Перевести"; btn.disabled = false; return tg.showAlert(`Недостаточно средств (нужно ${totalToDeduct.toFixed(2)} с учетом комиссии)`); }
 
-                // Списываем у отправителя (сумму + комиссию)
+                // Списываем у отправителя
                 await db.from('users').update({ [balanceField]: senderBalance - totalToDeduct }).eq('user_id', userId);
                 
-                // Начисляем получателю (без комиссии)
+                // Начисляем получателю
                 const { data: recData } = await db.from('users').select(balanceField).eq('user_id', recipient.user_id).single();
                 const recBalance = parseFloat(recData[balanceField]) || 0;
                 await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', recipient.user_id);
 
-                // Переводим комиссию тебе (админу), если комиссия > 0
-                if (commission > 0) {
-                    // Твой кошелек - T9RIG0JKYDQS0B9EMU0KDO9I, значит ищем по нему
-                    const { data: adminUser } = await db.from('users').select('user_id').eq('wallet_address', 'T9RIG0JKYDQS0B9EMU0KDO9I').single();
-                    if (adminUser) {
-                        const { data: adminBal } = await db.from('users').select(balanceField).eq('user_id', adminUser.user_id).single();
-                        await db.from('users').update({ [balanceField]: (parseFloat(adminBal[balanceField]) || 0) + commission }).eq('user_id', adminUser.user_id);
-                    }
+                // Переводим комиссию тебе
+                const { data: adminUser } = await db.from('users').select('user_id').eq('wallet_address', 'T9RIG0JKYDQS0B9EMU0KDO9I').single();
+                if (adminUser) {
+                    const { data: adminBal } = await db.from('users').select(balanceField).eq('user_id', adminUser.user_id).single();
+                    await db.from('users').update({ [balanceField]: (parseFloat(adminBal[balanceField]) || 0) + commission }).eq('user_id', adminUser.user_id);
                 }
 
                 await db.from('transfers').insert([{ from_user_id: userId, to_user_id: recipient.user_id, coin: transferCoin, amount: amount }]);
@@ -651,7 +651,7 @@
             document.getElementById('details-overlay').classList.remove('active');
         }
 
-        // === НАСТРОЙКИ И VIP ===
+        // === НАСТРОЙКИ ===
         function copyAddress() {
             const address = document.getElementById('wallet-address').innerText;
             if (address && address !== 'Загрузка...') {
@@ -681,49 +681,8 @@
         }
 
         async function loadSettings() {
-            const { data } = await db.from('users').select('*').eq('user_id', userId).single();
-            if (data) {
-                document.getElementById('wallet-address').innerText = data.wallet_address || 'Загрузка...';
-                
-                // Проверка VIP
-                if (data.vip_until && new Date(data.vip_until) > new Date()) {
-                    document.getElementById('vip-panel').classList.remove('active');
-                    document.getElementById('vip-active-panel').classList.add('active');
-                    document.getElementById('vip-until').innerText = new Date(data.vip_until).toLocaleDateString('ru-RU');
-                } else {
-                    document.getElementById('vip-panel').classList.add('active');
-                    document.getElementById('vip-active-panel').classList.remove('active');
-                }
-            }
-        }
-
-        function openVipConfirm() {
-            document.getElementById('vip-confirm-overlay').classList.add('active');
-        }
-
-        function closeVipConfirm() {
-            document.getElementById('vip-confirm-overlay').classList.remove('active');
-        }
-
-        async function buyVip() {
-            closeVipConfirm();
-            
-            try {
-                const { data: user } = await db.from('users').select('usdt_balance').eq('user_id', userId).single();
-                if ((user?.usdt_balance || 0) < 5) return tg.showAlert('Недостаточно USDT (нужно 5)');
-
-                const vipUntil = new Date();
-                vipUntil.setDate(vipUntil.getDate() + 30); // 30 дней
-
-                await db.from('users').update({ 
-                    usdt_balance: (user.usdt_balance || 0) - 5,
-                    vip_until: vipUntil.toISOString()
-                }).eq('user_id', userId);
-
-                tg.showAlert('✅ VIP активирован на 30 дней!');
-                loadSettings();
-                loadWallet();
-            } catch (e) { tg.showAlert("Ошибка: " + e.message); }
+            const { data } = await db.from('users').select('wallet_address').eq('user_id', userId).single();
+            document.getElementById('wallet-address').innerText = data?.wallet_address || 'Загрузка...';
         }
 
         // === ЗАГРУЗКА КОШЕЛЬКА ===
@@ -732,18 +691,11 @@
             try {
                 const { data } = await db.from('users').select('*').eq('user_id', userId).single();
                 if (data) {
-                    document.getElementById('usdt-balance').innerText = `${data.usdt_balance || 0} USDT`;
-                    document.getElementById('usdt-usd').innerText = `$${((data.usdt_balance || 0) * 1.00).toFixed(2)}`;
-                    document.getElementById('gram-balance').innerText = `${data.gram_balance || 0} GRAM`;
-                    document.getElementById('gram-usd').innerText = `$${((data.gram_balance || 0) * 1.15).toFixed(2)}`;
-                    document.getElementById('sol-balance').innerText = `${data.sol_balance || 0} SOL`;
-                    document.getElementById('sol-usd').innerText = `$${((data.sol_balance || 0) * 93.99).toFixed(2)}`;
-                    document.getElementById('trx-balance').innerText = `${data.trx_balance || 0} TRX`;
-                    document.getElementById('trx-usd').innerText = `$${((data.trx_balance || 0) * 0.12).toFixed(2)}`;
+                    balances.usdt = parseFloat(data.usdt_balance) || 0;
+                    balances.gram = parseFloat(data.gram_balance) || 0;
+                    balances.sol = parseFloat(data.sol_balance) || 0;
+                    balances.trx = parseFloat(data.trx_balance) || 0;
                     
-                    const total = ((data.usdt_balance||0) * 1.00) + ((data.gram_balance||0) * 1.15) + ((data.sol_balance||0) * 93.99) + ((data.trx_balance||0) * 0.12);
-                    document.getElementById('total-balance').innerText = total.toFixed(2);
-
                     if (!data.wallet_address) {
                         const newAddress = 'T' + Math.random().toString(36).substring(2, 15).toUpperCase() + Math.random().toString(36).substring(2, 15).toUpperCase();
                         await db.from('users').update({ wallet_address: newAddress }).eq('user_id', userId);
@@ -751,6 +703,8 @@
                     } else {
                         document.getElementById('wallet-address').innerText = data.wallet_address;
                     }
+                    
+                    updateDisplay();
                 }
             } catch (e) { console.error(e); }
         }
@@ -762,7 +716,7 @@
             document.getElementById('theme-light').classList.remove('active');
         }
 
-        // Запуск
+        // Старт
         checkAuth();
     </script>
 </body>

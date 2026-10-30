@@ -9,11 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #ffffff; color: #000000; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; }
+        body { background-color: #ffffff; color: #000000; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; overflow-x: hidden; }
         
         .top-bar { padding: 15px 20px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; }
         
-        /* Главный экран */
+        /* Экраны */
+        .screen { display: none; animation: fadeIn 0.3s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- КОШЕЛЕК --- */
         .balance-section { text-align: center; padding: 20px 0; }
         .balance-amount { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; }
         .balance-amount span:first-child { font-size: 1.5rem; color: #888; font-weight: 500; }
@@ -33,37 +38,44 @@
         .asset-info { flex: 1; display: flex; flex-direction: column; }
         .asset-name { font-size: 1rem; font-weight: 600; }
         .asset-price { font-size: 0.8rem; color: #4caf50; }
-        .asset-price.red { color: #f44336; }
         .asset-balance { text-align: right; display: flex; flex-direction: column; }
         .asset-amount { font-size: 1rem; font-weight: 600; }
         .asset-usd { font-size: 0.8rem; color: #888; }
 
-        /* Биржа */
-        .exchange-screen { display: none; padding: 20px; }
-        .exchange-header { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
-        .exchange-coin { padding: 10px 15px; background: #f0f0f0; border-radius: 20px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        /* --- БИРЖА --- */
+        .exchange-header { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding: 0 20px; }
+        .exchange-coin { padding: 10px 20px; background: #f0f0f0; border-radius: 20px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.2s; font-size: 1rem; }
         .exchange-coin.active { background: #1976d2; color: #fff; }
         
-        .chart-container { height: 200px; background: #f9f9f9; border-radius: 15px; margin-bottom: 20px; position: relative; overflow: hidden; }
+        .chart-container { height: 200px; background: #f9f9f9; border-radius: 15px; margin: 0 20px 20px 20px; position: relative; overflow: hidden; border: 1px solid #eee; }
         .chart-svg { width: 100%; height: 100%; }
         
-        .buy-panel { background: #f9f9f9; padding: 20px; border-radius: 15px; }
-        .buy-input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; outline: none; }
-        .buy-info { display: flex; justify-content: space-between; margin-bottom: 15px; color: #888; font-size: 0.9rem; }
-        .btn-buy { width: 100%; padding: 15px; background: #4caf50; color: #fff; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
+        .buy-panel { background: #fff; padding: 20px; border-radius: 15px; margin: 0 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1rem; color: #555; font-weight: 500; }
+        .buy-row span:last-child { font-weight: 700; color: #111; }
+        
+        .buy-input { width: 100%; padding: 18px; border: 2px solid #eee; border-radius: 12px; font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; outline: none; transition: 0.2s; text-align: center; }
+        .buy-input:focus { border-color: #1976d2; }
+        
+        .btn-buy { width: 100%; padding: 18px; background: #1976d2; color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-buy:active { background: #115293; transform: scale(0.98); }
 
-        /* Нижнее меню */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #f0f0f0; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #888; font-size: 0.75rem; cursor: pointer; }
+        /* --- ЗАГЛУШКА --- */
+        .creating-screen { display: flex; justify-content: center; align-items: center; height: 60vh; font-size: 1.5rem; font-weight: 800; color: #ccc; letter-spacing: 2px; }
+
+        /* --- НИЖНЕЕ МЕНЮ --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #f0f0f0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #888; font-size: 0.7rem; cursor: pointer; transition: 0.2s; width: 20%; }
         .nav-item.active { color: #1976d2; }
-        .nav-item .icon { font-size: 1.2rem; }
+        .nav-item .icon { width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; }
+        .nav-item .icon svg { width: 100%; height: 100%; fill: currentColor; }
     </style>
 </head>
 <body>
     <div class="top-bar">Crypto Bot</div>
 
-    <!-- Кошелек -->
-    <div class="main-screen" id="main-screen">
+    <!-- 1. КОШЕЛЕК -->
+    <div class="screen active" id="screen-wallet">
         <div class="balance-section">
             <div class="balance-amount"><span>$</span><span id="total-balance">0.00</span><span style="font-size: 1.5rem; color: #888; font-weight: 500; margin-left: 5px;">USDT</span></div>
             <div class="balance-usd">Общий баланс в USD</div>
@@ -93,12 +105,12 @@
         </div>
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
             <div class="asset-icon" style="background: #0088cc;">💎</div>
-            <div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price red">$1.15 -5.11%</div></div>
+            <div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price">$1.15 -5.11%</div></div>
             <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div>
         </div>
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')">
             <div class="asset-icon" style="background: #9945ff;">S</div>
-            <div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price red">$93.99 -6.66%</div></div>
+            <div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price">$93.99 -6.66%</div></div>
             <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div>
         </div>
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')">
@@ -108,13 +120,13 @@
         </div>
     </div>
 
-    <!-- Биржа -->
-    <div class="exchange-screen" id="exchange-screen">
+    <!-- 2. БИРЖА -->
+    <div class="screen" id="screen-exchange">
         <div class="exchange-header">
-            <div class="exchange-coin active" onclick="selectCoin('USDT')">USDT</div>
-            <div class="exchange-coin" onclick="selectCoin('GRAM')">GRAM</div>
-            <div class="exchange-coin" onclick="selectCoin('SOL')">SOL</div>
-            <div class="exchange-coin" onclick="selectCoin('TRX')">TRX</div>
+            <div class="exchange-coin active" onclick="selectCoin('USDT', this)">USDT</div>
+            <div class="exchange-coin" onclick="selectCoin('GRAM', this)">GRAM</div>
+            <div class="exchange-coin" onclick="selectCoin('SOL', this)">SOL</div>
+            <div class="exchange-coin" onclick="selectCoin('TRX', this)">TRX</div>
         </div>
         
         <div class="chart-container">
@@ -122,12 +134,12 @@
         </div>
 
         <div class="buy-panel">
-            <div class="buy-info">
+            <div class="buy-row">
                 <span>Цена:</span>
                 <span id="current-price">$1.00</span>
             </div>
-            <input type="number" class="buy-input" id="buy-amount" placeholder="Количество" oninput="calculateCost()">
-            <div class="buy-info">
+            <input type="number" class="buy-input" id="buy-amount" placeholder="Кол-во" oninput="calculateCost()">
+            <div class="buy-row">
                 <span>К оплате:</span>
                 <span id="cost-stars">0 ⭐</span>
             </div>
@@ -135,19 +147,41 @@
         </div>
     </div>
 
-    <!-- История -->
-    <div class="exchange-screen" id="history-screen">
-        <h2 style="margin-bottom: 20px;">История</h2>
-        <p style="color: #888; text-align: center;">Пока пусто</p>
+    <!-- 3. ИСТОРИЯ -->
+    <div class="screen" id="screen-history">
+        <div style="padding: 20px;">
+            <h2 style="margin-bottom: 20px;">История</h2>
+            <p style="color: #888; text-align: center;">Пока пусто</p>
+        </div>
     </div>
 
-    <!-- Нижнее меню -->
+    <!-- 4. ЗАГЛУШКИ -->
+    <div class="screen" id="screen-obmen"><div class="creating-screen">Creating..</div></div>
+    <div class="screen" id="screen-p2p"><div class="creating-screen">Creating..</div></div>
+    <div class="screen" id="screen-settings"><div class="creating-screen">Creating..</div></div>
+
+    <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-nav">
-        <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="icon">💼</div><span>Кошелек</span></div>
-        <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="icon">📊</div><span>Биржа</span></div>
-        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">↔️</div><span>Обмен</span></div>
-        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">🤝</div><span>P2P</span></div>
-        <div class="nav-item" onclick="tg.showAlert('Настройки в разработке')"><div class="icon">⚙️</div><span>Ещё</span></div>
+        <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')">
+            <div class="icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div>
+            <span>Кошелек</span>
+        </div>
+        <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')">
+            <div class="icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div>
+            <span>Биржа</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('obmen')">
+            <div class="icon"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div>
+            <span>Обмен</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('p2p')">
+            <div class="icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+            <span>P2P</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('settings')">
+            <div class="icon"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div>
+            <span>Ещё</span>
+        </div>
     </div>
 
     <script>
@@ -164,7 +198,6 @@
         const paramId = urlParams.get('user_id');
         const userId = paramId ? parseInt(paramId) : 0;
 
-        // Курсы и графики
         let currentCoin = 'USDT';
         let currentPrices = {
             'USDT': 1.00,
@@ -176,30 +209,37 @@
         let chartInterval;
 
         function switchTab(tab) {
-            document.getElementById('main-screen').style.display = 'none';
-            document.getElementById('exchange-screen').style.display = 'none';
-            document.getElementById('history-screen').style.display = 'none';
-            
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
             if (tab === 'wallet') {
-                document.getElementById('main-screen').style.display = 'block';
+                document.getElementById('screen-wallet').classList.add('active');
                 document.getElementById('nav-wallet').classList.add('active');
             } else if (tab === 'exchange') {
-                document.getElementById('exchange-screen').style.display = 'block';
+                document.getElementById('screen-exchange').classList.add('active');
                 document.getElementById('nav-exchange').classList.add('active');
                 startChart();
             } else if (tab === 'history') {
-                document.getElementById('history-screen').style.display = 'block';
+                document.getElementById('screen-history').classList.add('active');
+            } else if (tab === 'obmen') {
+                document.getElementById('screen-obmen').classList.add('active');
+            } else if (tab === 'p2p') {
+                document.getElementById('screen-p2p').classList.add('active');
+            } else if (tab === 'settings') {
+                document.getElementById('screen-settings').classList.add('active');
             }
         }
 
-        function selectCoin(coin) {
+        function selectCoin(coin, element) {
             currentCoin = coin;
             document.querySelectorAll('.exchange-coin').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.exchange-coin').forEach(el => {
-                if (el.innerText === coin) el.classList.add('active');
-            });
+            if (element) element.classList.add('active');
+            else {
+                // Если вызвано из кошелька, находим нужный элемент
+                document.querySelectorAll('.exchange-coin').forEach(el => {
+                    if (el.innerText === coin) el.classList.add('active');
+                });
+            }
             startChart();
             calculateCost();
         }
@@ -209,11 +249,8 @@
             chartData = Array(20).fill(currentPrices[currentCoin]);
             
             chartInterval = setInterval(() => {
-                // Рандомно меняем цену
                 let change = (Math.random() - 0.5) * (currentPrices[currentCoin] * 0.02);
                 currentPrices[currentCoin] += change;
-                
-                // Ограничения (чтобы не улетало в космос)
                 if (currentPrices[currentCoin] < 0.01) currentPrices[currentCoin] = 0.01;
                 
                 chartData.push(currentPrices[currentCoin]);
@@ -226,6 +263,7 @@
 
         function drawChart() {
             const svg = document.getElementById('chart-svg');
+            if (!svg) return;
             const min = Math.min(...chartData);
             const max = Math.max(...chartData);
             const range = max - min || 1;
@@ -233,7 +271,7 @@
             let points = '';
             chartData.forEach((val, i) => {
                 const x = (i / (chartData.length - 1)) * 100;
-                const y = 50 - ((val - min) / range) * 40; // 40 чтобы был отступ
+                const y = 50 - ((val - min) / range) * 40;
                 points += `${x},${y} `;
             });
 
@@ -247,8 +285,7 @@
             const amount = parseFloat(document.getElementById('buy-amount').value) || 0;
             const price = currentPrices[currentCoin];
             const usdCost = amount * price;
-            // Курс: 1 доллар = 100 звезд
-            const starsCost = Math.ceil(usdCost * 100);
+            const starsCost = Math.ceil(usdCost * 100); // 1 доллар = 100 звезд
             document.getElementById('cost-stars').innerText = `${starsCost} ⭐`;
             return { amount, starsCost };
         }
@@ -256,16 +293,19 @@
         function buyCrypto() {
             const { amount, starsCost } = calculateCost();
             if (amount <= 0) return tg.showAlert('Введите количество');
+            if (starsCost <= 0) return tg.showAlert('Ошибка расчета');
             
-            // Отправляем боту запрос на счет
-            tg.sendData(JSON.stringify({
-                action: "buy_crypto",
-                coin: currentCoin,
-                amount: amount,
-                stars: starsCost
-            }));
-            
-            tg.showAlert(`Счет на ${starsCost} звезд отправлен в бота!`);
+            // Отправляем данные в бота
+            try {
+                tg.sendData(JSON.stringify({
+                    action: "buy_crypto",
+                    coin: currentCoin,
+                    amount: amount,
+                    stars: starsCost
+                }));
+            } catch(e) {
+                tg.showAlert("Ошибка отправки: " + e.message);
+            }
         }
 
         async function loadWallet() {

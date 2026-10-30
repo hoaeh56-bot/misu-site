@@ -73,7 +73,7 @@
         .history-type { font-size: 0.9rem; font-weight: 600; } .history-date { font-size: 0.75rem; color: var(--text-secondary); }
         .history-amount { font-weight: 700; } .positive { color: #4caf50; } .negative { color: #f44336; }
         
-        /* НАСТРОЙКИ / КОЛЛЕКЦИЯ / АУКЦИОН */
+        /* НАСТРОЙКИ */
         .settings-panel { padding: 20px; }
         .settings-item { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
         .wallet-address { background: var(--card); padding: 20px; border-radius: 15px; font-family: monospace; font-size: 1.2rem; word-break: break-all; border: 1px solid var(--border); text-align: center; color: var(--accent); font-weight: 700; margin-bottom: 15px; }
@@ -82,19 +82,29 @@
         .theme-btn { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
         .theme-btn.active { border-color: var(--accent); color: var(--accent); }
 
+        /* ПРОФИЛЬ (НОВЫЙ БЛОК) */
+        .profile-header { display: flex; align-items: center; gap: 15px; padding: 20px; background: var(--card); border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--accent-light); display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: 700; color: var(--accent); overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-info { display: flex; flex-direction: column; }
+        .profile-name { font-size: 1.2rem; font-weight: 700; }
+        .profile-username { font-size: 0.9rem; color: var(--text-secondary); }
+
         /* АУКЦИОН */
-        .auction-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
-        .auction-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
-        .auction-info { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
-        .btn-bid { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .btn-create-lot { width: 100%; padding: 15px; background: #f44336; color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 20px; display: none; }
+        .auction-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .auction-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .auction-title { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+        .auction-price { font-size: 1.2rem; font-weight: 700; color: #4caf50; }
+        .auction-details { font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 5px; }
+        .btn-bid { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 5px; }
+        .btn-create-lot { width: 100%; padding: 18px; background: #f44336; color: #fff; border: none; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 20px; display: none; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 0.7rem; cursor: pointer; width: 20%; }
         .nav-item.active { color: var(--accent); }
         .nav-item .icon { width: 24px; height: 24px; } .nav-item .icon svg { width: 100%; height: 100%; fill: currentColor; }
 
-        /* МОДАЛКА ДЕТАЛЕЙ */
+        /* ДЕТАЛИ */
         .details-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1001; }
         .details-overlay.active { display: flex; } .details-card { background: var(--bg); padding: 20px; border-radius: 20px; width: 90%; max-width: 400px; }
         .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
@@ -219,10 +229,19 @@
         </div>
     </div>
 
-    <!-- НАСТРОЙКИ -->
+    <!-- НАСТРОЙКИ (С ПРОФИЛЕМ) -->
     <div class="screen" id="screen-settings">
         <div class="settings-panel">
             <h2 style="margin-bottom: 20px;">Настройки</h2>
+            
+            <div class="profile-header">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="profile-info">
+                    <div class="profile-name" id="user-name">Загрузка...</div>
+                    <div class="profile-username" id="user-username">@...</div>
+                </div>
+            </div>
+
             <div class="settings-item">
                 <span style="font-weight: 600;">Ваш адрес кошелька:</span>
                 <div class="wallet-address" id="wallet-address">Загрузка...</div>
@@ -241,7 +260,6 @@
         <div id="auction-list" style="padding: 0 20px;">
             <p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>
         </div>
-        <!-- Кнопка создания лота (только для админа) -->
         <button class="btn-create-lot" id="btn-create-lot" onclick="createLot()">Выставить лот</button>
     </div>
 
@@ -303,8 +321,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const paramId = urlParams.get('user_id');
         const userId = paramId ? parseInt(paramId) : 0;
-        
-        // Твой ID (Главный админ)
         const ADMIN_ID = 1780243396;
 
         let currentCoin = 'USDT';
@@ -312,6 +328,23 @@
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
         let chartInterval;
         let tradeMode = 'buy';
+
+        // Загрузка профиля в настройках
+        function loadProfile() {
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                document.getElementById('user-name').innerText = user.first_name || 'Пользователь';
+                document.getElementById('user-username').innerText = user.username ? `@${user.username}` : 'без юзернейма';
+                
+                const avatarDiv = document.getElementById('user-avatar');
+                if (user.photo_url) {
+                    avatarDiv.innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
+                } else {
+                    // Если нет аватарки, показываем первую букву
+                    avatarDiv.innerText = (user.first_name || 'U').charAt(0).toUpperCase();
+                }
+            }
+        }
 
         function switchTab(tab) {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
@@ -333,7 +366,6 @@
                 document.getElementById('screen-auction').classList.add('active');
                 document.getElementById('nav-auction').classList.add('active');
                 loadAuction();
-                // Показываем кнопку создания лота только админу
                 if (userId === ADMIN_ID) {
                     document.getElementById('btn-create-lot').style.display = 'block';
                 }
@@ -347,7 +379,7 @@
             }
         }
 
-        // === ФУНКЦИИ ДЛЯ БИРЖИ ===
+        // === БИРЖА ===
         function selectCoin(coin, element) {
             currentCoin = coin;
             document.querySelectorAll('.coin-pill').forEach(el => el.classList.remove('active'));
@@ -365,15 +397,12 @@
             tradeMode = mode;
             document.querySelectorAll('.exchange-tab').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
-            
             const btn = document.getElementById('action-btn');
             if (mode === 'buy') {
                 btn.innerText = 'Купить';
-                btn.className = 'btn-buy';
                 btn.style.background = '#4caf50';
             } else {
                 btn.innerText = 'Продать';
-                btn.className = 'btn-buy btn-sell';
                 btn.style.background = '#f44336';
             }
             calculateCost();
@@ -464,7 +493,7 @@
             finally { btn.innerText = oldText; btn.disabled = false; }
         }
 
-        // === ФУНКЦИИ ДЛЯ ПЕРЕВОДОВ ===
+        // === ПЕРЕВОДЫ ===
         function selectTransferCoin(coin, element) {
             transferCoin = coin;
             document.querySelectorAll('.transfer-coin-btn').forEach(el => el.classList.remove('active'));
@@ -547,7 +576,7 @@
             document.getElementById('details-overlay').classList.remove('active');
         }
 
-        // === НАСТРОЙКИ / КОЛЛЕКЦИЯ ===
+        // === НАСТРОЙКИ ===
         function copyAddress() {
             const address = document.getElementById('wallet-address').innerText;
             if (address && address !== 'Загрузка...') {
@@ -573,6 +602,7 @@
             document.getElementById('wallet-address').innerText = data?.wallet_address || 'Загрузка...';
         }
 
+        // === КОЛЛЕКЦИЯ ===
         async function loadCollection() {
             const myAddr = document.getElementById('my-custom-address');
             const list = document.getElementById('collection-list');
@@ -581,24 +611,23 @@
                 const { data: user } = await db.from('users').select('wallet_address').eq('user_id', userId).single();
                 myAddr.innerText = user?.wallet_address || 'Нет адреса';
 
-                // Показываем лоты, которые ты купил на аукционе или создал сам
                 const { data } = await db.from('collections').select('*').eq('owner_id', userId);
                 if (!data || data.length === 0) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Пока пусто</p>'; return; }
 
                 list.innerHTML = '';
                 data.forEach(item => {
                     const div = document.createElement('div');
-                    div.className = 'asset-item';
+                    div.className = 'collection-card';
                     div.innerHTML = `
-                        <div class="asset-icon" style="background: var(--accent);"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div>
-                        <div class="asset-info"><div class="asset-name">${item.address}</div><div class="asset-price">${item.is_listed ? 'На аукционе' : 'В коллекции'}</div></div>
+                        <div class="collection-address">${item.address}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">${item.is_listed ? 'На аукционе' : 'В коллекции'}</div>
                     `;
                     list.appendChild(div);
                 });
             } catch (e) { console.error(e); }
         }
 
-        // === ЛОГИКА АУКЦИОНА ===
+        // === АУКЦИОН (ЛОГИКА С ДОЛЛАРАМИ) ===
         async function loadAuction() {
             const list = document.getElementById('auction-list');
             list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
@@ -612,9 +641,11 @@
                     const div = document.createElement('div');
                     div.className = 'auction-card';
                     div.innerHTML = `
-                        <div class="auction-title">${item.address}</div>
-                        <div class="auction-info">
-                            <span>Мин. ставка: <b>${item.min_price} ⭐</b></span>
+                        <div class="auction-header">
+                            <div class="auction-title">${item.address}</div>
+                            <div class="auction-price">${item.min_price} USDT</div>
+                        </div>
+                        <div class="auction-details">
                             <span>Владелец: ${item.owner_id === ADMIN_ID ? 'Админ' : item.owner_id}</span>
                         </div>
                         <button class="btn-bid" onclick="placeBid(${item.id}, ${item.min_price})">Сделать ставку</button>
@@ -624,19 +655,19 @@
             } catch (e) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ошибка загрузки</p>'; }
         }
 
-        async function placeBid(collectionId, minPrice) {
-            const bid = prompt(`Введите вашу ставку (мин. ${minPrice} ⭐):`);
-            if (!bid || isNaN(bid)) return;
+        async function placeBid(collectionId, minPriceUsdt) {
+            const bidInput = prompt(`Введите ставку в USDT (мин. ${minPriceUsdt}):`);
+            if (!bidInput || isNaN(bidInput)) return;
             
-            const bidAmount = parseInt(bid);
-            if (bidAmount < minPrice) return tg.showAlert('Ставка слишком низкая');
+            const bidAmount = parseFloat(bidInput);
+            if (bidAmount < minPriceUsdt) return tg.showAlert('Ставка слишком низкая');
 
             try {
-                const { data: user } = await db.from('users').select('balance').eq('user_id', userId).single();
-                if ((user?.balance || 0) < bidAmount) return tg.showAlert('Недостаточно звезд на балансе');
+                const { data: user } = await db.from('users').select('usdt_balance').eq('user_id', userId).single();
+                if ((user?.usdt_balance || 0) < bidAmount) return tg.showAlert('Недостаточно USDT на балансе');
 
-                // Списываем звезды с игрока
-                await db.from('users').update({ balance: (user.balance || 0) - bidAmount }).eq('user_id', userId);
+                // Списываем USDT с игрока
+                await db.from('users').update({ usdt_balance: (user.usdt_balance || 0) - bidAmount }).eq('user_id', userId);
                 
                 // Записываем ставку
                 await db.from('auctions').insert([{ collection_id: collectionId, bidder_id: userId, amount: bidAmount }]);
@@ -647,34 +678,29 @@
             } catch (e) { tg.showAlert("Ошибка: " + e.message); }
         }
 
-        // === СОЗДАНИЕ ЛОТА (ТОЛЬКО ДЛЯ АДМИНА) ===
         async function createLot() {
             if (userId !== ADMIN_ID) return tg.showAlert('Только админ может создавать лоты');
 
             const address = prompt('Введите кастомный адрес кошелька (например, T123):');
             if (!address) return;
 
-            const minPrice = prompt('С какой ставки начинается аукцион (в звездах)?');
+            const minPrice = prompt('С какой ставки начинается аукцион (в USDT)?');
             if (!minPrice || isNaN(minPrice)) return;
 
-            const duration = prompt('Сколько часов будет длиться аукцион? (введите число)');
-            if (!duration || isNaN(duration)) return;
-
             try {
-                // Создаем запись в коллекции и сразу выставляем на аукцион
                 await db.from('collections').insert([{ 
                     address: address, 
                     owner_id: ADMIN_ID, 
                     is_listed: true, 
-                    min_price: parseInt(minPrice) 
+                    min_price: parseFloat(minPrice) 
                 }]);
 
-                tg.showAlert(`✅ Лот ${address} выставлен на аукцион со ставкой ${minPrice} ⭐ на ${duration} часов.`);
+                tg.showAlert(`✅ Лот ${address} выставлен на аукцион за ${minPrice} USDT.`);
                 loadAuction();
             } catch (e) { tg.showAlert("Ошибка: " + e.message); }
         }
 
-        // === ОБЩИЕ ФУНКЦИИ ===
+        // === ЗАГРУЗКА КОШЕЛЬКА ===
         async function loadWallet() {
             if (!userId) return;
             try {
@@ -710,6 +736,8 @@
             document.getElementById('theme-light').classList.remove('active');
         }
 
+        // Запуск при старте
+        loadProfile();
         loadWallet();
     </script>
 </body>

@@ -22,6 +22,8 @@
         .screen { display: none; animation: fadeIn 0.3s ease; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* КОШЕЛЕК */
         .balance-section { text-align: center; padding: 20px 0; }
         .balance-amount { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; }
         .balance-amount span:first-child { font-size: 1.5rem; color: var(--text-secondary); font-weight: 500; }
@@ -34,28 +36,43 @@
         .assets-title { padding: 0 20px; font-size: 1rem; font-weight: 600; color: var(--accent); display: flex; justify-content: space-between; margin-bottom: 15px; }
         .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; }
         .asset-item:active { background: var(--card); }
-        .asset-icon { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.2rem; font-weight: 700; }
+        .asset-icon { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; }
+        .asset-icon svg { width: 24px; height: 24px; }
         .asset-info { flex: 1; display: flex; flex-direction: column; }
         .asset-name { font-size: 1rem; font-weight: 600; }
         .asset-price { font-size: 0.8rem; color: #4caf50; }
         .asset-balance { text-align: right; display: flex; flex-direction: column; }
         .asset-amount { font-size: 1rem; font-weight: 600; }
         .asset-usd { font-size: 0.8rem; color: var(--text-secondary); }
-        .exchange-header { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding: 0 20px; }
-        .exchange-coin { padding: 10px 20px; background: var(--card); border-radius: 20px; font-weight: 700; cursor: pointer; white-space: nowrap; color: var(--text); }
-        .exchange-coin.active { background: var(--accent); color: #fff; }
-        .chart-container { height: 220px; background: var(--card); border-radius: 15px; margin: 0 20px 20px 20px; position: relative; overflow: hidden; border: 1px solid var(--border); }
+
+        /* БИРЖА */
+        .exchange-tabs { display: flex; background: var(--card); margin: 0 20px 15px 20px; border-radius: 12px; padding: 5px; }
+        .exchange-tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 8px; color: var(--text-secondary); }
+        .exchange-tab.active { background: var(--bg); color: var(--text); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .exchange-coin-selector { display: flex; gap: 10px; margin: 0 20px 15px 20px; overflow-x: auto; padding-bottom: 5px; }
+        .coin-pill { display: flex; align-items: center; gap: 5px; padding: 8px 15px; background: var(--card); border-radius: 20px; font-weight: 600; font-size: 0.9rem; cursor: pointer; white-space: nowrap; border: 1px solid transparent; }
+        .coin-pill.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+        .coin-pill svg { width: 16px; height: 16px; }
+        .chart-container { height: 220px; background: var(--card); border-radius: 15px; margin: 0 20px 15px 20px; position: relative; overflow: hidden; border: 1px solid var(--border); }
         .chart-svg { width: 100%; height: 100%; }
         .chart-grid { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 2 2; }
         .chart-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
         .chart-area { fill: url(#gradient); opacity: 0.3; }
-        .buy-panel { background: var(--bg); padding: 20px; border-radius: 15px; margin: 0 20px; border: 1px solid var(--border); }
-        .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1rem; color: var(--text-secondary); font-weight: 500; }
-        .buy-row span:last-child { font-weight: 700; color: var(--text); }
-        .buy-input { width: 100%; padding: 18px; border: 2px solid var(--border); border-radius: 12px; font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; outline: none; text-align: center; background: var(--card); color: var(--text); }
+        .price-info { display: flex; justify-content: space-between; align-items: flex-end; margin: 0 20px 15px 20px; }
+        .current-price { font-size: 2rem; font-weight: 700; }
+        .price-change { font-size: 0.9rem; font-weight: 600; color: #4caf50; margin-bottom: 5px; }
+        .buy-panel { background: var(--card); padding: 20px; border-radius: 15px; margin: 0 20px; border: 1px solid var(--border); }
+        .input-wrapper { position: relative; margin-bottom: 15px; }
+        .buy-input { width: 100%; padding: 18px; border: 1px solid var(--border); border-radius: 12px; font-size: 1.2rem; font-weight: 700; outline: none; background: var(--bg); color: var(--text); text-align: center; }
         .buy-input:focus { border-color: var(--accent); }
-        .btn-buy { width: 100%; padding: 18px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
+        .input-label { position: absolute; top: -8px; left: 15px; background: var(--card); padding: 0 5px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; }
+        .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; color: var(--text-secondary); }
+        .buy-row span:last-child { font-weight: 700; color: var(--text); }
+        .btn-buy { width: 100%; padding: 18px; background: #4caf50; color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
         .btn-buy:active { transform: scale(0.98); }
+        .btn-sell { background: #f44336; }
+
+        /* ПЕРЕВОДЫ */
         .transfer-panel { padding: 20px; }
         .transfer-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .transfer-input-group label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
@@ -64,8 +81,29 @@
         .transfer-coin-select { display: flex; gap: 10px; margin-bottom: 20px; }
         .transfer-coin-btn { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
         .transfer-coin-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        /* ИСТОРИЯ */
+        .history-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+        .history-item { background: var(--card); border-radius: 12px; padding: 15px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .history-info { display: flex; flex-direction: column; gap: 5px; }
+        .history-type { font-size: 0.9rem; font-weight: 600; }
+        .history-date { font-size: 0.75rem; color: var(--text-secondary); }
+        .history-amount { font-weight: 700; font-size: 1rem; }
+        .history-amount.positive { color: #4caf50; }
+        .history-amount.negative { color: #f44336; }
+        
+        /* ДЕТАЛИ */
+        .details-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1001; }
+        .details-overlay.active { display: flex; }
+        .details-card { background: var(--bg); padding: 20px; border-radius: 20px; width: 90%; max-width: 400px; }
+        .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .details-row:last-child { border-bottom: none; }
+        .details-row span:first-child { color: var(--text-secondary); }
+        .details-row span:last-child { font-weight: 600; word-break: break-all; }
+
+        /* НАСТРОЙКИ */
         .settings-panel { padding: 20px; }
-        .settings-item { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-direction: column; align-items: flex-start; gap: 10px; }
+        .settings-item { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
         .settings-item span { font-size: 1rem; }
         .wallet-address { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         .address-box { background: var(--card); padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.9rem; word-break: break-all; border: 1px solid var(--border); }
@@ -73,12 +111,15 @@
         .theme-toggle { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
         .theme-btn { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
         .theme-btn.active { border-color: var(--accent); color: var(--accent); }
+
         .creating-screen { display: flex; justify-content: center; align-items: center; height: 60vh; font-size: 1.5rem; font-weight: 800; color: var(--text-secondary); }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 0.7rem; cursor: pointer; width: 20%; }
         .nav-item.active { color: var(--accent); }
         .nav-item .icon { width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; }
         .nav-item .icon svg { width: 100%; height: 100%; fill: currentColor; }
+
+        /* УСПЕХ */
         .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
         .success-overlay.active { display: flex; }
         .success-card { background: var(--bg); padding: 40px 30px; border-radius: 24px; text-align: center; transform: scale(0.5); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
@@ -109,38 +150,75 @@
             <div class="action-btn" onclick="switchTab('history')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><span>История</span></div>
         </div>
         <div class="assets-title"><span>Мои активы →</span><span>Скрыть мелкие балансы</span></div>
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')"><div class="asset-icon" style="background: #26a17b;">₮</div><div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$1.00</div></div><div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div></div>
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')"><div class="asset-icon" style="background: #0088cc;">💎</div><div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price">$1.15</div></div><div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div></div>
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')"><div class="asset-icon" style="background: #9945ff;">S</div><div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price">$93.99</div></div><div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div></div>
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')"><div class="asset-icon" style="background: #ff0000;">T</div><div class="asset-info"><div class="asset-name">TRON</div><div class="asset-price">$0.12</div></div><div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">$0.00</div></div></div>
+        
+        <!-- Tether -->
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')">
+            <div class="asset-icon" style="background: #26a17b;">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v3h2v2h-2v5h-2v-5H9V9h2V7z"/></svg>
+            </div>
+            <div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$1.00</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div>
+        </div>
+        
+        <!-- Gram -->
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
+            <div class="asset-icon" style="background: #0088cc;">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg>
+            </div>
+            <div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price">$1.15</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div>
+        </div>
+
+        <!-- Solana -->
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')">
+            <div class="asset-icon" style="background: #9945ff;">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM9 11h6v2H9z"/></svg>
+            </div>
+            <div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price">$93.99</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div>
+        </div>
+
+        <!-- TRON -->
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')">
+            <div class="asset-icon" style="background: #ff0000;">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg>
+            </div>
+            <div class="asset-info"><div class="asset-name">TRON</div><div class="asset-price">$0.12</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">$0.00</div></div>
+        </div>
     </div>
 
     <!-- БИРЖА -->
     <div class="screen" id="screen-exchange">
-        <div class="exchange-header">
-            <div class="exchange-coin active" onclick="selectCoin('USDT', this)">USDT</div>
-            <div class="exchange-coin" onclick="selectCoin('GRAM', this)">GRAM</div>
-            <div class="exchange-coin" onclick="selectCoin('SOL', this)">SOL</div>
-            <div class="exchange-coin" onclick="selectCoin('TRX', this)">TRX</div>
+        <div class="exchange-tabs">
+            <div class="exchange-tab active" onclick="toggleTradeTab('buy', this)">Купить</div>
+            <div class="exchange-tab" onclick="toggleTradeTab('sell', this)">Продать</div>
+        </div>
+        <div class="exchange-coin-selector">
+            <div class="coin-pill active" data-coin="USDT" onclick="selectCoin('USDT', this)"><svg viewBox="0 0 24 24" fill="#26a17b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg> USDT</div>
+            <div class="coin-pill" data-coin="GRAM" onclick="selectCoin('GRAM', this)"><svg viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg> GRAM</div>
+            <div class="coin-pill" data-coin="SOL" onclick="selectCoin('SOL', this)"><svg viewBox="0 0 24 24" fill="#9945ff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg> SOL</div>
+            <div class="coin-pill" data-coin="TRX" onclick="selectCoin('TRX', this)"><svg viewBox="0 0 24 24" fill="#ff0000"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg> TRX</div>
         </div>
         <div class="chart-container">
             <svg class="chart-svg" id="chart-svg" viewBox="0 0 100 50" preserveAspectRatio="none">
-                <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:var(--accent);stop-opacity:0.5" />
-                        <stop offset="100%" style="stop-color:var(--accent);stop-opacity:0" />
-                    </linearGradient>
-                </defs>
+                <defs><linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:var(--accent);stop-opacity:0.5" /><stop offset="100%" style="stop-color:var(--accent);stop-opacity:0" /></linearGradient></defs>
                 <g id="chart-grid-group"></g>
                 <path id="chart-area" class="chart-area" d="" />
                 <polyline id="chart-line" class="chart-line" points="" />
             </svg>
         </div>
+        <div class="price-info">
+            <div class="current-price" id="current-price">$1.00</div>
+            <div class="price-change" id="price-change">+0.00%</div>
+        </div>
         <div class="buy-panel">
-            <div class="buy-row"><span>Цена:</span><span id="current-price">$1.00</span></div>
-            <input type="number" class="buy-input" id="buy-amount" placeholder="Кол-во" oninput="calculateCost()">
+            <div class="input-wrapper">
+                <div class="input-label">Количество</div>
+                <input type="number" class="buy-input" id="buy-amount" placeholder="0.00" oninput="calculateCost()">
+            </div>
             <div class="buy-row"><span>К оплате:</span><span id="cost-stars">0 ⭐</span></div>
-            <button class="btn-buy" onclick="buyCrypto()">Купить</button>
+            <button class="btn-buy" id="action-btn" onclick="buyCrypto()">Купить</button>
         </div>
     </div>
 
@@ -161,7 +239,12 @@
     </div>
 
     <!-- ИСТОРИЯ -->
-    <div class="screen" id="screen-history"><div style="padding: 20px;"><h2>История</h2><p style="color: var(--text-secondary); margin-top: 20px;">Пока пусто</p></div></div>
+    <div class="screen" id="screen-history">
+        <h2 style="padding: 20px;">История</h2>
+        <div class="history-list" id="history-list">
+            <p style="color: var(--text-secondary); text-align: center;">Пока пусто</p>
+        </div>
+    </div>
 
     <!-- НАСТРОЙКИ -->
     <div class="screen" id="screen-settings">
@@ -181,6 +264,19 @@
     <!-- ЗАГЛУШКИ -->
     <div class="screen" id="screen-obmen"><div class="creating-screen">Creating..</div></div>
     <div class="screen" id="screen-p2p"><div class="creating-screen">Creating..</div></div>
+
+    <!-- ДЕТАЛИ ИСТОРИИ -->
+    <div class="details-overlay" id="details-overlay" onclick="closeDetails()">
+        <div class="details-card" onclick="event.stopPropagation()">
+            <h3 style="margin-bottom: 15px; text-align: center;">Детали перевода</h3>
+            <div class="details-row"><span>Сумма:</span><span id="det-amount">-</span></div>
+            <div class="details-row"><span>Валюта:</span><span id="det-coin">-</span></div>
+            <div class="details-row"><span>Дата:</span><span id="det-date">-</span></div>
+            <div class="details-row"><span>Отправитель:</span><span id="det-from">-</span></div>
+            <div class="details-row"><span>Получатель:</span><span id="det-to">-</span></div>
+            <button class="btn-buy" style="margin-top: 20px;" onclick="closeDetails()">Закрыть</button>
+        </div>
+    </div>
 
     <!-- УСПЕШНЫЙ ПЕРЕВОД -->
     <div class="success-overlay" id="success-overlay">
@@ -217,6 +313,7 @@
         let transferCoin = 'USDT';
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
         let chartInterval;
+        let tradeMode = 'buy'; // 'buy' или 'sell'
 
         function switchTab(tab) {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
@@ -231,6 +328,7 @@
                 startChart();
             } else if (tab === 'history') {
                 document.getElementById('screen-history').classList.add('active');
+                loadHistory();
             } else if (tab === 'transfer') {
                 document.getElementById('screen-transfer').classList.add('active');
             } else if (tab === 'obmen') {
@@ -245,9 +343,32 @@
         // БИРЖА
         function selectCoin(coin, element) {
             currentCoin = coin;
-            document.querySelectorAll('.exchange-coin').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.coin-pill').forEach(el => el.classList.remove('active'));
             if (element) element.classList.add('active');
+            else {
+                // Если вызвано из кошелька
+                document.querySelectorAll('.coin-pill').forEach(el => {
+                    if (el.innerText.includes(coin)) el.classList.add('active');
+                });
+            }
             startChart();
+            calculateCost();
+        }
+
+        function toggleTradeTab(mode, element) {
+            tradeMode = mode;
+            document.querySelectorAll('.exchange-tab').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            
+            const btn = document.getElementById('action-btn');
+            if (mode === 'buy') {
+                btn.innerText = 'Купить';
+                btn.className = 'btn-buy';
+                btn.style.background = '#4caf50';
+            } else {
+                btn.innerText = 'Продать';
+                btn.className = 'btn-buy btn-sell';
+            }
             calculateCost();
         }
 
@@ -274,30 +395,23 @@
             if (!svg || !line || !area) return;
 
             gridGroup.innerHTML = '';
-            
             for(let i=1; i<=3; i++) {
                 const y = i * 12.5;
                 const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                gridLine.setAttribute("x1", "0");
-                gridLine.setAttribute("y1", y);
-                gridLine.setAttribute("x2", "100");
-                gridLine.setAttribute("y2", y);
+                gridLine.setAttribute("x1", "0"); gridLine.setAttribute("y1", y);
+                gridLine.setAttribute("x2", "100"); gridLine.setAttribute("y2", y);
                 gridLine.setAttribute("class", "chart-grid");
                 gridGroup.appendChild(gridLine);
             }
 
             let points = '';
             const numPoints = 40;
-            
-            // Синхронизируем график по времени (чтобы у всех был одинаковый)
             const timeSeed = Math.floor(Date.now() / 10000); 
             
             for (let i = 0; i < numPoints; i++) {
                 const x = (i / (numPoints - 1)) * 100;
-                // Используем синус для красивой волны
                 const wave = Math.sin(timeSeed + i * 0.5) * 10 + Math.cos(timeSeed * 0.5 + i * 0.2) * 5;
                 const y = 25 - wave;
-                
                 points += `${x},${y} `;
             }
 
@@ -319,20 +433,39 @@
             const { amount, starsCost } = calculateCost();
             if (amount <= 0) return tg.showAlert('Введите количество');
             
-            const btn = document.querySelector('.btn-buy');
+            const btn = document.getElementById('action-btn');
+            const oldText = btn.innerText;
             btn.innerText = "Отправка...";
             btn.disabled = true;
 
+            if (tradeMode === 'sell') {
+                try {
+                    const { data } = await db.from('users').select('*').eq('user_id', userId).single();
+                    const balanceField = `${currentCoin.toLowerCase()}_balance`;
+                    const balance = parseFloat(data[balanceField]) || 0;
+                    
+                    if (balance < amount) {
+                        btn.innerText = oldText; btn.disabled = false;
+                        return tg.showAlert('Недостаточно средств для продажи');
+                    }
+                    
+                    await db.from('users').update({ [balanceField]: balance - amount }).eq('user_id', userId);
+                    const starsToGive = Math.floor(starsCost);
+                    await db.from('users').update({ balance: (parseInt(data.balance) || 0) + starsToGive }).eq('user_id', userId);
+                    
+                    tg.showAlert(`✅ Успешно продано ${amount} ${currentCoin} за ${starsToGive} ⭐`);
+                    loadWallet();
+                } catch(e) { tg.showAlert("Ошибка: " + e.message); }
+                finally { btn.innerText = oldText; btn.disabled = false; }
+                return;
+            }
+
+            // Покупка
             try {
                 const response = await fetch('https://misu-bot-5uwv.onrender.com/buy', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        coin: currentCoin,
-                        amount: amount,
-                        stars: starsCost
-                    })
+                    body: JSON.stringify({ user_id: userId, coin: currentCoin, amount: amount, stars: starsCost })
                 });
                 
                 if (response.ok) {
@@ -343,12 +476,12 @@
             } catch (e) {
                 tg.showAlert("Ошибка сети: " + e.message);
             } finally {
-                btn.innerText = "Купить";
+                btn.innerText = oldText;
                 btn.disabled = false;
             }
         }
 
-        // ПЕРЕВОДЫ (ПО АДРЕСУ)
+        // ПЕРЕВОДЫ
         function selectTransferCoin(coin, element) {
             transferCoin = coin;
             document.querySelectorAll('.transfer-coin-btn').forEach(el => el.classList.remove('active'));
@@ -359,13 +492,8 @@
             const toAddress = document.getElementById('transfer-address').value.trim();
             const amount = parseFloat(document.getElementById('transfer-amount').value);
 
-            if (!toAddress || !amount || amount <= 0) {
-                return tg.showAlert('Заполните все поля корректно');
-            }
-            
-            if (!toAddress.startsWith('T') || toAddress.length < 10) {
-                return tg.showAlert('Неверный формат адреса кошелька');
-            }
+            if (!toAddress || !amount || amount <= 0) return tg.showAlert('Заполните все поля');
+            if (!toAddress.startsWith('T') || toAddress.length < 10) return tg.showAlert('Неверный адрес');
 
             const btn = document.querySelector('#screen-transfer .btn-buy');
             btn.innerText = "Отправка...";
@@ -373,24 +501,14 @@
 
             try {
                 const { data: recipient } = await db.from('users').select('user_id').eq('wallet_address', toAddress).single();
-                if (!recipient) {
-                    btn.innerText = "Перевести"; btn.disabled = false;
-                    return tg.showAlert('Кошелек с таким адресом не найден');
-                }
-
-                if (recipient.user_id === userId) {
-                    btn.innerText = "Перевести"; btn.disabled = false;
-                    return tg.showAlert('Нельзя перевести самому себе');
-                }
+                if (!recipient) { btn.innerText = "Перевести"; btn.disabled = false; return tg.showAlert('Кошелек не найден'); }
+                if (recipient.user_id === userId) { btn.innerText = "Перевести"; btn.disabled = false; return tg.showAlert('Нельзя перевести себе'); }
 
                 const { data: sender } = await db.from('users').select('*').eq('user_id', userId).single();
                 const balanceField = `${transferCoin.toLowerCase()}_balance`;
                 const senderBalance = parseFloat(sender[balanceField]) || 0;
 
-                if (senderBalance < amount) {
-                    btn.innerText = "Перевести"; btn.disabled = false;
-                    return tg.showAlert('Недостаточно средств');
-                }
+                if (senderBalance < amount) { btn.innerText = "Перевести"; btn.disabled = false; return tg.showAlert('Недостаточно средств'); }
 
                 await db.from('users').update({ [balanceField]: senderBalance - amount }).eq('user_id', userId);
                 
@@ -398,24 +516,15 @@
                 const recBalance = parseFloat(recData[balanceField]) || 0;
                 await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', recipient.user_id);
 
-                await db.from('transfers').insert([{
-                    from_user_id: userId,
-                    to_user_id: recipient.user_id,
-                    coin: transferCoin,
-                    amount: amount
-                }]);
+                await db.from('transfers').insert([{ from_user_id: userId, to_user_id: recipient.user_id, coin: transferCoin, amount: amount }]);
 
                 document.getElementById('success-amount').innerText = `-${amount} ${transferCoin}`;
                 document.getElementById('success-overlay').classList.add('active');
-                
                 document.getElementById('transfer-address').value = '';
                 document.getElementById('transfer-amount').value = '';
                 
                 loadWallet();
-
-                setTimeout(() => {
-                    document.getElementById('success-overlay').classList.remove('active');
-                }, 3000);
+                setTimeout(() => { document.getElementById('success-overlay').classList.remove('active'); }, 3000);
 
             } catch (e) {
                 tg.showAlert("Ошибка: " + e.message);
@@ -425,15 +534,68 @@
             }
         }
 
+        // ИСТОРИЯ
+        async function loadHistory() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
+            
+            try {
+                const { data, error } = await db.from('transfers').select('*').or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`).order('created_at', { ascending: false });
+                
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">История пуста</p>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                data.forEach(tx => {
+                    const isSender = tx.from_user_id === userId;
+                    const sign = isSender ? '-' : '+';
+                    const typeText = isSender ? 'Исходящий' : 'Входящий';
+                    const date = new Date(tx.created_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                    
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `
+                        <div class="history-info">
+                            <div class="history-type">${typeText} ${tx.coin}</div>
+                            <div class="history-date">${date}</div>
+                        </div>
+                        <div class="history-amount ${isSender ? 'negative' : 'positive'}">${sign}${tx.amount} ${tx.coin}</div>
+                    `;
+                    
+                    div.onclick = () => openDetails(tx, isSender, date);
+                    list.appendChild(div);
+                });
+            } catch (e) {
+                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ошибка загрузки</p>';
+            }
+        }
+
+        async function openDetails(tx, isSender, date) {
+            document.getElementById('det-amount').innerText = `${isSender ? '-' : '+'}${tx.amount} ${tx.coin}`;
+            document.getElementById('det-coin').innerText = tx.coin;
+            document.getElementById('det-date').innerText = date;
+            
+            // Получаем адреса для деталей
+            const { data: fromData } = await db.from('users').select('wallet_address').eq('user_id', tx.from_user_id).single();
+            const { data: toData } = await db.from('users').select('wallet_address').eq('user_id', tx.to_user_id).single();
+            
+            document.getElementById('det-from').innerText = fromData?.wallet_address || `ID: ${tx.from_user_id}`;
+            document.getElementById('det-to').innerText = toData?.wallet_address || `ID: ${tx.to_user_id}`;
+            
+            document.getElementById('details-overlay').classList.add('active');
+        }
+
+        function closeDetails() {
+            document.getElementById('details-overlay').classList.remove('active');
+        }
+
         // НАСТРОЙКИ
         function copyAddress() {
             const address = document.getElementById('wallet-address').innerText;
             if (address && address !== 'Загрузка...') {
-                navigator.clipboard.writeText(address).then(() => {
-                    tg.showAlert('Адрес скопирован!');
-                }).catch(() => {
-                    tg.showAlert('Не удалось скопировать');
-                });
+                navigator.clipboard.writeText(address).then(() => tg.showAlert('Адрес скопирован!')).catch(() => tg.showAlert('Ошибка копирования'));
             }
         }
 

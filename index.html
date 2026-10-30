@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ТЕМЫ */
         :root {
             --bg: #ffffff; --text: #000000; --text-secondary: #888888;
             --accent: #1976d2; --accent-light: #e3f2fd; --card: #f9f9f9; --border: #f0f0f0;
@@ -45,8 +44,11 @@
         .exchange-header { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding: 0 20px; }
         .exchange-coin { padding: 10px 20px; background: var(--card); border-radius: 20px; font-weight: 700; cursor: pointer; white-space: nowrap; color: var(--text); }
         .exchange-coin.active { background: var(--accent); color: #fff; }
-        .chart-container { height: 200px; background: var(--card); border-radius: 15px; margin: 0 20px 20px 20px; position: relative; overflow: hidden; border: 1px solid var(--border); }
+        .chart-container { height: 220px; background: var(--card); border-radius: 15px; margin: 0 20px 20px 20px; position: relative; overflow: hidden; border: 1px solid var(--border); }
         .chart-svg { width: 100%; height: 100%; }
+        .chart-grid { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 2 2; }
+        .chart-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+        .chart-area { fill: url(#gradient); opacity: 0.3; }
         .buy-panel { background: var(--bg); padding: 20px; border-radius: 15px; margin: 0 20px; border: 1px solid var(--border); }
         .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1rem; color: var(--text-secondary); font-weight: 500; }
         .buy-row span:last-child { font-weight: 700; color: var(--text); }
@@ -121,7 +123,19 @@
             <div class="exchange-coin" onclick="selectCoin('SOL', this)">SOL</div>
             <div class="exchange-coin" onclick="selectCoin('TRX', this)">TRX</div>
         </div>
-        <div class="chart-container"><svg class="chart-svg" id="chart-svg" viewBox="0 0 100 50" preserveAspectRatio="none"></svg></div>
+        <div class="chart-container">
+            <svg class="chart-svg" id="chart-svg" viewBox="0 0 100 50" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:var(--accent);stop-opacity:0.5" />
+                        <stop offset="100%" style="stop-color:var(--accent);stop-opacity:0" />
+                    </linearGradient>
+                </defs>
+                <g id="chart-grid-group"></g>
+                <path id="chart-area" class="chart-area" d="" />
+                <polyline id="chart-line" class="chart-line" points="" />
+            </svg>
+        </div>
         <div class="buy-panel">
             <div class="buy-row"><span>Цена:</span><span id="current-price">$1.00</span></div>
             <input type="number" class="buy-input" id="buy-amount" placeholder="Кол-во" oninput="calculateCost()">
@@ -140,7 +154,7 @@
                 <div class="transfer-coin-btn" onclick="selectTransferCoin('SOL', this)">SOL</div>
                 <div class="transfer-coin-btn" onclick="selectTransferCoin('TRX', this)">TRX</div>
             </div>
-            <div class="transfer-input-group"><label>ID получателя:</label><input type="number" class="transfer-input" id="transfer-id" placeholder="Введите ID"></div>
+            <div class="transfer-input-group"><label>Адрес получателя:</label><input type="text" class="transfer-input" id="transfer-address" placeholder="Введите адрес (T...)"></div>
             <div class="transfer-input-group"><label>Сумма:</label><input type="number" class="transfer-input" id="transfer-amount" placeholder="0.00"></div>
             <button class="btn-buy" onclick="makeTransfer()">Перевести</button>
         </div>
@@ -164,9 +178,11 @@
         </div>
     </div>
 
+    <!-- ЗАГЛУШКИ -->
     <div class="screen" id="screen-obmen"><div class="creating-screen">Creating..</div></div>
     <div class="screen" id="screen-p2p"><div class="creating-screen">Creating..</div></div>
 
+    <!-- УСПЕШНЫЙ ПЕРЕВОД -->
     <div class="success-overlay" id="success-overlay">
         <div class="success-card">
             <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
@@ -182,7 +198,8 @@
         <div class="nav-item" onclick="switchTab('obmen')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><span>Обмен</span></div>
         <div class="nav-item" onclick="switchTab('p2p')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><span>P2P</span></div>
         <div class="nav-item" onclick="switchTab('settings')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div><span>Ещё</span></div>
-    </div> <script>
+    </div>
+    <script>
         const SUPABASE_URL = "https://ptcofqwsvyytcnoerazu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_CL2wAd6YW9tj5fIq4r9b4A_iVeZtnBx";
         const { createClient } = supabase;
@@ -199,7 +216,6 @@
         let currentCoin = 'USDT';
         let transferCoin = 'USDT';
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
-        let chartData = [];
         let chartInterval;
 
         function switchTab(tab) {
@@ -237,37 +253,57 @@
 
         function startChart() {
             clearInterval(chartInterval);
-            chartData = Array(20).fill(currentPrices[currentCoin]);
+            drawChart();
+            
             chartInterval = setInterval(() => {
                 let change = (Math.random() - 0.5) * (currentPrices[currentCoin] * 0.02);
                 currentPrices[currentCoin] += change;
                 if (currentPrices[currentCoin] < 0.01) currentPrices[currentCoin] = 0.01;
                 
-                chartData.push(currentPrices[currentCoin]);
-                if (chartData.length > 20) chartData.shift();
-                
-                drawChart();
                 document.getElementById('current-price').innerText = `$${currentPrices[currentCoin].toFixed(2)}`;
-            }, 2000);
+                drawChart();
+            }, 3000);
         }
 
         function drawChart() {
             const svg = document.getElementById('chart-svg');
-            if (!svg) return;
-            const min = Math.min(...chartData);
-            const max = Math.max(...chartData);
-            const range = max - min || 1;
+            const line = document.getElementById('chart-line');
+            const area = document.getElementById('chart-area');
+            const gridGroup = document.getElementById('chart-grid-group');
+            
+            if (!svg || !line || !area) return;
+
+            gridGroup.innerHTML = '';
+            
+            for(let i=1; i<=3; i++) {
+                const y = i * 12.5;
+                const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                gridLine.setAttribute("x1", "0");
+                gridLine.setAttribute("y1", y);
+                gridLine.setAttribute("x2", "100");
+                gridLine.setAttribute("y2", y);
+                gridLine.setAttribute("class", "chart-grid");
+                gridGroup.appendChild(gridLine);
+            }
 
             let points = '';
-            chartData.forEach((val, i) => {
-                const x = (i / (chartData.length - 1)) * 100;
-                const y = 50 - ((val - min) / range) * 40;
+            const numPoints = 40;
+            
+            // Синхронизируем график по времени (чтобы у всех был одинаковый)
+            const timeSeed = Math.floor(Date.now() / 10000); 
+            
+            for (let i = 0; i < numPoints; i++) {
+                const x = (i / (numPoints - 1)) * 100;
+                // Используем синус для красивой волны
+                const wave = Math.sin(timeSeed + i * 0.5) * 10 + Math.cos(timeSeed * 0.5 + i * 0.2) * 5;
+                const y = 25 - wave;
+                
                 points += `${x},${y} `;
-            });
+            }
 
-            const isUp = chartData[chartData.length - 1] >= chartData[0];
-            const color = isUp ? '#4caf50' : '#f44336';
-            svg.innerHTML = `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>`;
+            line.setAttribute('points', points.trim());
+            const areaPath = `M0,50 L${points.trim()} L100,50 Z`;
+            area.setAttribute('d', areaPath);
         }
 
         function calculateCost() {
@@ -312,7 +348,7 @@
             }
         }
 
-        // ПЕРЕВОДЫ
+        // ПЕРЕВОДЫ (ПО АДРЕСУ)
         function selectTransferCoin(coin, element) {
             transferCoin = coin;
             document.querySelectorAll('.transfer-coin-btn').forEach(el => el.classList.remove('active'));
@@ -320,14 +356,15 @@
         }
 
         async function makeTransfer() {
-            const toId = parseInt(document.getElementById('transfer-id').value);
+            const toAddress = document.getElementById('transfer-address').value.trim();
             const amount = parseFloat(document.getElementById('transfer-amount').value);
 
-            if (!toId || !amount || amount <= 0) {
+            if (!toAddress || !amount || amount <= 0) {
                 return tg.showAlert('Заполните все поля корректно');
             }
-            if (toId === userId) {
-                return tg.showAlert('Нельзя перевести самому себе');
+            
+            if (!toAddress.startsWith('T') || toAddress.length < 10) {
+                return tg.showAlert('Неверный формат адреса кошелька');
             }
 
             const btn = document.querySelector('#screen-transfer .btn-buy');
@@ -335,14 +372,17 @@
             btn.disabled = true;
 
             try {
-                // Проверка получателя
-                const { data: recipient } = await db.from('users').select('user_id').eq('user_id', toId).single();
+                const { data: recipient } = await db.from('users').select('user_id').eq('wallet_address', toAddress).single();
                 if (!recipient) {
                     btn.innerText = "Перевести"; btn.disabled = false;
-                    return tg.showAlert('Получатель с таким ID не найден');
+                    return tg.showAlert('Кошелек с таким адресом не найден');
                 }
 
-                // Проверка баланса отправителя
+                if (recipient.user_id === userId) {
+                    btn.innerText = "Перевести"; btn.disabled = false;
+                    return tg.showAlert('Нельзя перевести самому себе');
+                }
+
                 const { data: sender } = await db.from('users').select('*').eq('user_id', userId).single();
                 const balanceField = `${transferCoin.toLowerCase()}_balance`;
                 const senderBalance = parseFloat(sender[balanceField]) || 0;
@@ -352,33 +392,27 @@
                     return tg.showAlert('Недостаточно средств');
                 }
 
-                // Списание у отправителя и начисление получателю
                 await db.from('users').update({ [balanceField]: senderBalance - amount }).eq('user_id', userId);
                 
-                const { data: recData } = await db.from('users').select(balanceField).eq('user_id', toId).single();
+                const { data: recData } = await db.from('users').select(balanceField).eq('user_id', recipient.user_id).single();
                 const recBalance = parseFloat(recData[balanceField]) || 0;
-                await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', toId);
+                await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', recipient.user_id);
 
-                // Запись в историю
                 await db.from('transfers').insert([{
                     from_user_id: userId,
-                    to_user_id: toId,
+                    to_user_id: recipient.user_id,
                     coin: transferCoin,
                     amount: amount
                 }]);
 
-                // Показываем анимацию
                 document.getElementById('success-amount').innerText = `-${amount} ${transferCoin}`;
                 document.getElementById('success-overlay').classList.add('active');
                 
-                // Очищаем поля
-                document.getElementById('transfer-id').value = '';
+                document.getElementById('transfer-address').value = '';
                 document.getElementById('transfer-amount').value = '';
                 
-                // Обновляем баланс
                 loadWallet();
 
-                // Закрываем анимацию через 3 секунды
                 setTimeout(() => {
                     document.getElementById('success-overlay').classList.remove('active');
                 }, 3000);
@@ -432,9 +466,8 @@
                     
                     const total = ((data.usdt_balance||0) * 1.00) + ((data.gram_balance||0) * 1.15) + ((data.sol_balance||0) * 93.99) + ((data.trx_balance||0) * 0.12);
                     document.getElementById('total-balance').innerText = total.toFixed(2);
-                    // Адрес кошелька
+
                     if (!data.wallet_address) {
-                        // Генерируем адрес, если его нет
                         const newAddress = 'T' + Math.random().toString(36).substring(2, 15).toUpperCase() + Math.random().toString(36).substring(2, 15).toUpperCase();
                         await db.from('users').update({ wallet_address: newAddress }).eq('user_id', userId);
                         document.getElementById('wallet-address').innerText = newAddress;
@@ -445,7 +478,6 @@
             } catch (e) { console.error(e); }
         }
 
-        // Загрузка темы при старте
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'halloween') {
             document.body.classList.add('halloween');
@@ -456,4 +488,4 @@
         loadWallet();
     </script>
 </body>
-</html> все ровно без пробелов лишних даm
+</html>

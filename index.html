@@ -34,103 +34,80 @@
         .action-btn .icon svg { width: 24px; height: 24px; fill: var(--accent); }
         .action-btn span { font-size: 0.85rem; color: var(--accent); font-weight: 500; }
         .assets-title { padding: 0 20px; font-size: 1rem; font-weight: 600; color: var(--accent); display: flex; justify-content: space-between; margin-bottom: 15px; }
+        
         .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .asset-item:active { background: var(--card); }
         .asset-icon { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; }
         .asset-icon svg { width: 24px; height: 24px; }
-        .asset-info { flex: 1; display: flex; flex-direction: column; }
-        .asset-name { font-size: 1rem; font-weight: 600; }
-        .asset-price { font-size: 0.8rem; color: #4caf50; }
-        .asset-balance { text-align: right; display: flex; flex-direction: column; }
-        .asset-amount { font-size: 1rem; font-weight: 600; }
-        .asset-usd { font-size: 0.8rem; color: var(--text-secondary); }
+        .asset-info { flex: 1; } .asset-name { font-size: 1rem; font-weight: 600; } .asset-price { font-size: 0.8rem; color: #4caf50; }
+        .asset-balance { text-align: right; } .asset-amount { font-size: 1rem; font-weight: 600; } .asset-usd { font-size: 0.8rem; color: var(--text-secondary); }
 
         /* БИРЖА */
         .exchange-tabs { display: flex; background: var(--card); margin: 0 20px 15px 20px; border-radius: 12px; padding: 5px; }
         .exchange-tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 8px; color: var(--text-secondary); }
         .exchange-tab.active { background: var(--bg); color: var(--text); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .exchange-coin-selector { display: flex; gap: 10px; margin: 0 20px 15px 20px; overflow-x: auto; padding-bottom: 5px; }
+        .exchange-coin-selector { display: flex; gap: 10px; margin: 0 20px 15px 20px; overflow-x: auto; }
         .coin-pill { display: flex; align-items: center; gap: 5px; padding: 8px 15px; background: var(--card); border-radius: 20px; font-weight: 600; font-size: 0.9rem; cursor: pointer; white-space: nowrap; border: 1px solid transparent; }
         .coin-pill.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
         .coin-pill svg { width: 16px; height: 16px; }
-        .chart-container { height: 220px; background: var(--card); border-radius: 15px; margin: 0 20px 15px 20px; position: relative; overflow: hidden; border: 1px solid var(--border); }
-        .chart-svg { width: 100%; height: 100%; }
-        .chart-grid { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 2 2; }
-        .chart-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
-        .chart-area { fill: url(#gradient); opacity: 0.3; }
+        .chart-container { height: 220px; background: var(--card); border-radius: 15px; margin: 0 20px 15px 20px; position: relative; border: 1px solid var(--border); }
+        .chart-svg { width: 100%; height: 100%; } .chart-line { fill: none; stroke: var(--accent); stroke-width: 2; } .chart-area { fill: var(--accent); opacity: 0.1; }
         .price-info { display: flex; justify-content: space-between; align-items: flex-end; margin: 0 20px 15px 20px; }
         .current-price { font-size: 2rem; font-weight: 700; }
-        .price-change { font-size: 0.9rem; font-weight: 600; color: #4caf50; margin-bottom: 5px; }
         .buy-panel { background: var(--card); padding: 20px; border-radius: 15px; margin: 0 20px; border: 1px solid var(--border); }
-        .input-wrapper { position: relative; margin-bottom: 15px; }
-        .buy-input { width: 100%; padding: 18px; border: 1px solid var(--border); border-radius: 12px; font-size: 1.2rem; font-weight: 700; outline: none; background: var(--bg); color: var(--text); text-align: center; }
-        .buy-input:focus { border-color: var(--accent); }
-        .input-label { position: absolute; top: -8px; left: 15px; background: var(--card); padding: 0 5px; font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; }
+        .buy-input { width: 100%; padding: 18px; border: 1px solid var(--border); border-radius: 12px; font-size: 1.2rem; font-weight: 700; outline: none; background: var(--bg); color: var(--text); text-align: center; margin-bottom: 15px; }
         .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; color: var(--text-secondary); }
-        .buy-row span:last-child { font-weight: 700; color: var(--text); }
         .btn-buy { width: 100%; padding: 18px; background: #4caf50; color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
-        .btn-buy:active { transform: scale(0.98); }
-        .btn-sell { background: #f44336; }
-
+        
         /* ПЕРЕВОДЫ */
         .transfer-panel { padding: 20px; }
         .transfer-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .transfer-input-group label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
         .transfer-input { padding: 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-size: 1rem; outline: none; }
-        .transfer-input:focus { border-color: var(--accent); }
         .transfer-coin-select { display: flex; gap: 10px; margin-bottom: 20px; }
         .transfer-coin-btn { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
-        .transfer-coin-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .transfer-coin-btn.active { background: var(--accent); color: #fff; }
 
         /* ИСТОРИЯ */
         .history-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
-        .history-item { background: var(--card); border-radius: 12px; padding: 15px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .history-item { background: var(--card); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .history-info { display: flex; flex-direction: column; gap: 5px; }
-        .history-type { font-size: 0.9rem; font-weight: 600; }
-        .history-date { font-size: 0.75rem; color: var(--text-secondary); }
-        .history-amount { font-weight: 700; font-size: 1rem; }
-        .history-amount.positive { color: #4caf50; }
-        .history-amount.negative { color: #f44336; }
+        .history-type { font-size: 0.9rem; font-weight: 600; } .history-date { font-size: 0.75rem; color: var(--text-secondary); }
+        .history-amount { font-weight: 700; } .positive { color: #4caf50; } .negative { color: #f44336; }
         
-        /* ДЕТАЛИ */
-        .details-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1001; }
-        .details-overlay.active { display: flex; }
-        .details-card { background: var(--bg); padding: 20px; border-radius: 20px; width: 90%; max-width: 400px; }
-        .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        .details-row:last-child { border-bottom: none; }
-        .details-row span:first-child { color: var(--text-secondary); }
-        .details-row span:last-child { font-weight: 600; word-break: break-all; }
-
-        /* НАСТРОЙКИ */
+        /* НАСТРОЙКИ / КОЛЛЕКЦИЯ / АУКЦИОН */
         .settings-panel { padding: 20px; }
         .settings-item { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
-        .settings-item span { font-size: 1rem; }
-        .wallet-address { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .address-box { background: var(--card); padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.9rem; word-break: break-all; border: 1px solid var(--border); }
-        .btn-copy { background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .theme-toggle { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
+        .wallet-address { background: var(--card); padding: 20px; border-radius: 15px; font-family: monospace; font-size: 1.2rem; word-break: break-all; border: 1px solid var(--border); text-align: center; color: var(--accent); font-weight: 700; margin-bottom: 15px; }
+        .btn-copy { background: var(--accent); color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; }
+        .theme-toggle { display: flex; gap: 10px; }
         .theme-btn { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
         .theme-btn.active { border-color: var(--accent); color: var(--accent); }
 
-        .creating-screen { display: flex; justify-content: center; align-items: center; height: 60vh; font-size: 1.5rem; font-weight: 800; color: var(--text-secondary); }
+        /* АУКЦИОН */
+        .auction-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .auction-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+        .auction-info { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
+        .btn-bid { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .btn-create-lot { width: 100%; padding: 15px; background: #f44336; color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 20px; display: none; }
+
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 0.7rem; cursor: pointer; width: 20%; }
         .nav-item.active { color: var(--accent); }
-        .nav-item .icon { width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; }
-        .nav-item .icon svg { width: 100%; height: 100%; fill: currentColor; }
+        .nav-item .icon { width: 24px; height: 24px; } .nav-item .icon svg { width: 100%; height: 100%; fill: currentColor; }
 
+        /* МОДАЛКА ДЕТАЛЕЙ */
+        .details-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1001; }
+        .details-overlay.active { display: flex; } .details-card { background: var(--bg); padding: 20px; border-radius: 20px; width: 90%; max-width: 400px; }
+        .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .details-row:last-child { border-bottom: none; } .details-row span:first-child { color: var(--text-secondary); } .details-row span:last-child { font-weight: 600; word-break: break-all; }
+        
         /* УСПЕХ */
         .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
         .success-overlay.active { display: flex; }
         .success-card { background: var(--bg); padding: 40px 30px; border-radius: 24px; text-align: center; transform: scale(0.5); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         .success-overlay.active .success-card { transform: scale(1); opacity: 1; }
-        .checkmark { width: 80px; height: 80px; border-radius: 50%; display: block; stroke-width: 4; stroke: #fff; stroke-miterlimit: 10; margin: 0 auto 20px auto; box-shadow: inset 0px 0px 0px #4caf50; animation: fillGreen .4s ease-in-out .4s forwards, scaleCheck .3s ease-in-out .9s both; }
-        .checkmark-circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 4; stroke-miterlimit: 10; stroke: #4caf50; fill: none; animation: strokeCircle .6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
-        .checkmark-check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; stroke: #4caf50; fill: none; animation: strokeCheck .3s cubic-bezier(0.65, 0, 0.45, 1) .8s forwards; }
-        @keyframes strokeCircle { 100% { stroke-dashoffset: 0; } }
-        @keyframes strokeCheck { 100% { stroke-dashoffset: 0; } }
-        @keyframes fillGreen { 100% { box-shadow: inset 0px 0px 0px 40px #e8f5e9; } }
-        @keyframes scaleCheck { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+        .checkmark { width: 80px; height: 80px; margin: 0 auto 20px; }
+        .checkmark-circle { stroke: #4caf50; stroke-width: 4; fill: none; }
+        .checkmark-check { stroke: #4caf50; stroke-width: 4; fill: none; }
         .success-text { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 5px; }
         .success-sub { font-size: 1rem; color: #4caf50; font-weight: 600; }
     </style>
@@ -248,7 +225,8 @@
             <h2 style="margin-bottom: 20px;">Настройки</h2>
             <div class="settings-item">
                 <span style="font-weight: 600;">Ваш адрес кошелька:</span>
-                <div class="wallet-address"><div class="address-box" id="wallet-address">Загрузка...</div><button class="btn-copy" onclick="copyAddress()">Копировать</button></div>
+                <div class="wallet-address" id="wallet-address">Загрузка...</div>
+                <button class="btn-copy" onclick="copyAddress()">Копировать</button>
             </div>
             <div class="settings-item">
                 <span style="font-weight: 600;">Тема оформления:</span>
@@ -260,27 +238,29 @@
     <!-- АУКЦИОН -->
     <div class="screen" id="screen-auction">
         <h2 style="padding: 20px;">Аукцион</h2>
-        <div class="history-list" id="auction-list">
+        <div id="auction-list" style="padding: 0 20px;">
             <p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>
         </div>
+        <!-- Кнопка создания лота (только для админа) -->
+        <button class="btn-create-lot" id="btn-create-lot" onclick="createLot()">Выставить лот</button>
     </div>
 
     <!-- КОЛЛЕКЦИЯ -->
     <div class="screen" id="screen-collection">
-        <h2 style="padding: 20px;">Коллекция</h2>
-        <div class="settings-panel" style="padding-top: 0;">
-            <div class="settings-item" style="background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 20px;">
-                <span style="font-weight: 600;">Мой кастомный адрес:</span>
-                <div class="address-box" id="my-custom-address" style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">T...</div>
+        <div class="settings-panel">
+            <h2 style="margin-bottom: 20px;">Коллекция</h2>
+            <div class="settings-item" style="background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 20px;">
+                <span style="font-weight: 600; text-align: center; display: block; margin-bottom: 10px;">Мой кастомный адрес:</span>
+                <div class="wallet-address" id="my-custom-address">T...</div>
             </div>
-            <h3 style="margin-bottom: 15px;">Твои лоты</h3>
+            <h3 style="margin-bottom: 15px;">Мои лоты</h3>
             <div id="collection-list">
-                <p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>
+                <p style="color: var(--text-secondary); text-align: center;">Пока пусто</p>
             </div>
         </div>
     </div>
 
-    <!-- ДЕТАЛИ ИСТОРИИ -->
+    <!-- МОДАЛКА ДЕТАЛЕЙ -->
     <div class="details-overlay" id="details-overlay" onclick="closeDetails()">
         <div class="details-card" onclick="event.stopPropagation()">
             <h3 style="margin-bottom: 15px; text-align: center;">Детали перевода</h3>
@@ -293,11 +273,11 @@
         </div>
     </div>
 
-    <!-- УСПЕШНЫЙ ПЕРЕВОД -->
+    <!-- УСПЕХ -->
     <div class="success-overlay" id="success-overlay">
         <div class="success-card">
             <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
-            <div class="success-text">Перевод доставлен!</div>
+            <div class="success-text">Успешно!</div>
             <div class="success-sub" id="success-amount">-5 USDT</div>
         </div>
     </div>
@@ -323,6 +303,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const paramId = urlParams.get('user_id');
         const userId = paramId ? parseInt(paramId) : 0;
+        
+        // Твой ID (Главный админ)
         const ADMIN_ID = 1780243396;
 
         let currentCoin = 'USDT';
@@ -351,6 +333,10 @@
                 document.getElementById('screen-auction').classList.add('active');
                 document.getElementById('nav-auction').classList.add('active');
                 loadAuction();
+                // Показываем кнопку создания лота только админу
+                if (userId === ADMIN_ID) {
+                    document.getElementById('btn-create-lot').style.display = 'block';
+                }
             } else if (tab === 'collection') {
                 document.getElementById('screen-collection').classList.add('active');
                 document.getElementById('nav-collection').classList.add('active');
@@ -361,7 +347,7 @@
             }
         }
 
-        // БИРЖА
+        // === ФУНКЦИИ ДЛЯ БИРЖИ ===
         function selectCoin(coin, element) {
             currentCoin = coin;
             document.querySelectorAll('.coin-pill').forEach(el => el.classList.remove('active'));
@@ -478,7 +464,7 @@
             finally { btn.innerText = oldText; btn.disabled = false; }
         }
 
-        // ПЕРЕВОДЫ
+        // === ФУНКЦИИ ДЛЯ ПЕРЕВОДОВ ===
         function selectTransferCoin(coin, element) {
             transferCoin = coin;
             document.querySelectorAll('.transfer-coin-btn').forEach(el => el.classList.remove('active'));
@@ -521,7 +507,7 @@
             finally { btn.innerText = "Перевести"; btn.disabled = false; }
         }
 
-        // ИСТОРИЯ
+        // === ИСТОРИЯ ===
         async function loadHistory() {
             const list = document.getElementById('history-list');
             list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
@@ -561,7 +547,7 @@
             document.getElementById('details-overlay').classList.remove('active');
         }
 
-        // НАСТРОЙКИ И АДРЕС
+        // === НАСТРОЙКИ / КОЛЛЕКЦИЯ ===
         function copyAddress() {
             const address = document.getElementById('wallet-address').innerText;
             if (address && address !== 'Загрузка...') {
@@ -587,35 +573,6 @@
             document.getElementById('wallet-address').innerText = data?.wallet_address || 'Загрузка...';
         }
 
-        // АУКЦИОН И КОЛЛЕКЦИЯ
-        async function loadAuction() {
-            const list = document.getElementById('auction-list');
-            list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
-            
-            try {
-                const { data } = await db.from('collections').select('*').eq('is_listed', true);
-                if (!data || data.length === 0) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Нет активных лотов</p>'; return; }
-
-                list.innerHTML = '';
-                data.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'history-item';
-                    div.innerHTML = `
-                        <div class="history-info"><div class="history-type">${item.address}</div><div class="history-date">Мин. ставка: ${item.min_price} ⭐</div></div>
-                        <div style="font-weight: 700; color: var(--accent);">Ставка</div>
-                    `;
-                    div.onclick = async () => {
-                        const bid = prompt(`Введите вашу ставку (мин. ${item.min_price} ⭐):`);
-                        if (bid && parseInt(bid) >= item.min_price) {
-                            await db.from('auctions').insert([{ collection_id: item.id, bidder_id: userId, amount: parseInt(bid) }]);
-                            tg.showAlert('Ставка принята!');
-                        } else if (bid) { tg.showAlert('Ставка слишком низкая'); }
-                    };
-                    list.appendChild(div);
-                });
-            } catch (e) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ошибка загрузки</p>'; }
-        }
-
         async function loadCollection() {
             const myAddr = document.getElementById('my-custom-address');
             const list = document.getElementById('collection-list');
@@ -624,8 +581,9 @@
                 const { data: user } = await db.from('users').select('wallet_address').eq('user_id', userId).single();
                 myAddr.innerText = user?.wallet_address || 'Нет адреса';
 
-                const { data } = await db.from('collections').select('*').eq('owner_id', ADMIN_ID);
-                if (!data || data.length === 0) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Пока нет лотов</p>'; return; }
+                // Показываем лоты, которые ты купил на аукционе или создал сам
+                const { data } = await db.from('collections').select('*').eq('owner_id', userId);
+                if (!data || data.length === 0) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Пока пусто</p>'; return; }
 
                 list.innerHTML = '';
                 data.forEach(item => {
@@ -640,6 +598,83 @@
             } catch (e) { console.error(e); }
         }
 
+        // === ЛОГИКА АУКЦИОНА ===
+        async function loadAuction() {
+            const list = document.getElementById('auction-list');
+            list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
+            
+            try {
+                const { data } = await db.from('collections').select('*').eq('is_listed', true);
+                if (!data || data.length === 0) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Нет активных лотов</p>'; return; }
+
+                list.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'auction-card';
+                    div.innerHTML = `
+                        <div class="auction-title">${item.address}</div>
+                        <div class="auction-info">
+                            <span>Мин. ставка: <b>${item.min_price} ⭐</b></span>
+                            <span>Владелец: ${item.owner_id === ADMIN_ID ? 'Админ' : item.owner_id}</span>
+                        </div>
+                        <button class="btn-bid" onclick="placeBid(${item.id}, ${item.min_price})">Сделать ставку</button>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (e) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ошибка загрузки</p>'; }
+        }
+
+        async function placeBid(collectionId, minPrice) {
+            const bid = prompt(`Введите вашу ставку (мин. ${minPrice} ⭐):`);
+            if (!bid || isNaN(bid)) return;
+            
+            const bidAmount = parseInt(bid);
+            if (bidAmount < minPrice) return tg.showAlert('Ставка слишком низкая');
+
+            try {
+                const { data: user } = await db.from('users').select('balance').eq('user_id', userId).single();
+                if ((user?.balance || 0) < bidAmount) return tg.showAlert('Недостаточно звезд на балансе');
+
+                // Списываем звезды с игрока
+                await db.from('users').update({ balance: (user.balance || 0) - bidAmount }).eq('user_id', userId);
+                
+                // Записываем ставку
+                await db.from('auctions').insert([{ collection_id: collectionId, bidder_id: userId, amount: bidAmount }]);
+                await db.from('collections').update({ min_price: bidAmount }).eq('id', collectionId);
+
+                tg.showAlert('✅ Ставка принята!');
+                loadAuction();
+            } catch (e) { tg.showAlert("Ошибка: " + e.message); }
+        }
+
+        // === СОЗДАНИЕ ЛОТА (ТОЛЬКО ДЛЯ АДМИНА) ===
+        async function createLot() {
+            if (userId !== ADMIN_ID) return tg.showAlert('Только админ может создавать лоты');
+
+            const address = prompt('Введите кастомный адрес кошелька (например, T123):');
+            if (!address) return;
+
+            const minPrice = prompt('С какой ставки начинается аукцион (в звездах)?');
+            if (!minPrice || isNaN(minPrice)) return;
+
+            const duration = prompt('Сколько часов будет длиться аукцион? (введите число)');
+            if (!duration || isNaN(duration)) return;
+
+            try {
+                // Создаем запись в коллекции и сразу выставляем на аукцион
+                await db.from('collections').insert([{ 
+                    address: address, 
+                    owner_id: ADMIN_ID, 
+                    is_listed: true, 
+                    min_price: parseInt(minPrice) 
+                }]);
+
+                tg.showAlert(`✅ Лот ${address} выставлен на аукцион со ставкой ${minPrice} ⭐ на ${duration} часов.`);
+                loadAuction();
+            } catch (e) { tg.showAlert("Ошибка: " + e.message); }
+        }
+
+        // === ОБЩИЕ ФУНКЦИИ ===
         async function loadWallet() {
             if (!userId) return;
             try {
@@ -678,4 +713,4 @@
         loadWallet();
     </script>
 </body>
-</html>
+    </html>

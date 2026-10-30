@@ -8,66 +8,88 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ТЕМЫ */
+        :root {
+            --bg: #ffffff; --text: #000000; --text-secondary: #888888;
+            --accent: #1976d2; --accent-light: #e3f2fd; --card: #f9f9f9; --border: #f0f0f0;
+        }
+        body.halloween {
+            --bg: #120a1f; --text: #ffffff; --text-secondary: #aa99bb;
+            --accent: #ff7b00; --accent-light: #2b1b45; --card: #1f1235; --border: #2b1b45;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #ffffff; color: #000000; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; overflow-x: hidden; }
-        
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
         .top-bar { padding: 15px 20px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; }
-        
         .screen { display: none; animation: fadeIn 0.3s ease; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* КОШЕЛЕК */
         .balance-section { text-align: center; padding: 20px 0; }
         .balance-amount { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; }
-        .balance-amount span:first-child { font-size: 1.5rem; color: #888; font-weight: 500; }
-        .balance-usd { font-size: 0.9rem; color: #888; font-weight: 500; margin-top: 5px; }
-
+        .balance-amount span:first-child { font-size: 1.5rem; color: var(--text-secondary); font-weight: 500; }
+        .balance-usd { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; margin-top: 5px; }
         .action-buttons { display: flex; justify-content: center; gap: 30px; margin: 20px 0 30px 0; }
         .action-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
-        .action-btn .icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: #e3f2fd; }
-        .action-btn .icon svg { width: 24px; height: 24px; fill: #1976d2; }
-        .action-btn span { font-size: 0.85rem; color: #1976d2; font-weight: 500; }
-
-        .assets-title { padding: 0 20px; font-size: 1rem; font-weight: 600; color: #1976d2; display: flex; justify-content: space-between; margin-bottom: 15px; }
-        
-        .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
-        .asset-item:active { background: #f9f9f9; }
+        .action-btn .icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--accent-light); }
+        .action-btn .icon svg { width: 24px; height: 24px; fill: var(--accent); }
+        .action-btn span { font-size: 0.85rem; color: var(--accent); font-weight: 500; }
+        .assets-title { padding: 0 20px; font-size: 1rem; font-weight: 600; color: var(--accent); display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .asset-item:active { background: var(--card); }
         .asset-icon { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.2rem; font-weight: 700; }
         .asset-info { flex: 1; display: flex; flex-direction: column; }
         .asset-name { font-size: 1rem; font-weight: 600; }
         .asset-price { font-size: 0.8rem; color: #4caf50; }
         .asset-balance { text-align: right; display: flex; flex-direction: column; }
         .asset-amount { font-size: 1rem; font-weight: 600; }
-        .asset-usd { font-size: 0.8rem; color: #888; }
-
-        /* БИРЖА */
+        .asset-usd { font-size: 0.8rem; color: var(--text-secondary); }
         .exchange-header { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding: 0 20px; }
-        .exchange-coin { padding: 10px 20px; background: #f0f0f0; border-radius: 20px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-        .exchange-coin.active { background: #1976d2; color: #fff; }
-        
-        .chart-container { height: 200px; background: #f9f9f9; border-radius: 15px; margin: 0 20px 20px 20px; position: relative; overflow: hidden; border: 1px solid #eee; }
+        .exchange-coin { padding: 10px 20px; background: var(--card); border-radius: 20px; font-weight: 700; cursor: pointer; white-space: nowrap; color: var(--text); }
+        .exchange-coin.active { background: var(--accent); color: #fff; }
+        .chart-container { height: 200px; background: var(--card); border-radius: 15px; margin: 0 20px 20px 20px; position: relative; overflow: hidden; border: 1px solid var(--border); }
         .chart-svg { width: 100%; height: 100%; }
-        
-        .buy-panel { background: #fff; padding: 20px; border-radius: 15px; margin: 0 20px; border: 1px solid #eee; }
-        .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1rem; color: #555; font-weight: 500; }
-        .buy-row span:last-child { font-weight: 700; color: #111; }
-        
-        .buy-input { width: 100%; padding: 18px; border: 2px solid #eee; border-radius: 12px; font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; outline: none; text-align: center; }
-        .buy-input:focus { border-color: #1976d2; }
-        
-        .btn-buy { width: 100%; padding: 18px; background: #1976d2; color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
-        .btn-buy:active { background: #115293; transform: scale(0.98); }
-
-        /* ЗАГЛУШКА */
-        .creating-screen { display: flex; justify-content: center; align-items: center; height: 60vh; font-size: 1.5rem; font-weight: 800; color: #ccc; }
-
-        /* НИЖНЕЕ МЕНЮ */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #f0f0f0; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #888; font-size: 0.7rem; cursor: pointer; width: 20%; }
-        .nav-item.active { color: #1976d2; }
+        .buy-panel { background: var(--bg); padding: 20px; border-radius: 15px; margin: 0 20px; border: 1px solid var(--border); }
+        .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1rem; color: var(--text-secondary); font-weight: 500; }
+        .buy-row span:last-child { font-weight: 700; color: var(--text); }
+        .buy-input { width: 100%; padding: 18px; border: 2px solid var(--border); border-radius: 12px; font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; outline: none; text-align: center; background: var(--card); color: var(--text); }
+        .buy-input:focus { border-color: var(--accent); }
+        .btn-buy { width: 100%; padding: 18px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
+        .btn-buy:active { transform: scale(0.98); }
+        .transfer-panel { padding: 20px; }
+        .transfer-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .transfer-input-group label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+        .transfer-input { padding: 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-size: 1rem; outline: none; }
+        .transfer-input:focus { border-color: var(--accent); }
+        .transfer-coin-select { display: flex; gap: 10px; margin-bottom: 20px; }
+        .transfer-coin-btn { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
+        .transfer-coin-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .settings-panel { padding: 20px; }
+        .settings-item { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-direction: column; align-items: flex-start; gap: 10px; }
+        .settings-item span { font-size: 1rem; }
+        .wallet-address { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        .address-box { background: var(--card); padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.9rem; word-break: break-all; border: 1px solid var(--border); }
+        .btn-copy { background: var(--accent); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .theme-toggle { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
+        .theme-btn { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
+        .theme-btn.active { border-color: var(--accent); color: var(--accent); }
+        .creating-screen { display: flex; justify-content: center; align-items: center; height: 60vh; font-size: 1.5rem; font-weight: 800; color: var(--text-secondary); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 0.7rem; cursor: pointer; width: 20%; }
+        .nav-item.active { color: var(--accent); }
         .nav-item .icon { width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; }
         .nav-item .icon svg { width: 100%; height: 100%; fill: currentColor; }
+        .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .success-overlay.active { display: flex; }
+        .success-card { background: var(--bg); padding: 40px 30px; border-radius: 24px; text-align: center; transform: scale(0.5); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .success-overlay.active .success-card { transform: scale(1); opacity: 1; }
+        .checkmark { width: 80px; height: 80px; border-radius: 50%; display: block; stroke-width: 4; stroke: #fff; stroke-miterlimit: 10; margin: 0 auto 20px auto; box-shadow: inset 0px 0px 0px #4caf50; animation: fillGreen .4s ease-in-out .4s forwards, scaleCheck .3s ease-in-out .9s both; }
+        .checkmark-circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 4; stroke-miterlimit: 10; stroke: #4caf50; fill: none; animation: strokeCircle .6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+        .checkmark-check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; stroke: #4caf50; fill: none; animation: strokeCheck .3s cubic-bezier(0.65, 0, 0.45, 1) .8s forwards; }
+        @keyframes strokeCircle { 100% { stroke-dashoffset: 0; } }
+        @keyframes strokeCheck { 100% { stroke-dashoffset: 0; } }
+        @keyframes fillGreen { 100% { box-shadow: inset 0px 0px 0px 40px #e8f5e9; } }
+        @keyframes scaleCheck { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+        .success-text { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+        .success-sub { font-size: 1rem; color: #4caf50; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -76,47 +98,19 @@
     <!-- КОШЕЛЕК -->
     <div class="screen active" id="screen-wallet">
         <div class="balance-section">
-            <div class="balance-amount"><span>$</span><span id="total-balance">0.00</span><span style="font-size: 1.5rem; color: #888; font-weight: 500; margin-left: 5px;">USDT</span></div>
+            <div class="balance-amount"><span>$</span><span id="total-balance">0.00</span><span style="font-size: 1.5rem; color: var(--text-secondary); font-weight: 500; margin-left: 5px;">USDT</span></div>
             <div class="balance-usd">Общий баланс в USD</div>
         </div>
-
         <div class="action-buttons">
-            <div class="action-btn" onclick="switchTab('exchange')">
-                <div class="icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-                <span>Пополнить</span>
-            </div>
-            <div class="action-btn" onclick="tg.showAlert('В разработке')">
-                <div class="icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-                <span>Вывести</span>
-            </div>
-            <div class="action-btn" onclick="switchTab('history')">
-                <div class="icon"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div>
-                <span>История</span>
-            </div>
+            <div class="action-btn" onclick="switchTab('exchange')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><span>Пополнить</span></div>
+            <div class="action-btn" onclick="switchTab('transfer')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><span>Перевод</span></div>
+            <div class="action-btn" onclick="switchTab('history')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><span>История</span></div>
         </div>
-
         <div class="assets-title"><span>Мои активы →</span><span>Скрыть мелкие балансы</span></div>
-
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')">
-            <div class="asset-icon" style="background: #26a17b;">₮</div>
-            <div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$1.00</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div>
-        </div>
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
-            <div class="asset-icon" style="background: #0088cc;">💎</div>
-            <div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price">$1.15</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div>
-        </div>
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')">
-            <div class="asset-icon" style="background: #9945ff;">S</div>
-            <div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price">$93.99</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div>
-        </div>
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')">
-            <div class="asset-icon" style="background: #ff0000;">T</div>
-            <div class="asset-info"><div class="asset-name">TRON</div><div class="asset-price">$0.12</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">$0.00</div></div>
-        </div>
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')"><div class="asset-icon" style="background: #26a17b;">₮</div><div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$1.00</div></div><div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div></div>
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')"><div class="asset-icon" style="background: #0088cc;">💎</div><div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price">$1.15</div></div><div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div></div>
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')"><div class="asset-icon" style="background: #9945ff;">S</div><div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price">$93.99</div></div><div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div></div>
+        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')"><div class="asset-icon" style="background: #ff0000;">T</div><div class="asset-info"><div class="asset-name">TRON</div><div class="asset-price">$0.12</div></div><div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">$0.00</div></div></div>
     </div>
 
     <!-- БИРЖА -->
@@ -127,11 +121,7 @@
             <div class="exchange-coin" onclick="selectCoin('SOL', this)">SOL</div>
             <div class="exchange-coin" onclick="selectCoin('TRX', this)">TRX</div>
         </div>
-        
-        <div class="chart-container">
-            <svg class="chart-svg" id="chart-svg" viewBox="0 0 100 50" preserveAspectRatio="none"></svg>
-        </div>
-
+        <div class="chart-container"><svg class="chart-svg" id="chart-svg" viewBox="0 0 100 50" preserveAspectRatio="none"></svg></div>
         <div class="buy-panel">
             <div class="buy-row"><span>Цена:</span><span id="current-price">$1.00</span></div>
             <input type="number" class="buy-input" id="buy-amount" placeholder="Кол-во" oninput="calculateCost()">
@@ -140,26 +130,59 @@
         </div>
     </div>
 
-    <!-- ИСТОРИЯ -->
-    <div class="screen" id="screen-history">
-        <div style="padding: 20px;"><h2>История</h2><p style="color: #888; margin-top: 20px;">Пока пусто</p></div>
+    <!-- ПЕРЕВОДЫ -->
+    <div class="screen" id="screen-transfer">
+        <div class="transfer-panel">
+            <h2 style="margin-bottom: 20px;">Перевод</h2>
+            <div class="transfer-coin-select">
+                <div class="transfer-coin-btn active" onclick="selectTransferCoin('USDT', this)">USDT</div>
+                <div class="transfer-coin-btn" onclick="selectTransferCoin('GRAM', this)">GRAM</div>
+                <div class="transfer-coin-btn" onclick="selectTransferCoin('SOL', this)">SOL</div>
+                <div class="transfer-coin-btn" onclick="selectTransferCoin('TRX', this)">TRX</div>
+            </div>
+            <div class="transfer-input-group"><label>ID получателя:</label><input type="number" class="transfer-input" id="transfer-id" placeholder="Введите ID"></div>
+            <div class="transfer-input-group"><label>Сумма:</label><input type="number" class="transfer-input" id="transfer-amount" placeholder="0.00"></div>
+            <button class="btn-buy" onclick="makeTransfer()">Перевести</button>
+        </div>
     </div>
 
-    <!-- ЗАГЛУШКИ -->
+    <!-- ИСТОРИЯ -->
+    <div class="screen" id="screen-history"><div style="padding: 20px;"><h2>История</h2><p style="color: var(--text-secondary); margin-top: 20px;">Пока пусто</p></div></div>
+
+    <!-- НАСТРОЙКИ -->
+    <div class="screen" id="screen-settings">
+        <div class="settings-panel">
+            <h2 style="margin-bottom: 20px;">Настройки</h2>
+            <div class="settings-item">
+                <span style="font-weight: 600;">Ваш адрес кошелька:</span>
+                <div class="wallet-address"><div class="address-box" id="wallet-address">Загрузка...</div><button class="btn-copy" onclick="copyAddress()">Копировать</button></div>
+            </div>
+            <div class="settings-item">
+                <span style="font-weight: 600;">Тема оформления:</span>
+                <div class="theme-toggle"><button class="theme-btn active" id="theme-light" onclick="setTheme('light')">Светлая</button><button class="theme-btn" id="theme-halloween" onclick="setTheme('halloween')">Хэллоуин</button></div>
+            </div>
+        </div>
+    </div>
+
     <div class="screen" id="screen-obmen"><div class="creating-screen">Creating..</div></div>
     <div class="screen" id="screen-p2p"><div class="creating-screen">Creating..</div></div>
-    <div class="screen" id="screen-settings"><div class="creating-screen">Creating..</div></div>
 
-    <!-- МЕНЮ -->
+    <div class="success-overlay" id="success-overlay">
+        <div class="success-card">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
+            <div class="success-text">Перевод доставлен!</div>
+            <div class="success-sub" id="success-amount">-5 USDT</div>
+        </div>
+    </div>
+
+    <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div><span>Кошелек</span></div>
         <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div><span>Биржа</span></div>
         <div class="nav-item" onclick="switchTab('obmen')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><span>Обмен</span></div>
         <div class="nav-item" onclick="switchTab('p2p')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><span>P2P</span></div>
         <div class="nav-item" onclick="switchTab('settings')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div><span>Ещё</span></div>
-    </div>
-
-    <script>
+    </div> <script>
         const SUPABASE_URL = "https://ptcofqwsvyytcnoerazu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_CL2wAd6YW9tj5fIq4r9b4A_iVeZtnBx";
         const { createClient } = supabase;
@@ -174,6 +197,7 @@
         const userId = paramId ? parseInt(paramId) : 0;
 
         let currentCoin = 'USDT';
+        let transferCoin = 'USDT';
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
         let chartData = [];
         let chartInterval;
@@ -191,6 +215,8 @@
                 startChart();
             } else if (tab === 'history') {
                 document.getElementById('screen-history').classList.add('active');
+            } else if (tab === 'transfer') {
+                document.getElementById('screen-transfer').classList.add('active');
             } else if (tab === 'obmen') {
                 document.getElementById('screen-obmen').classList.add('active');
             } else if (tab === 'p2p') {
@@ -200,6 +226,7 @@
             }
         }
 
+        // БИРЖА
         function selectCoin(coin, element) {
             currentCoin = coin;
             document.querySelectorAll('.exchange-coin').forEach(el => el.classList.remove('active'));
@@ -211,7 +238,6 @@
         function startChart() {
             clearInterval(chartInterval);
             chartData = Array(20).fill(currentPrices[currentCoin]);
-            
             chartInterval = setInterval(() => {
                 let change = (Math.random() - 0.5) * (currentPrices[currentCoin] * 0.02);
                 currentPrices[currentCoin] += change;
@@ -241,7 +267,6 @@
 
             const isUp = chartData[chartData.length - 1] >= chartData[0];
             const color = isUp ? '#4caf50' : '#f44336';
-
             svg.innerHTML = `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>`;
         }
 
@@ -287,6 +312,110 @@
             }
         }
 
+        // ПЕРЕВОДЫ
+        function selectTransferCoin(coin, element) {
+            transferCoin = coin;
+            document.querySelectorAll('.transfer-coin-btn').forEach(el => el.classList.remove('active'));
+            if (element) element.classList.add('active');
+        }
+
+        async function makeTransfer() {
+            const toId = parseInt(document.getElementById('transfer-id').value);
+            const amount = parseFloat(document.getElementById('transfer-amount').value);
+
+            if (!toId || !amount || amount <= 0) {
+                return tg.showAlert('Заполните все поля корректно');
+            }
+            if (toId === userId) {
+                return tg.showAlert('Нельзя перевести самому себе');
+            }
+
+            const btn = document.querySelector('#screen-transfer .btn-buy');
+            btn.innerText = "Отправка...";
+            btn.disabled = true;
+
+            try {
+                // Проверка получателя
+                const { data: recipient } = await db.from('users').select('user_id').eq('user_id', toId).single();
+                if (!recipient) {
+                    btn.innerText = "Перевести"; btn.disabled = false;
+                    return tg.showAlert('Получатель с таким ID не найден');
+                }
+
+                // Проверка баланса отправителя
+                const { data: sender } = await db.from('users').select('*').eq('user_id', userId).single();
+                const balanceField = `${transferCoin.toLowerCase()}_balance`;
+                const senderBalance = parseFloat(sender[balanceField]) || 0;
+
+                if (senderBalance < amount) {
+                    btn.innerText = "Перевести"; btn.disabled = false;
+                    return tg.showAlert('Недостаточно средств');
+                }
+
+                // Списание у отправителя и начисление получателю
+                await db.from('users').update({ [balanceField]: senderBalance - amount }).eq('user_id', userId);
+                
+                const { data: recData } = await db.from('users').select(balanceField).eq('user_id', toId).single();
+                const recBalance = parseFloat(recData[balanceField]) || 0;
+                await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', toId);
+
+                // Запись в историю
+                await db.from('transfers').insert([{
+                    from_user_id: userId,
+                    to_user_id: toId,
+                    coin: transferCoin,
+                    amount: amount
+                }]);
+
+                // Показываем анимацию
+                document.getElementById('success-amount').innerText = `-${amount} ${transferCoin}`;
+                document.getElementById('success-overlay').classList.add('active');
+                
+                // Очищаем поля
+                document.getElementById('transfer-id').value = '';
+                document.getElementById('transfer-amount').value = '';
+                
+                // Обновляем баланс
+                loadWallet();
+
+                // Закрываем анимацию через 3 секунды
+                setTimeout(() => {
+                    document.getElementById('success-overlay').classList.remove('active');
+                }, 3000);
+
+            } catch (e) {
+                tg.showAlert("Ошибка: " + e.message);
+            } finally {
+                btn.innerText = "Перевести";
+                btn.disabled = false;
+            }
+        }
+
+        // НАСТРОЙКИ
+        function copyAddress() {
+            const address = document.getElementById('wallet-address').innerText;
+            if (address && address !== 'Загрузка...') {
+                navigator.clipboard.writeText(address).then(() => {
+                    tg.showAlert('Адрес скопирован!');
+                }).catch(() => {
+                    tg.showAlert('Не удалось скопировать');
+                });
+            }
+        }
+
+        function setTheme(theme) {
+            if (theme === 'halloween') {
+                document.body.classList.add('halloween');
+                document.getElementById('theme-halloween').classList.add('active');
+                document.getElementById('theme-light').classList.remove('active');
+            } else {
+                document.body.classList.remove('halloween');
+                document.getElementById('theme-light').classList.add('active');
+                document.getElementById('theme-halloween').classList.remove('active');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
         async function loadWallet() {
             if (!userId) return;
             try {
@@ -303,11 +432,28 @@
                     
                     const total = ((data.usdt_balance||0) * 1.00) + ((data.gram_balance||0) * 1.15) + ((data.sol_balance||0) * 93.99) + ((data.trx_balance||0) * 0.12);
                     document.getElementById('total-balance').innerText = total.toFixed(2);
+                    // Адрес кошелька
+                    if (!data.wallet_address) {
+                        // Генерируем адрес, если его нет
+                        const newAddress = 'T' + Math.random().toString(36).substring(2, 15).toUpperCase() + Math.random().toString(36).substring(2, 15).toUpperCase();
+                        await db.from('users').update({ wallet_address: newAddress }).eq('user_id', userId);
+                        document.getElementById('wallet-address').innerText = newAddress;
+                    } else {
+                        document.getElementById('wallet-address').innerText = data.wallet_address;
+                    }
                 }
             } catch (e) { console.error(e); }
+        }
+
+        // Загрузка темы при старте
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'halloween') {
+            document.body.classList.add('halloween');
+            document.getElementById('theme-halloween').classList.add('active');
+            document.getElementById('theme-light').classList.remove('active');
         }
 
         loadWallet();
     </script>
 </body>
-</html>
+</html> все ровно без пробелов лишних даm

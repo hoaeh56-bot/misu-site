@@ -3,163 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Halloween Case</title>
+    <title>Crypto Bot</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #0a0a0a; background-image: radial-gradient(circle at top right, #1f1235 0%, #0a0a0a 50%); color: #fff; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 20px; overflow-x: hidden; }
-        .top-bar { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2b1b45; position: sticky; top: 0; z-index: 10; }
-        .logo { font-size: 1.1rem; font-weight: 800; color: #fff; text-shadow: 0 0 15px #ff7b00; letter-spacing: 1px; }
-        .balance-box { background: #151515; padding: 8px 16px; border-radius: 8px; border: 1px solid #333; font-weight: 800; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 5px; }
-        .container { padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
-        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-        .nav-tab { text-align: center; padding: 10px 15px; background: #151515; border: 1px solid #222; border-radius: 12px; color: #777; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
-        .nav-tab.active { background: #1a1a1a; color: #fff; border-color: #ff7b00; box-shadow: 0 0 15px rgba(255,123,0,0.2); }
-        .section-title { color: #fff; margin-bottom: 20px; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-left: 3px solid #ff7b00; padding-left: 10px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #ffffff; color: #000000; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; }
         
-        .cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .case-card { background: #111; border: 1px solid #222; border-radius: 16px; padding: 15px 10px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; position: relative; }
-        .case-card:active { transform: scale(0.96); border-color: #ff7b00; }
-        .case-img { width: 90px; height: 90px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 0 15px rgba(255,123,0,0.4)); }
-        .case-card h3 { font-size: 0.8rem; font-weight: 800; margin-bottom: 4px; color: #fff; }
-        .case-card .creator { font-size: 0.65rem; color: #00ffff; text-shadow: 0 0 5px #00ffff; margin-bottom: 8px; font-weight: 600; }
-        .case-card p { color: #fff; font-weight: 800; font-size: 0.9rem; background: #1a1a1a; padding: 4px 10px; border-radius: 8px; border: 1px solid #333; }
+        .top-bar { padding: 15px 20px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; }
+        
+        .balance-section { text-align: center; padding: 20px 0; }
+        .balance-amount { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; }
+        .balance-amount span:first-child { font-size: 1.5rem; color: #888; font-weight: 500; }
+        .balance-usd { font-size: 0.9rem; color: #888; font-weight: 500; margin-top: 5px; }
 
-        .inventory-list { display: flex; flex-direction: column; gap: 10px; }
-        .inventory-item { background: #111; padding: 15px; border-radius: 12px; border: 1px solid #222; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; transition: 0.3s; }
-        .inv-info { flex: 1; min-width: 120px; display: flex; align-items: center; gap: 10px; }
-        .inv-info img { width: 40px; height: 40px; object-fit: contain; }
-        .inv-info span { font-weight: 800; color: #fff; display: block; margin-bottom: 2px; word-break: break-all; font-size: 0.9rem; }
-        .inv-info small { color: #ff7b00; font-weight: 600; font-size: 0.75rem; }
-        .inv-actions { display: flex; gap: 5px; }
-        .btn-sell { background: #28a745; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
-        .btn-withdraw { background: #ff4500; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
+        .action-buttons { display: flex; justify-content: center; gap: 30px; margin: 20px 0 30px 0; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+        .action-btn .icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; background: #e3f2fd; color: #1976d2; }
+        .action-btn span { font-size: 0.85rem; color: #1976d2; font-weight: 500; }
 
-        .empty-text { text-align: center; color: #555; margin-top: 40px; font-weight: 600; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .assets-title { padding: 0 20px; font-size: 1rem; font-weight: 600; color: #1976d2; display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .assets-title span:last-child { color: #888; font-weight: 500; }
+        
+        .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f0f0f0; }
+        .asset-icon { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.2rem; font-weight: 700; }
+        .asset-info { flex: 1; display: flex; flex-direction: column; }
+        .asset-name { font-size: 1rem; font-weight: 600; }
+        .asset-price { font-size: 0.8rem; color: #4caf50; }
+        .asset-price.red { color: #f44336; }
+        .asset-balance { text-align: right; display: flex; flex-direction: column; }
+        .asset-amount { font-size: 1rem; font-weight: 600; }
+        .asset-usd { font-size: 0.8rem; color: #888; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(10px); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #f0f0f0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #888; font-size: 0.75rem; cursor: pointer; }
+        .nav-item.active { color: #1976d2; }
+        .nav-item .icon { font-size: 1.2rem; }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); display: none; z-index: 1000; flex-direction: column; }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: #0f0f0f; border: 1px solid #333; border-radius: 24px; padding: 25px 20px; width: 100%; max-width: 400px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.8); text-align: center; }
-        .modal-title { color: #fff; margin-bottom: 15px; text-align: center; font-size: 1.2rem; font-weight: 800; text-transform: uppercase; }
+        .modal-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header span { font-size: 1.2rem; font-weight: 600; }
+        .close-btn { font-size: 1.5rem; color: #888; cursor: pointer; }
         
-        .win-img { width: 150px; height: 150px; object-fit: contain; margin: 0 auto 15px auto; filter: drop-shadow(0 0 20px rgba(255,123,0,0.6)); }
-        .win-img.legendary { filter: drop-shadow(0 0 30px gold); animation: pulseGold 1.5s infinite; }
-        @keyframes pulseGold { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .win-name { color: #fff; font-size: 1.2rem; font-weight: 800; margin-bottom: 5px; }
-        .win-price { color: #ffb700; font-size: 1rem; font-weight: 600; margin-bottom: 20px; }
-        
-        .confirm-text { text-align: center; color: #aaa; margin-bottom: 20px; font-size: 0.9rem; }
-        .modal-actions { display: flex; gap: 10px; flex-direction: column; }
-        .btn-yes { background: #28a745; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
-        .btn-no { background: transparent; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
-        .btn-sell-win { background: #ff7b00; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
-
-        .roulette-container { overflow: hidden; width: 100%; height: 120px; position: relative; border-top: 1px solid #333; border-bottom: 1px solid #333; margin-bottom: 20px; background: #151515; }
-        .roulette-strip { display: flex; height: 100%; width: max-content; align-items: center; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); }
-        .roulette-item { width: 100px; height: 100px; margin: 0 10px; border-radius: 10px; background: #1a1a1a; border: 1px solid #333; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 0.6rem; font-weight: 600; padding: 5px; flex-shrink: 0; }
-        .roulette-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 5px; }
-        .roulette-pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: #ff7b00; box-shadow: 0 0 10px #ff7b00; z-index: 2; }
-        .roulette-pointer::before { content: ''; position: absolute; top: -10px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 10px solid #ff7b00; }
+        .settings-group { margin-top: 20px; }
+        .settings-group-title { padding: 10px 20px; font-size: 0.9rem; color: #888; font-weight: 600; }
+        .settings-item { padding: 15px 20px; font-size: 1rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .settings-item span { color: #1976d2; }
     </style>
 </head>
 <body>
-    <header class="top-bar">
-        <h1 class="logo">HALLOWEEN CASE</h1>
-        <div class="balance-box"><span id="balance-amount">0</span> 🎃</div>
-    </header>
+    <div class="top-bar">Crypto Bot</div>
 
-    <main class="container">
-        <div class="nav-tabs">
-            <div class="nav-tab active" onclick="switchTab('cases', this)">Кейсы</div>
-            <div class="nav-tab" onclick="switchTab('inventory', this)">Инвентарь</div>
+    <div class="main-screen" id="main-screen">
+        <div class="balance-section">
+            <div class="balance-amount"><span>$</span><span id="total-balance">0.00</span><span style="font-size: 1.5rem; color: #888; font-weight: 500; margin-left: 5px;">USDT</span></div>
+            <div class="balance-usd" id="total-usd">Общий баланс в USD</div>
         </div>
 
-        <div id="tab-cases" class="tab-content active">
-            <h2 class="section-title">Доступные кейсы</h2>
-            <div class="cases-grid">
-                <div class="case-card" id="free-case-card" onclick="openCase('free', 0)">
-                    <img src="https://f.2fools.app/tgs/sticker_set/558bb616.gif" class="case-img">
-                    <h3>КЕЙС БОБРА (FREE)</h3>
-                    <p id="free-case-timer">Бесплатно</p>
-                </div>
-                <div class="case-card" onclick="openCase('hell', 300)">
-                    <img src="https://f.2fools.app/tgs/sticker_set/f70510f3.gif" class="case-img">
-                    <h3>АДСКИЙ КЕЙС</h3>
-                    <p>300 🎃</p>
-                </div>
-                <div class="case-card" onclick="openCase('coffin', 250)">
-                    <img src="https://f.2fools.app/tgs/sticker_set/debf8fd6.gif" class="case-img">
-                    <h3>ГРОБНЫЙ КЕЙС</h3>
-                    <p>250 🎃</p>
-                </div>
-                <div class="case-card" onclick="openCase('nft', 1000)">
-                    <img src="https://f.2fools.app/tgs/sticker_set/1a148ae3.gif" class="case-img">
-                    <h3>NFT ЮЗЕРНЕЙМЫ</h3>
-                    <p>1000 🎃</p>
-                </div>
-                <div class="case-card" onclick="openCase('anon', 1500)">
-                    <img src="https://f.2fools.app/tgs/sticker_set/baa518d9.gif" class="case-img">
-                    <h3>АНОНИМНЫЕ НОМЕРА</h3>
-                    <p>1500 🎃</p>
-                </div>
-                <div class="case-card" onclick="openCase('suchiy', 275)">
-                    <img src="https://f.2fools.app/tgs/sticker_set/79425d09.gif" class="case-img">
-                    <h3>СУЧИЙ КЕЙС</h3>
-                    <div class="creator">Create - @user</div>
-                    <p>275 🎃</p>
-                </div>
-                <div class="case-card" onclick="openCase('bober', 2000)">
-                    <img src="https://f.2fools.app/tgs/sticker_set/558bb616.gif" class="case-img">
-                    <h3>КЕЙС БОБРА</h3>
-                    <div class="creator">Create - @sardelka @telegram</div>
-                    <p>2000 🎃</p>
-                </div>
+        <div class="action-buttons">
+            <div class="action-btn" onclick="tg.showAlert('Пополнение в разработке')">
+                <div class="icon">↓</div><span>Пополнить</span>
+            </div>
+            <div class="action-btn" onclick="tg.showAlert('Вывод в разработке')">
+                <div class="icon">↑</div><span>Вывести</span>
+            </div>
+            <div class="action-btn" onclick="tg.showAlert('История в разработке')">
+                <div class="icon">📅</div><span>История</span>
             </div>
         </div>
 
-        <div id="tab-inventory" class="tab-content">
-            <h2 class="section-title">Твой инвентарь</h2>
-            <div id="inventory-list" class="inventory-list">
-                <p class="empty-text">Загрузка...</p>
-            </div>
+        <div class="assets-title">
+            <span>Мои активы →</span>
+            <span>Скрыть мелкие балансы</span>
         </div>
-    </main>
 
-    <div class="modal-overlay" id="roulette-modal">
-        <div class="modal-content" style="max-width: 500px; padding: 20px;">
-            <h3 class="modal-title" id="roulette-title">Открываем...</h3>
-            <div class="roulette-container">
-                <div class="roulette-pointer"></div>
-                <div class="roulette-strip" id="roulette-strip"></div>
-            </div>
+        <div class="asset-item">
+            <div class="asset-icon" style="background: #26a17b;">₮</div>
+            <div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$0.9991 +0.02%</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div>
+        </div>
+        <div class="asset-item">
+            <div class="asset-icon" style="background: #0088cc;">💎</div>
+            <div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price red">$1.15 -5.11%</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div>
+        </div>
+        <div class="asset-item">
+            <div class="asset-icon" style="background: #9945ff;">S</div>
+            <div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price red">$93.99 -6.66%</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div>
+        </div>
+        <div class="asset-item">
+            <div class="asset-icon" style="background: #ff0000;">T</div>
+            <div class="asset-info"><div class="asset-name">TRON</div><div class="asset-price">$0.12 +1.20%</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">$0.00</div></div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="win-modal">
-        <div class="modal-content">
-            <h3 class="modal-title" style="color: #ffb700;">Твой выигрыш!</h3>
-            <img id="win-img" class="win-img" src="">
-            <div class="win-name" id="win-name"></div>
-            <div class="win-price" id="win-price"></div>
-            <div class="modal-actions">
-                <button class="btn-sell-win" id="win-sell-btn">Продать за <span id="win-sell-price"></span> 🎃</button>
-                <button class="btn-yes" onclick="closeWinModal()">В инвентарь</button>
-            </div>
-        </div>
+    <div class="bottom-nav">
+        <div class="nav-item active"><div class="icon">💼</div><span>Кошелек</span></div>
+        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">📊</div><span>Биржа</span></div>
+        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">↔️</div><span>Обмен</span></div>
+        <div class="nav-item" onclick="tg.showAlert('В разработке')"><div class="icon">🤝</div><span>P2P</span></div>
+        <div class="nav-item" onclick="openSettings()"><div class="icon">⚙️</div><span>Ещё</span></div>
     </div>
 
-    <div class="modal-overlay" id="confirm-modal">
-        <div class="modal-content">
-            <h3 class="modal-title">Подтверждение</h3>
-            <p class="confirm-text" id="confirm-text">Вы уверены?</p>
-            <div class="modal-actions">
-                <button class="btn-yes" id="confirm-yes-btn">Да</button>
-                <button class="btn-no" onclick="closeConfirm()">Нет</button>
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-header"><span>Настройки</span><div class="close-btn" onclick="closeSettings()">×</div></div>
+        <div class="settings-group">
+            <div class="settings-group-title">Помощь</div>
+            <div class="settings-item" onclick="tg.showAlert('Поддержка: @sardelka @anime')">
+                <span>Написать в поддержку</span><span>↗</span>
             </div>
         </div>
     </div>
@@ -176,342 +131,32 @@
         
         const urlParams = new URLSearchParams(window.location.search);
         const paramId = urlParams.get('user_id');
-        const userId = paramId ? parseInt(paramId) : ((tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 1780243205);
+        const userId = paramId ? parseInt(paramId) : ((tg.initDataUnsafe?.user?.id) ? tg.initDataUnsafe.user.id : 0);
 
-        const SUCHIY_ITEMS = [
-            { name: "Neko helmet", url: "https://f.2fools.app/tgs/sticker_set/5bb57e.gif", value: 150, weight: 40 },
-            { name: "Candy", url: "https://f.2fools.app/tgs/sticker_set/b205dfeb.gif", value: 200, weight: 30 },
-            { name: "Peach", url: "https://f.2fools.app/tgs/sticker_set/43bee242.gif", value: 250, weight: 20 },
-            { name: "Perfume", url: "https://f.2fools.app/tgs/sticker_set/cf9da734.gif", value: 300, weight: 10 }
-        ];
-
-        const BOBER_ITEMS = [
-            { name: "Crazy Cap", url: "https://f.2fools.app/tgs/sticker_set/f1cb2a76.gif", value: 400, weight: 35 },
-            { name: "Switches Watch", url: "https://f.2fools.app/tgs/sticker_set/e3f75839.gif", value: 300, weight: 25 },
-            { name: "Toy bear", url: "https://f.2fools.app/tgs/sticker_set/fcdbafe0.gif", value: 500, weight: 20 },
-            { name: "Pepe", url: "https://f.2fools.app/tgs/sticker_set/20af6852.gif", value: 2000, weight: 1, legendary: true }
-        ];
-
-        const HELL_ITEMS = [
-            { name: "Candle", url: "https://f.2fools.app/tgs/sticker_set/1f7df42a.gif", value: 100, weight: 25 },
-            { name: "Witch's Hat", url: "https://f.2fools.app/tgs/sticker_set/44d07e3a.gif", value: 150, weight: 20 },
-            { name: "Scared Cat", url: "https://f.2fools.app/tgs/sticker_set/6073f383.gif", value: 150, weight: 15 },
-            { name: "Broom", url: "https://f.2fools.app/tgs/sticker_set/44e096b9.gif", value: 150, weight: 10 },
-            { name: "Pumpkin", url: "https://f.2fools.app/tgs/sticker_set/453aefb8.gif", value: 150, weight: 10 },
-            { name: "Locket", url: "https://f.2fools.app/tgs/sticker_set/1fe865a8.gif", value: 150, weight: 5 },
-            { name: "halloween eye", url: "https://f.2fools.app/tgs/sticker_set/1f633827.gif", value: 150, weight: 5 },
-            { name: "Pot", url: "https://f.2fools.app/tgs/sticker_set/44b5c237.gif", value: 150, weight: 5 },
-            { name: "Halloween pop", url: "https://f.2fools.app/tgs/sticker_set/1f313026.gif", value: 150, weight: 4 },
-            { name: "Mask Vurses", url: "https://f.2fools.app/tgs/sticker_set/860a7d97.gif", value: 300, weight: 1 }
-        ];
-
-        const COFFIN_ITEMS = [
-            { name: "Mushroom", url: "https://f.2fools.app/tgs/sticker_set/8640d690.gif", value: 200, weight: 40 },
-            { name: "magic ball", url: "https://f.2fools.app/tgs/sticker_set/6083fc02.gif", value: 200, weight: 20 },
-            { name: "Halloween flower", url: "https://f.2fools.app/tgs/sticker_set/85d68612.gif", value: 200, weight: 15 },
-            { name: "Lips", url: "https://f.2fools.app/tgs/sticker_set/61b3290d.gif", value: 200, weight: 10 },
-            { name: "Ice gem", url: "https://f.2fools.app/tgs/sticker_set/8705b31d.gif", value: 200, weight: 5 },
-            { name: "Frog", url: "https://f.2fools.app/tgs/sticker_set/4483ba36.gif", value: 200, weight: 5 },
-            { name: "magic potion", url: "https://f.2fools.app/tgs/sticker_set/6148b78f.gif", value: 200, weight: 3 },
-            { name: "Wodoo", url: "https://f.2fools.app/tgs/sticker_set/1f8e0ca9.gif", value: 250, weight: 1.5 },
-            { name: "Tombstone", url: "https://f.2fools.app/tgs/sticker_set/452496bd.gif", value: 750, weight: 0.4 },
-            { name: "Coffin", url: "https://beta.2fools.app/packs/sticker_set", value: 1000, weight: 0.1 }
-        ];
-
-        const FREE_ITEMS = [
-            { name: "+1 Тыква", value: 1, weight: 60 },
-            { name: "+10 Тыкв", value: 10, weight: 30 },
-            { name: "+50 Тыкв", value: 50, weight: 10 }
-        ];
-
-        const NFT_USERNAMES = ["@spook", "@pumpk", "@ghost", "@witch", "@demon", "@batty", "@scary", "@crypt", "@trick", "@magic", "@vampy", "@haunt", "@bones", "@devil", "@raven", "@candy", "@skull", "@cursd", "@night", "@magik"];
-
-        let currentAction = null; 
-
-        async function loadBalance() {
+        async function loadWallet() {
+            if (!userId) return;
             try {
-                const { data } = await db.from('users').select('balance').eq('user_id', userId).single();
-                if (data) document.getElementById('balance-amount').innerText = data.balance;
-                else document.getElementById('balance-amount').innerText = "0";
-            } catch (e) { console.error(e); }
-        }
-
-        async function loadInventory() {
-            const list = document.getElementById('inventory-list');
-            list.innerHTML = '<p class="empty-text">Загрузка...</p>';
-            
-            try {
-                const { data } = await db.from('inventory').select('*').eq('user_id', userId).order('created_at', { ascending: false });
-                if (!data || data.length === 0) {
-                    list.innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
-                    return;
-                }
-                list.innerHTML = '';
-                
-                const allItems = [...HELL_ITEMS, ...COFFIN_ITEMS, ...SUCHIY_ITEMS, ...BOBER_ITEMS];
-                
-                data.forEach(item => {
-                    let value = 0;
-                    let imgUrl = "";
+                const { data } = await db.from('users').select('*').eq('user_id', userId).single();
+                if (data) {
+                    document.getElementById('usdt-balance').innerText = `${data.usdt_balance} USDT`;
+                    document.getElementById('usdt-usd').innerText = `$${(data.usdt_balance * 0.9991).toFixed(2)}`;
+                    document.getElementById('gram-balance').innerText = `${data.gram_balance} GRAM`;
+                    document.getElementById('gram-usd').innerText = `$${(data.gram_balance * 1.15).toFixed(2)}`;
+                    document.getElementById('sol-balance').innerText = `${data.sol_balance} SOL`;
+                    document.getElementById('sol-usd').innerText = `$${(data.sol_balance * 93.99).toFixed(2)}`;
+                    document.getElementById('trx-balance').innerText = `${data.trx_balance} TRX`;
+                    document.getElementById('trx-usd').innerText = `$${(data.trx_balance * 0.12).toFixed(2)}`;
                     
-                    if (item.item_type === "Номер") value = 1500;
-                    else if (item.item_type === "Юзернейм") value = 1000;
-                    else if (item.item_type === "Тыква") value = parseInt(item.item_name.replace(/\D/g, ''));
-                    else {
-                        const found = allItems.find(i => i.name === item.item_name);
-                        if (found) { value = found.value; imgUrl = found.url; }
-                        else value = 50;
-                    }
-
-                    const itemId = Number(item.id);
-
-                    const div = document.createElement('div');
-                    div.className = 'inventory-item';
-                    div.id = `inv-item-${itemId}`;
-                    div.innerHTML = `
-                        <div class="inv-info">
-                            ${imgUrl ? `<img src="${imgUrl}">` : ''}
-                            <div>
-                                <span>${item.item_name}</span>
-                                <small>${item.item_type} | ${value} 🎃</small>
-                            </div>
-                        </div>
-                        <div class="inv-actions">
-                            <button class="btn-sell" onclick="askAction('sell', ${itemId}, '${item.item_name}', ${value})">Продать</button>
-                            <button class="btn-withdraw" onclick="askAction('withdraw', ${itemId}, '${item.item_name}', 0)">Вывод</button>
-                        </div>
-                    `;
-                    list.appendChild(div);
-                });
+                    const total = (data.usdt_balance * 0.9991) + (data.gram_balance * 1.15) + (data.sol_balance * 93.99) + (data.trx_balance * 0.12);
+                    document.getElementById('total-balance').innerText = total.toFixed(2);
+                }
             } catch (e) { console.error(e); }
         }
 
-        function switchTab(tabName, element) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-            element.classList.add('active');
-            if (tabName === 'inventory') loadInventory();
-        }
+        function openSettings() { document.getElementById('settings-modal').classList.add('active'); }
+        function closeSettings() { document.getElementById('settings-modal').classList.remove('active'); }
 
-        function askAction(action, itemId, itemName, value) {
-            currentAction = { action, itemId, itemName, value };
-            const text = action === 'sell' ? `Продать "${itemName}" за ${value} 🎃?` : `Запросить вывод "${itemName}"?`;
-            document.getElementById('confirm-text').innerText = text;
-            document.getElementById('confirm-yes-btn').onclick = () => confirmAction();
-            document.getElementById('confirm-modal').classList.add('active');
-        }
-
-        function closeConfirm() {
-            document.getElementById('confirm-modal').classList.remove('active');
-            currentAction = null;
-        }
-
-        async function confirmAction() {
-            if (!currentAction) return;
-            const { action, itemId, itemName, value } = currentAction;
-            
-            closeConfirm(); 
-
-            if (action === 'sell') {
-                const currentBal = parseInt(document.getElementById('balance-amount').innerText);
-                document.getElementById('balance-amount').innerText = currentBal + value;
-                
-                const itemEl = document.getElementById(`inv-item-${itemId}`);
-                if (itemEl) itemEl.remove();
-                if (document.getElementById('inventory-list').children.length === 0) {
-                    document.getElementById('inventory-list').innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
-                }
-                
-                db.from('users').update({ balance: currentBal + value }).eq('user_id', userId);
-                db.from('inventory').delete().eq('id', itemId);
-                
-                tg.showAlert(`✅ Предмет продан за ${value} 🎃`);
-                
-            } else if (action === 'withdraw') {
-                const itemEl = document.getElementById(`inv-item-${itemId}`);
-                if (itemEl) itemEl.remove();
-                if (document.getElementById('inventory-list').children.length === 0) {
-                    document.getElementById('inventory-list').innerHTML = '<p class="empty-text">Инвентарь пуст</p>';
-                }
-                
-                db.from('withdrawals').insert([{ user_id: userId, item_name: itemName }]);
-                db.from('inventory').delete().eq('id', itemId);
-                
-                tg.showAlert(`✅ Заявка на вывод отправлена!`);
-            }
-        }
-
-        function closeWinModal() {
-            document.getElementById('win-modal').classList.remove('active');
-            loadInventory();
-        }
-
-        async function updateFreeTimer() {
-            const { data } = await db.from('users').select('last_free_case').eq('user_id', userId).single();
-            const timerEl = document.getElementById('free-case-timer');
-            
-            if (!data || !data.last_free_case) {
-                timerEl.innerText = "Бесплатно";
-                return;
-            }
-            
-            const lastTime = new Date(data.last_free_case).getTime();
-            const now = new Date().getTime();
-            const diffMs = (12 * 60 * 60 * 1000) - (now - lastTime);
-            
-            if (diffMs <= 0) {
-                timerEl.innerText = "Бесплатно";
-            } else {
-                const hours = Math.floor(diffMs / (1000 * 60 * 60));
-                const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-                timerEl.innerText = `Доступно через ${hours}ч ${minutes}м`;
-            }
-        }
-
-        async function openCase(caseId, price) {
-            const currentBalance = parseInt(document.getElementById('balance-amount').innerText);
-            if (currentBalance < price) return tg.showAlert("Недостаточно средств!");
-
-            if (caseId === 'free') {
-                const { data } = await db.from('users').select('last_free_case').eq('user_id', userId).single();
-                if (data && data.last_free_case) {
-                    const lastTime = new Date(data.last_free_case).getTime();
-                    const now = new Date().getTime();
-                    const hoursPassed = (now - lastTime) / (1000 * 60 * 60);
-                    if (hoursPassed < 12) {
-                        return tg.showAlert("⏳ Кулдаун! Этот кейс можно открыть раз в 12 часов.");
-                    }
-                }
-            }
-
-            if (price > 0) {
-                document.getElementById('balance-amount').innerText = currentBalance - price;
-                await db.from('users').update({ balance: currentBalance - price }).eq('user_id', userId);
-            }
-
-            let pool = [];
-            let selectedItem = null;
-
-            if (caseId === 'nft') {
-                const name = NFT_USERNAMES[Math.floor(Math.random() * NFT_USERNAMES.length)];
-                selectedItem = { name: name, url: "", value: 1000 };
-                pool = NFT_USERNAMES.map(n => ({ name: n, url: "", value: 1000 }));
-            } 
-            else if (caseId === 'anon') {
-                let rnd = "";
-                for (let j = 0; j < 7; j++) rnd += Math.floor(Math.random() * 10);
-                selectedItem = { name: "+888" + rnd, url: "", value: 1500 };
-                pool = [{ name: "+888XXXXXXX", url: "", value: 1500 }];
-            }
-            else if (caseId === 'free') {
-                pool = FREE_ITEMS;
-                const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
-                let random = Math.random() * totalWeight;
-                for (const item of pool) {
-                    if (random < item.weight) { selectedItem = item; break; }
-                    random -= item.weight;
-                }
-                await db.from('users').update({ last_free_case: new Date().toISOString() }).eq('user_id', userId);
-                updateFreeTimer();
-            }
-            else {
-                if (caseId === 'hell') pool = HELL_ITEMS;
-                else if (caseId === 'coffin') pool = COFFIN_ITEMS;
-                else if (caseId === 'suchiy') pool = SUCHIY_ITEMS;
-                else if (caseId === 'bober') pool = BOBER_ITEMS;
-
-                const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
-                let random = Math.random() * totalWeight;
-                for (const item of pool) {
-                    if (random < item.weight) { selectedItem = item; break; }
-                    random -= item.weight;
-                }
-            }
-
-            let type = (caseId === 'nft') ? "Юзернейм" : (caseId === 'anon' ? "Номер" : (caseId === 'free' ? "Тыква" : "Подарок"));
-            
-            if (caseId === 'free') {
-                const newBal = parseInt(document.getElementById('balance-amount').innerText) + selectedItem.value;
-                document.getElementById('balance-amount').innerText = newBal;
-                await db.from('users').update({ balance: newBal }).eq('user_id', userId);
-            } else {
-                await db.from('inventory').insert([{ user_id: userId, item_name: selectedItem.name, item_type: type }]);
-            }
-
-            const strip = document.getElementById('roulette-strip');
-            strip.innerHTML = '';
-            strip.style.transition = 'none';
-            strip.style.transform = 'translateX(0)';
-
-            const displayPool = [];
-            for (let i = 0; i < 40; i++) displayPool.push(pool[Math.floor(Math.random() * pool.length)]);
-            const winnerIndex = 35; 
-            displayPool[winnerIndex] = selectedItem; 
-
-            displayPool.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'roulette-item';
-                if (item.url) div.innerHTML = `<img src="${item.url}"><span>${item.name}</span>`;
-                else div.innerText = item.name;
-                strip.appendChild(div);
-            });
-
-            document.getElementById('roulette-modal').classList.add('active');
-            
-            setTimeout(() => {
-                const itemWidth = 120;
-                const screenWidth = window.innerWidth > 500 ? 500 : window.innerWidth;
-                const targetX = -(winnerIndex * itemWidth) + (screenWidth / 2) - (itemWidth / 2);
-                strip.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)';
-                strip.style.transform = `translateX(${targetX}px)`;
-            }, 100);
-
-            setTimeout(() => {
-                document.getElementById('roulette-modal').classList.remove('active');
-                if (caseId === 'free') {
-                    tg.showAlert(`🎉 Ты выиграл ${selectedItem.name}!\nБаланс пополнен.`);
-                    loadBalance();
-                } else {
-                    showWinModal(selectedItem, caseId);
-                }
-            }, 4500);
-        }
-
-        function showWinModal(item, caseId) {
-            document.getElementById('win-name').innerText = item.name;
-            document.getElementById('win-price').innerText = item.value + " 🎃";
-            
-            const img = document.getElementById('win-img');
-            if (item.url) { img.src = item.url; img.style.display = 'block'; } 
-            else { img.style.display = 'none'; }
-
-            if (item.legendary) img.classList.add('legendary');
-            else img.classList.remove('legendary');
-
-            const sellBtn = document.getElementById('win-sell-btn');
-            document.getElementById('win-sell-price').innerText = item.value;
-
-            sellBtn.onclick = async () => {
-                const currentBal = parseInt(document.getElementById('balance-amount').innerText);
-                document.getElementById('balance-amount').innerText = currentBal + item.value;
-                await db.from('users').update({ balance: currentBal + item.value }).eq('user_id', userId);
-                
-                const { data } = await db.from('inventory').select('id').eq('user_id', userId).order('created_at', { ascending: false }).limit(1);
-                if (data && data.length > 0) {
-                    await db.from('inventory').delete().eq('id', data[0].id);
-                }
-                
-                tg.showAlert(`✅ Продано за ${item.value} 🎃`);
-                closeWinModal();
-            };
-
-            document.getElementById('win-modal').classList.add('active');
-        }
-
-        loadBalance();
-        updateFreeTimer();
-        loadInventory();
+        loadWallet();
     </script>
 </body>
 </html>

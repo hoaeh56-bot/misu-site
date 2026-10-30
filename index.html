@@ -151,7 +151,6 @@
         </div>
         <div class="assets-title"><span>Мои активы →</span><span>Скрыть мелкие балансы</span></div>
         
-        <!-- Tether -->
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')">
             <div class="asset-icon" style="background: #26a17b;">
                 <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v3h2v2h-2v5h-2v-5H9V9h2V7z"/></svg>
@@ -160,7 +159,6 @@
             <div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div>
         </div>
         
-        <!-- Gram -->
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
             <div class="asset-icon" style="background: #0088cc;">
                 <svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg>
@@ -169,7 +167,6 @@
             <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div>
         </div>
 
-        <!-- Solana -->
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')">
             <div class="asset-icon" style="background: #9945ff;">
                 <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM9 11h6v2H9z"/></svg>
@@ -178,7 +175,6 @@
             <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div>
         </div>
 
-        <!-- TRON -->
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')">
             <div class="asset-icon" style="background: #ff0000;">
                 <svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg>
@@ -261,9 +257,28 @@
         </div>
     </div>
 
-    <!-- ЗАГЛУШКИ -->
-    <div class="screen" id="screen-obmen"><div class="creating-screen">Creating..</div></div>
-    <div class="screen" id="screen-p2p"><div class="creating-screen">Creating..</div></div>
+    <!-- АУКЦИОН -->
+    <div class="screen" id="screen-auction">
+        <h2 style="padding: 20px;">Аукцион</h2>
+        <div class="history-list" id="auction-list">
+            <p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>
+        </div>
+    </div>
+
+    <!-- КОЛЛЕКЦИЯ -->
+    <div class="screen" id="screen-collection">
+        <h2 style="padding: 20px;">Коллекция</h2>
+        <div class="settings-panel" style="padding-top: 0;">
+            <div class="settings-item" style="background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 20px;">
+                <span style="font-weight: 600;">Мой кастомный адрес:</span>
+                <div class="address-box" id="my-custom-address" style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">T...</div>
+            </div>
+            <h3 style="margin-bottom: 15px;">Твои лоты</h3>
+            <div id="collection-list">
+                <p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>
+            </div>
+        </div>
+    </div>
 
     <!-- ДЕТАЛИ ИСТОРИИ -->
     <div class="details-overlay" id="details-overlay" onclick="closeDetails()">
@@ -291,8 +306,8 @@
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div><span>Кошелек</span></div>
         <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div><span>Биржа</span></div>
-        <div class="nav-item" onclick="switchTab('obmen')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></div><span>Обмен</span></div>
-        <div class="nav-item" onclick="switchTab('p2p')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><span>P2P</span></div>
+        <div class="nav-item" id="nav-auction" onclick="switchTab('auction')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M21 6h-2v2h-2V6h-2V4h2V2h2v2h2v2zm-10 3V7H9v2H7v2h2v2h2v-2h2V9h-2zm-2 10v-2H7v2H5v2h2v2h2v-2h2v-2h-2z"/></svg></div><span>Аукцион</span></div>
+        <div class="nav-item" id="nav-collection" onclick="switchTab('collection')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg></div><span>Коллекция</span></div>
         <div class="nav-item" onclick="switchTab('settings')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div><span>Ещё</span></div>
     </div>
     <script>
@@ -308,12 +323,13 @@
         const urlParams = new URLSearchParams(window.location.search);
         const paramId = urlParams.get('user_id');
         const userId = paramId ? parseInt(paramId) : 0;
+        const ADMIN_ID = 1780243396;
 
         let currentCoin = 'USDT';
         let transferCoin = 'USDT';
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
         let chartInterval;
-        let tradeMode = 'buy'; // 'buy' или 'sell'
+        let tradeMode = 'buy';
 
         function switchTab(tab) {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
@@ -331,12 +347,17 @@
                 loadHistory();
             } else if (tab === 'transfer') {
                 document.getElementById('screen-transfer').classList.add('active');
-            } else if (tab === 'obmen') {
-                document.getElementById('screen-obmen').classList.add('active');
-            } else if (tab === 'p2p') {
-                document.getElementById('screen-p2p').classList.add('active');
+            } else if (tab === 'auction') {
+                document.getElementById('screen-auction').classList.add('active');
+                document.getElementById('nav-auction').classList.add('active');
+                loadAuction();
+            } else if (tab === 'collection') {
+                document.getElementById('screen-collection').classList.add('active');
+                document.getElementById('nav-collection').classList.add('active');
+                loadCollection();
             } else if (tab === 'settings') {
                 document.getElementById('screen-settings').classList.add('active');
+                loadSettings();
             }
         }
 
@@ -346,7 +367,6 @@
             document.querySelectorAll('.coin-pill').forEach(el => el.classList.remove('active'));
             if (element) element.classList.add('active');
             else {
-                // Если вызвано из кошелька
                 document.querySelectorAll('.coin-pill').forEach(el => {
                     if (el.innerText.includes(coin)) el.classList.add('active');
                 });
@@ -368,6 +388,7 @@
             } else {
                 btn.innerText = 'Продать';
                 btn.className = 'btn-buy btn-sell';
+                btn.style.background = '#f44336';
             }
             calculateCost();
         }
@@ -375,12 +396,10 @@
         function startChart() {
             clearInterval(chartInterval);
             drawChart();
-            
             chartInterval = setInterval(() => {
                 let change = (Math.random() - 0.5) * (currentPrices[currentCoin] * 0.02);
                 currentPrices[currentCoin] += change;
                 if (currentPrices[currentCoin] < 0.01) currentPrices[currentCoin] = 0.01;
-                
                 document.getElementById('current-price').innerText = `$${currentPrices[currentCoin].toFixed(2)}`;
                 drawChart();
             }, 3000);
@@ -391,7 +410,6 @@
             const line = document.getElementById('chart-line');
             const area = document.getElementById('chart-area');
             const gridGroup = document.getElementById('chart-grid-group');
-            
             if (!svg || !line || !area) return;
 
             gridGroup.innerHTML = '';
@@ -407,17 +425,14 @@
             let points = '';
             const numPoints = 40;
             const timeSeed = Math.floor(Date.now() / 10000); 
-            
             for (let i = 0; i < numPoints; i++) {
                 const x = (i / (numPoints - 1)) * 100;
                 const wave = Math.sin(timeSeed + i * 0.5) * 10 + Math.cos(timeSeed * 0.5 + i * 0.2) * 5;
                 const y = 25 - wave;
                 points += `${x},${y} `;
             }
-
             line.setAttribute('points', points.trim());
-            const areaPath = `M0,50 L${points.trim()} L100,50 Z`;
-            area.setAttribute('d', areaPath);
+            area.setAttribute('d', `M0,50 L${points.trim()} L100,50 Z`);
         }
 
         function calculateCost() {
@@ -432,27 +447,19 @@
         async function buyCrypto() {
             const { amount, starsCost } = calculateCost();
             if (amount <= 0) return tg.showAlert('Введите количество');
-            
             const btn = document.getElementById('action-btn');
             const oldText = btn.innerText;
-            btn.innerText = "Отправка...";
-            btn.disabled = true;
+            btn.innerText = "Отправка..."; btn.disabled = true;
 
             if (tradeMode === 'sell') {
                 try {
                     const { data } = await db.from('users').select('*').eq('user_id', userId).single();
                     const balanceField = `${currentCoin.toLowerCase()}_balance`;
                     const balance = parseFloat(data[balanceField]) || 0;
-                    
-                    if (balance < amount) {
-                        btn.innerText = oldText; btn.disabled = false;
-                        return tg.showAlert('Недостаточно средств для продажи');
-                    }
-                    
+                    if (balance < amount) { btn.innerText = oldText; btn.disabled = false; return tg.showAlert('Недостаточно средств'); }
                     await db.from('users').update({ [balanceField]: balance - amount }).eq('user_id', userId);
                     const starsToGive = Math.floor(starsCost);
                     await db.from('users').update({ balance: (parseInt(data.balance) || 0) + starsToGive }).eq('user_id', userId);
-                    
                     tg.showAlert(`✅ Успешно продано ${amount} ${currentCoin} за ${starsToGive} ⭐`);
                     loadWallet();
                 } catch(e) { tg.showAlert("Ошибка: " + e.message); }
@@ -460,25 +467,15 @@
                 return;
             }
 
-            // Покупка
             try {
                 const response = await fetch('https://misu-bot-5uwv.onrender.com/buy', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ user_id: userId, coin: currentCoin, amount: amount, stars: starsCost })
                 });
-                
-                if (response.ok) {
-                    tg.showAlert(`Счет на ${starsCost} ⭐ отправлен в чат!`);
-                } else {
-                    tg.showAlert("Ошибка сервера. Попробуйте позже.");
-                }
-            } catch (e) {
-                tg.showAlert("Ошибка сети: " + e.message);
-            } finally {
-                btn.innerText = oldText;
-                btn.disabled = false;
-            }
+                if (response.ok) tg.showAlert(`Счет на ${starsCost} ⭐ отправлен в чат!`);
+                else tg.showAlert("Ошибка сервера.");
+            } catch (e) { tg.showAlert("Ошибка сети: " + e.message); }
+            finally { btn.innerText = oldText; btn.disabled = false; }
         }
 
         // ПЕРЕВОДЫ
@@ -491,13 +488,11 @@
         async function makeTransfer() {
             const toAddress = document.getElementById('transfer-address').value.trim();
             const amount = parseFloat(document.getElementById('transfer-amount').value);
-
             if (!toAddress || !amount || amount <= 0) return tg.showAlert('Заполните все поля');
             if (!toAddress.startsWith('T') || toAddress.length < 10) return tg.showAlert('Неверный адрес');
 
             const btn = document.querySelector('#screen-transfer .btn-buy');
-            btn.innerText = "Отправка...";
-            btn.disabled = true;
+            btn.innerText = "Отправка..."; btn.disabled = true;
 
             try {
                 const { data: recipient } = await db.from('users').select('user_id').eq('wallet_address', toAddress).single();
@@ -507,11 +502,9 @@
                 const { data: sender } = await db.from('users').select('*').eq('user_id', userId).single();
                 const balanceField = `${transferCoin.toLowerCase()}_balance`;
                 const senderBalance = parseFloat(sender[balanceField]) || 0;
-
                 if (senderBalance < amount) { btn.innerText = "Перевести"; btn.disabled = false; return tg.showAlert('Недостаточно средств'); }
 
                 await db.from('users').update({ [balanceField]: senderBalance - amount }).eq('user_id', userId);
-                
                 const { data: recData } = await db.from('users').select(balanceField).eq('user_id', recipient.user_id).single();
                 const recBalance = parseFloat(recData[balanceField]) || 0;
                 await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', recipient.user_id);
@@ -522,68 +515,45 @@
                 document.getElementById('success-overlay').classList.add('active');
                 document.getElementById('transfer-address').value = '';
                 document.getElementById('transfer-amount').value = '';
-                
                 loadWallet();
                 setTimeout(() => { document.getElementById('success-overlay').classList.remove('active'); }, 3000);
-
-            } catch (e) {
-                tg.showAlert("Ошибка: " + e.message);
-            } finally {
-                btn.innerText = "Перевести";
-                btn.disabled = false;
-            }
+            } catch (e) { tg.showAlert("Ошибка: " + e.message); }
+            finally { btn.innerText = "Перевести"; btn.disabled = false; }
         }
 
         // ИСТОРИЯ
         async function loadHistory() {
             const list = document.getElementById('history-list');
             list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
-            
             try {
-                const { data, error } = await db.from('transfers').select('*').or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`).order('created_at', { ascending: false });
-                
-                if (!data || data.length === 0) {
-                    list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">История пуста</p>';
-                    return;
-                }
-
+                const { data } = await db.from('transfers').select('*').or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`).order('created_at', { ascending: false });
+                if (!data || data.length === 0) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">История пуста</p>'; return; }
                 list.innerHTML = '';
                 data.forEach(tx => {
                     const isSender = tx.from_user_id === userId;
                     const sign = isSender ? '-' : '+';
                     const typeText = isSender ? 'Исходящий' : 'Входящий';
                     const date = new Date(tx.created_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-                    
                     const div = document.createElement('div');
                     div.className = 'history-item';
                     div.innerHTML = `
-                        <div class="history-info">
-                            <div class="history-type">${typeText} ${tx.coin}</div>
-                            <div class="history-date">${date}</div>
-                        </div>
+                        <div class="history-info"><div class="history-type">${typeText} ${tx.coin}</div><div class="history-date">${date}</div></div>
                         <div class="history-amount ${isSender ? 'negative' : 'positive'}">${sign}${tx.amount} ${tx.coin}</div>
                     `;
-                    
                     div.onclick = () => openDetails(tx, isSender, date);
                     list.appendChild(div);
                 });
-            } catch (e) {
-                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ошибка загрузки</p>';
-            }
+            } catch (e) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ошибка загрузки</p>'; }
         }
 
         async function openDetails(tx, isSender, date) {
             document.getElementById('det-amount').innerText = `${isSender ? '-' : '+'}${tx.amount} ${tx.coin}`;
             document.getElementById('det-coin').innerText = tx.coin;
             document.getElementById('det-date').innerText = date;
-            
-            // Получаем адреса для деталей
             const { data: fromData } = await db.from('users').select('wallet_address').eq('user_id', tx.from_user_id).single();
             const { data: toData } = await db.from('users').select('wallet_address').eq('user_id', tx.to_user_id).single();
-            
             document.getElementById('det-from').innerText = fromData?.wallet_address || `ID: ${tx.from_user_id}`;
             document.getElementById('det-to').innerText = toData?.wallet_address || `ID: ${tx.to_user_id}`;
-            
             document.getElementById('details-overlay').classList.add('active');
         }
 
@@ -591,7 +561,7 @@
             document.getElementById('details-overlay').classList.remove('active');
         }
 
-        // НАСТРОЙКИ
+        // НАСТРОЙКИ И АДРЕС
         function copyAddress() {
             const address = document.getElementById('wallet-address').innerText;
             if (address && address !== 'Загрузка...') {
@@ -610,6 +580,64 @@
                 document.getElementById('theme-halloween').classList.remove('active');
             }
             localStorage.setItem('theme', theme);
+        }
+
+        async function loadSettings() {
+            const { data } = await db.from('users').select('wallet_address').eq('user_id', userId).single();
+            document.getElementById('wallet-address').innerText = data?.wallet_address || 'Загрузка...';
+        }
+
+        // АУКЦИОН И КОЛЛЕКЦИЯ
+        async function loadAuction() {
+            const list = document.getElementById('auction-list');
+            list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
+            
+            try {
+                const { data } = await db.from('collections').select('*').eq('is_listed', true);
+                if (!data || data.length === 0) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Нет активных лотов</p>'; return; }
+
+                list.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `
+                        <div class="history-info"><div class="history-type">${item.address}</div><div class="history-date">Мин. ставка: ${item.min_price} ⭐</div></div>
+                        <div style="font-weight: 700; color: var(--accent);">Ставка</div>
+                    `;
+                    div.onclick = async () => {
+                        const bid = prompt(`Введите вашу ставку (мин. ${item.min_price} ⭐):`);
+                        if (bid && parseInt(bid) >= item.min_price) {
+                            await db.from('auctions').insert([{ collection_id: item.id, bidder_id: userId, amount: parseInt(bid) }]);
+                            tg.showAlert('Ставка принята!');
+                        } else if (bid) { tg.showAlert('Ставка слишком низкая'); }
+                    };
+                    list.appendChild(div);
+                });
+            } catch (e) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ошибка загрузки</p>'; }
+        }
+
+        async function loadCollection() {
+            const myAddr = document.getElementById('my-custom-address');
+            const list = document.getElementById('collection-list');
+            
+            try {
+                const { data: user } = await db.from('users').select('wallet_address').eq('user_id', userId).single();
+                myAddr.innerText = user?.wallet_address || 'Нет адреса';
+
+                const { data } = await db.from('collections').select('*').eq('owner_id', ADMIN_ID);
+                if (!data || data.length === 0) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Пока нет лотов</p>'; return; }
+
+                list.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'asset-item';
+                    div.innerHTML = `
+                        <div class="asset-icon" style="background: var(--accent);"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div>
+                        <div class="asset-info"><div class="asset-name">${item.address}</div><div class="asset-price">${item.is_listed ? 'На аукционе' : 'В коллекции'}</div></div>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (e) { console.error(e); }
         }
 
         async function loadWallet() {

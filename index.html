@@ -8,371 +8,316 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #fff; --text: #000; --text-sec: #888; --accent: #1976d2; --accent-light: #e3f2fd; --card: #f9f9f9; --border: #f0f0f0; --green: #4caf50; --red: #f44336; }
-        body.halloween { --bg: #120a1f; --text: #fff; --text-sec: #aa99bb; --accent: #ff7b00; --accent-light: #2b1b45; --card: #1f1235; --border: #2b1b45; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; overflow-x: hidden; }
-        .top-bar { padding: 15px; display: flex; justify-content: center; font-size: 1.1rem; font-weight: 700; }
-        .screen { display: none; animation: fadeIn 0.3s; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .balance-sec { text-align: center; padding: 20px 0; }
-        .balance-amt { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; cursor: pointer; }
-        .balance-amt span:first-child { font-size: 1.5rem; color: var(--text-sec); }
-        .balance-usd { font-size: 0.9rem; color: var(--text-sec); margin-top: 5px; }
-        
-        .actions { display: flex; justify-content: space-around; margin: 20px 10px 30px; }
-        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; width: 25%; }
-        .action-btn .icon { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--accent-light); }
-        .action-btn .icon svg { width: 24px; height: 24px; fill: var(--accent); }
-        .action-btn span { font-size: 0.75rem; color: var(--accent); font-weight: 600; text-align: center; }
-
-        .assets-head { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 15px; }
-        .assets-title { font-size: 1rem; font-weight: 600; color: var(--accent); }
-        .btn-hide { background: none; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 600; cursor: pointer; }
-        
-        .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .asset-icon { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; }
-        .asset-icon svg { width: 24px; height: 24px; }
-        .asset-info { flex: 1; } .asset-name { font-size: 1rem; font-weight: 600; } .asset-price { font-size: 0.8rem; color: var(--green); }
-        .asset-bal { text-align: right; } .asset-amt { font-size: 1rem; font-weight: 600; } .asset-usd { font-size: 0.8rem; color: var(--text-sec); }
-
-        .coin-select { display: flex; gap: 10px; margin: 20px 20px 15px; overflow-x: auto; }
-        .coin-pill { padding: 8px 15px; background: var(--card); border-radius: 20px; font-weight: 600; font-size: 0.9rem; cursor: pointer; white-space: nowrap; border: 1px solid transparent; }
-        .coin-pill.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
-        .panel { background: var(--card); padding: 20px; border-radius: 15px; margin: 0 20px; border: 1px solid var(--border); }
-        .input-main { width: 100%; padding: 18px; border: 1px solid var(--border); border-radius: 12px; font-size: 1.2rem; font-weight: 700; outline: none; background: var(--bg); color: var(--text); text-align: center; margin-bottom: 15px; }
-        .row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; color: var(--text-sec); }
-        .btn-main { width: 100%; padding: 18px; background: var(--green); color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
-
-        .transfer-panel { padding: 20px; }
-        .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .input-trans { padding: 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-size: 1rem; outline: none; }
-        .coin-btns { display: flex; gap: 10px; margin-bottom: 20px; }
-        .coin-btn { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
-        .coin-btn.active { background: var(--accent); color: #fff; }
-
-        .hist-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
-        .hist-item { background: var(--card); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; }
-        .hist-info { display: flex; flex-direction: column; gap: 5px; }
-        .hist-type { font-size: 0.9rem; font-weight: 600; } .hist-date { font-size: 0.75rem; color: var(--text-sec); }
-        .hist-amt { font-weight: 700; } .pos { color: var(--green); } .neg { color: var(--red); }
-        
-        .settings-panel { padding: 20px; }
-        .set-item { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
-        .wallet-addr { background: var(--card); padding: 20px; border-radius: 15px; font-family: monospace; font-size: 1.2rem; word-break: break-all; border: 1px solid var(--border); text-align: center; color: var(--accent); font-weight: 700; margin-bottom: 15px; }
-        .btn-copy { background: var(--accent); color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; }
-
-        .nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sec); font-size: 0.7rem; cursor: pointer; width: 20%; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item .icon { width: 24px; height: 24px; } .nav-item .icon svg { width: 100%; height: 100%; fill: currentColor; }
-
-        .success-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
-        .success-overlay.active { display: flex; }
-        .success-card { background: var(--bg); padding: 48px 32px 32px; border-radius: 28px; text-align: center; width: 90%; max-width: 360px; }
+        :root{--bg:#fff;--text:#000;--sec:#888;--accent:#1976d2;--accent-l:#e3f2fd;--card:#f9f9f9;--border:#f0f0f0;--green:#4caf50;--red:#f44336}
+        body.halloween{--bg:#120a1f;--text:#fff;--sec:#aa99bb;--accent:#ff7b00;--accent-l:#2b1b45;--card:#1f1235;--border:#2b1b45}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;user-select:none;-webkit-tap-highlight-color:transparent}
+        body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;padding-bottom:80px;overflow-x:hidden;transition:background .3s,color .3s}
+        .top{text-align:center;padding:15px;font-size:1.1rem;font-weight:700}
+        .scr{display:none;animation:fade .3s}
+        .scr.active{display:block}
+        @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+        .bal-sec{text-align:center;padding:20px 0}
+        .bal-amt{font-size:3rem;font-weight:700;display:flex;justify-content:center;align-items:baseline;gap:5px;cursor:pointer}
+        .bal-amt span:first-child{font-size:1.5rem;color:var(--sec)}
+        .bal-usd{font-size:.9rem;color:var(--sec);margin-top:5px}
+        .acts{display:flex;justify-content:space-around;margin:20px 10px 30px}
+        .act-btn{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;width:25%}
+        .act-btn .ic{width:55px;height:55px;border-radius:50%;display:flex;justify-content:center;align-items:center;background:var(--accent-l)}
+        .act-btn .ic svg{width:24px;height:24px;fill:var(--accent)}
+        .act-btn span{font-size:.75rem;color:var(--accent);font-weight:600;text-align:center}
+        .ass-head{display:flex;justify-content:space-between;align-items:center;padding:0 20px;margin-bottom:15px}
+        .ass-title{font-size:1rem;font-weight:600;color:var(--accent)}
+        .btn-hide{background:none;border:none;color:var(--accent);font-size:.85rem;font-weight:600;cursor:pointer}
+        .ass-item{display:flex;align-items:center;padding:15px 20px;border-bottom:1px solid var(--border);cursor:pointer}
+        .ass-ic{width:40px;height:40px;border-radius:50%;margin-right:15px;display:flex;justify-content:center;align-items:center}
+        .ass-ic svg{width:24px;height:24px}
+        .ass-info{flex:1}.ass-name{font-size:1rem;font-weight:600}.ass-price{font-size:.8rem;color:var(--green)}
+        .ass-bal{text-align:right}.ass-amt{font-size:1rem;font-weight:600}.ass-usd{font-size:.8rem;color:var(--sec)}
+        .coin-sel{display:flex;gap:10px;margin:20px 20px 15px;overflow-x:auto}
+        .pill{padding:8px 15px;background:var(--card);border-radius:20px;font-weight:600;font-size:.9rem;cursor:pointer;white-space:nowrap;border:1px solid transparent}
+        .pill.active{border-color:var(--accent);background:var(--accent-l);color:var(--accent)}
+        .panel{background:var(--card);padding:20px;border-radius:15px;margin:0 20px;border:1px solid var(--border)}
+        .input-main{width:100%;padding:18px;border:1px solid var(--border);border-radius:12px;font-size:1.2rem;font-weight:700;outline:none;background:var(--bg);color:var(--text);text-align:center;margin-bottom:15px}
+        .row{display:flex;justify-content:space-between;margin-bottom:15px;font-size:.9rem;color:var(--sec)}
+        .btn-main{width:100%;padding:18px;background:var(--green);color:#fff;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer}
+        .trans-panel{padding:20px}
+        .inp-grp{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+        .inp-trans{padding:15px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:1rem;outline:none}
+        .coin-btns{display:flex;gap:10px;margin-bottom:20px}
+        .coin-btn{flex:1;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-weight:600;cursor:pointer}
+        .coin-btn.active{background:var(--accent);color:#fff}
+        .hist-list{padding:0 20px;display:flex;flex-direction:column;gap:10px}
+        .hist-item{background:var(--card);border-radius:12px;padding:15px;display:flex;justify-content:space-between}
+        .hist-info{display:flex;flex-direction:column;gap:5px}
+        .hist-type{font-size:.9rem;font-weight:600}.hist-date{font-size:.75rem;color:var(--sec)}
+        .hist-amt{font-weight:700}.pos{color:var(--green)}.neg{color:var(--red)}
+        .set-panel{padding:20px}
+        .set-item{padding:15px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+        .wallet-addr{background:var(--card);padding:20px;border-radius:15px;font-family:monospace;font-size:1.2rem;word-break:break-all;border:1px solid var(--border);text-align:center;color:var(--accent);font-weight:700;margin-bottom:15px}
+        .btn-copy{background:var(--accent);color:#fff;border:none;padding:15px;border-radius:10px;font-weight:600;cursor:pointer;width:100%}
+        .nav{position:fixed;bottom:0;left:0;width:100%;background:var(--bg);display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid var(--border);z-index:100}
+        .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--sec);font-size:.7rem;cursor:pointer;width:20%}
+        .nav-item.active{color:var(--accent)}
+        .nav-item .ic{width:24px;height:24px}.nav-item .ic svg{width:100%;height:100%;fill:currentColor}
+        .suc-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;justify-content:center;align-items:center;z-index:1000;backdrop-filter:blur(8px)}
+        .suc-overlay.active{display:flex}
+        .suc-card{background:var(--bg);padding:48px 32px 32px;border-radius:28px;text-align:center;width:90%;max-width:360px}
     </style>
 </head>
 <body>
-    <div class="top-bar">Crypto Bot</div>
+    <div class="top">Crypto Bot</div>
 
-    <!-- КОШЕЛЕК -->
-    <div class="screen active" id="screen-wallet">
-        <div class="balance-sec">
-            <div class="balance-amt" onclick="toggleCurrency()">
-                <span id="curr-sym">$</span><span id="total-bal">0.00</span><span id="curr-lbl" style="font-size: 1.5rem; color: var(--text-sec); margin-left: 5px;">USDT</span>
+    <div class="scr active" id="scr-wallet">
+        <div class="bal-sec">
+            <div class="bal-amt" id="tot-bal-cont" onclick="toggleCurrency()">
+                <span id="curr-sym">$</span><span id="tot-bal">0.00</span><span id="curr-lbl" style="font-size:1.5rem;color:var(--sec);font-weight:500;margin-left:5px">USDT</span>
             </div>
-            <div class="balance-usd" id="total-usd">Общий баланс</div>
+            <div class="bal-usd" id="tot-usd">Общий баланс</div>
         </div>
-        
-        <div class="actions">
-            <div class="action-btn" onclick="switchTab('exchange')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><span>Пополнить</span></div>
-            <div class="action-btn" onclick="switchTab('transfer')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><span>Перевод</span></div>
-            <div class="action-btn" onclick="switchTab('history')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><span>История</span></div>
+        <div class="acts">
+            <div class="act-btn" onclick="switchTab('exchange')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><span>Пополнить</span></div>
+            <div class="act-btn" onclick="switchTab('transfer')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><span>Перевод</span></div>
+            <div class="act-btn" onclick="switchTab('history')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><span>История</span></div>
         </div>
 
-        <div class="assets-head">
-            <div class="assets-title">Мои активы →</div>
+        <div class="ass-head">
+            <div class="ass-title">Мои активы →</div>
             <button class="btn-hide" id="btn-hide" onclick="toggleHideBalances()">Скрыть балансы</button>
         </div>
 
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')">
-            <div class="asset-icon" style="background: #26a17b;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v3h2v2h-2v5h-2v-5H9V9h2V7z"/></svg></div>
-            <div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$1.00</div></div>
-            <div class="asset-bal"><div class="asset-amt" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div>
+        <div class="ass-item" onclick="switchTab('exchange'); selectCoin('USDT')">
+            <div class="ass-ic" style="background:#26a17b"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v3h2v2h-2v5h-2v-5H9V9h2V7z"/></svg></div>
+            <div class="ass-info"><div class="ass-name">Tether</div><div class="ass-price">$1.00</div></div>
+            <div class="ass-bal"><div class="ass-amt" id="usdt-bal">0.00 USDT</div><div class="ass-usd" id="usdt-usd">$0.00</div></div>
         </div>
-
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
-            <div class="asset-icon" style="background: #0088cc;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
-            <div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price">$1.15</div></div>
-            <div class="asset-bal"><div class="asset-amt" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div>
+        <div class="ass-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
+            <div class="ass-ic" style="background:#0088cc"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
+            <div class="ass-info"><div class="ass-name">Gram</div><div class="ass-price">$1.15</div></div>
+            <div class="ass-bal"><div class="ass-amt" id="gram-bal">0.00 GRAM</div><div class="ass-usd" id="gram-usd">$0.00</div></div>
         </div>
-
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')">
-            <div class="asset-icon" style="background: #9945ff;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM9 11h6v2H9z"/></svg></div>
-            <div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price">$93.99</div></div>
-            <div class="asset-bal"><div class="asset-amt" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div>
+        <div class="ass-item" onclick="switchTab('exchange'); selectCoin('SOL')">
+            <div class="ass-ic" style="background:#9945ff"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM9 11h6v2H9z"/></svg></div>
+            <div class="ass-info"><div class="ass-name">Solana</div><div class="ass-price">$93.99</div></div>
+            <div class="ass-bal"><div class="ass-amt" id="sol-bal">0.00 SOL</div><div class="ass-usd" id="sol-usd">$0.00</div></div>
         </div>
-
-        <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')">
-            <div class="asset-icon" style="background: #ff0000;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
-            <div class="asset-info"><div class="asset-name">TRON</div><div class="asset-price">$0.12</div></div>
-            <div class="asset-bal"><div class="asset-amt" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">$0.00</div></div>
+        <div class="ass-item" onclick="switchTab('exchange'); selectCoin('TRX')">
+            <div class="ass-ic" style="background:#ff0000"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
+            <div class="ass-info"><div class="ass-name">TRON</div><div class="ass-price">$0.12</div></div>
+            <div class="ass-bal"><div class="ass-amt" id="trx-bal">0.00 TRX</div><div class="ass-usd" id="trx-usd">$0.00</div></div>
         </div>
     </div>
 
-    <!-- БИРЖА -->
-    <div class="screen" id="screen-exchange">
-        <div style="padding: 20px 20px 0; font-weight: 700; font-size: 1.1rem;">Покупка</div>
-        <div class="coin-select">
-            <div class="coin-pill active" onclick="selectCoin('USDT', this)">USDT</div>
-            <div class="coin-pill" onclick="selectCoin('GRAM', this)">GRAM</div>
-            <div class="coin-pill" onclick="selectCoin('SOL', this)">SOL</div>
-            <div class="coin-pill" onclick="selectCoin('TRX', this)">TRX</div>
+    <div class="scr" id="scr-exchange">
+        <div style="padding:20px 20px 0;font-weight:700;font-size:1.1rem">Покупка</div>
+        <div class="coin-sel">
+            <div class="pill active" onclick="selectCoin('USDT', this)">USDT</div>
+            <div class="pill" onclick="selectCoin('GRAM', this)">GRAM</div>
+            <div class="pill" onclick="selectCoin('SOL', this)">SOL</div>
+            <div class="pill" onclick="selectCoin('TRX', this)">TRX</div>
         </div>
         <div class="panel">
-            <input type="number" class="input-main" id="buy-amount" placeholder="Количество" oninput="calculateCost()">
+            <input type="number" class="input-main" id="buy-amt" placeholder="Количество" oninput="calculateCost()">
             <div class="row"><span>К оплате:</span><span id="cost-stars">0 ⭐</span></div>
             <button class="btn-main" onclick="buyCrypto()">Купить</button>
         </div>
     </div>
 
-    <!-- ПЕРЕВОД -->
-    <div class="screen" id="screen-transfer">
-        <div class="transfer-panel">
-            <h2 style="margin-bottom: 20px;">Перевод</h2>
+    <div class="scr" id="scr-transfer">
+        <div class="trans-panel">
+            <h2 style="margin-bottom:20px">Перевод</h2>
             <div class="coin-btns">
-                <div class="coin-btn active" onclick="selectTransferCoin('USDT', this)">USDT</div>
-                <div class="coin-btn" onclick="selectTransferCoin('GRAM', this)">GRAM</div>
-                <div class="coin-btn" onclick="selectTransferCoin('SOL', this)">SOL</div>
-                <div class="coin-btn" onclick="selectTransferCoin('TRX', this)">TRX</div>
+                <div class="coin-btn active" onclick="selectTransCoin('USDT', this)">USDT</div>
+                <div class="coin-btn" onclick="selectTransCoin('GRAM', this)">GRAM</div>
+                <div class="coin-btn" onclick="selectTransCoin('SOL', this)">SOL</div>
+                <div class="coin-btn" onclick="selectTransCoin('TRX', this)">TRX</div>
             </div>
-            <div class="input-group"><label>Адрес получателя:</label><input type="text" class="input-trans" id="transfer-address" placeholder="Введите адрес (T...)"></div>
-            <div class="input-group"><label>Сумма:</label><input type="number" class="input-trans" id="transfer-amount" placeholder="0.00"></div>
-            <div style="font-size: 0.8rem; color: var(--text-sec); text-align: center; margin-top: -10px;">Комиссия сети: 1%</div>
-            <button class="btn-main" style="margin-top: 20px;" onclick="makeTransfer()">Отправить</button>
+            <div class="inp-grp"><label>Адрес:</label><input type="text" class="inp-trans" id="trans-addr" placeholder="Введите адрес (T...)"></div>
+            <div class="inp-grp"><label>Сумма:</label><input type="number" class="inp-trans" id="trans-amt" placeholder="0.00"></div>
+            <div style="font-size:.8rem;color:var(--sec);text-align:center;margin-top:-10px">Комиссия: 1%</div>
+            <button class="btn-main" style="margin-top:20px" onclick="makeTransfer()">Отправить</button>
         </div>
     </div>
 
-    <!-- ИСТОРИЯ -->
-    <div class="screen" id="screen-history">
-        <h2 style="padding: 20px;">История</h2>
-        <div class="hist-list" id="history-list">
-            <p style="color: var(--text-sec); text-align: center;">Пока пусто</p>
-        </div>
+    <div class="scr" id="scr-history">
+        <h2 style="padding:20px">История</h2>
+        <div class="hist-list" id="hist-list"><p style="color:var(--sec);text-align:center">Пока пусто</p></div>
     </div>
 
-    <!-- НАСТРОЙКИ -->
-    <div class="screen" id="screen-settings">
-        <div class="settings-panel">
-            <h2 style="margin-bottom: 20px;">Настройки</h2>
+    <div class="scr" id="scr-settings">
+        <div class="set-panel">
+            <h2 style="margin-bottom:20px">Настройки</h2>
             <div class="set-item">
-                <span style="font-weight: 600;">Ваш адрес кошелька:</span>
-                <div class="wallet-addr" id="wallet-address">Загрузка...</div>
-                <button class="btn-copy" onclick="copyAddress()">Копировать</button>
+                <span style="font-weight:600">Ваш адрес:</span>
+                <div class="wallet-addr" id="wallet-addr">Загрузка...</div>
+                <button class="btn-copy" onclick="copyAddr()">Копировать</button>
             </div>
         </div>
     </div>
 
-    <!-- НАВИГАЦИЯ -->
     <div class="nav">
-        <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div><span>Кошелек</span></div>
-        <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div><span>Биржа</span></div>
-        <div class="nav-item" onclick="switchTab('settings')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div><span>Ещё</span></div>
+        <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div><span>Кошелек</span></div>
+        <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div><span>Биржа</span></div>
+        <div class="nav-item" onclick="switchTab('settings')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div><span>Ещё</span></div>
     </div>
 
-    <!-- УСПЕХ -->
-    <div class="success-overlay" id="success-overlay" onclick="hideSuccess()">
-        <div class="success-card" onclick="event.stopPropagation()">
-            <h3 style="margin-bottom: 10px;">Успешно!</h3>
-            <div id="success-amount" style="font-size: 1.2rem; font-weight: 700; color: var(--green);">-0 USDT</div>
-            <button class="btn-main" style="margin-top: 20px;" onclick="hideSuccess()">Готово</button>
+    <div class="suc-overlay" id="suc-overlay" onclick="hideSuc()">
+        <div class="suc-card" onclick="event.stopPropagation()">
+            <h3 style="margin-bottom:10px">Успешно!</h3>
+            <div id="suc-amt" style="font-size:1.2rem;font-weight:700;color:var(--green)">-0 USDT</div>
+            <button class="btn-main" style="margin-top:20px" onclick="hideSuc()">Готово</button>
         </div>
     </div>
 
     <script>
-        const SUPABASE_URL = "https://ptcofqwsvyytcnoerazu.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_CL2wAd6YW9tj5fIq4r9b4A_iVeZtnBx";
-        const { createClient } = supabase;
-        const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseUrl = "https://ptcofqwsvyytcnoerazu.supabase.co";
+        const supabaseKey = "sb_publishable_CL2wAd6YW9tj5fIq4r9b4A_iVeZtnBx";
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand();
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = parseInt(urlParams.get('user_id')) || 0;
+        const urlP = new URLSearchParams(window.location.search);
+        const userId = parseInt(urlP.get('user_id')) || 0;
+        let curCoin = 'USDT', transCoin = 'USDT';
+        let bals = {usdt:0, gram:0, sol:0, trx:0};
+        let isHidden = false;
 
-        let currentCoin = 'USDT';
-        let transferCoin = 'USDT';
-        let balances = { usdt: 0, gram: 0, sol: 0, trx: 0 };
-        let isBalancesHidden = false;
-
-        async function init() { if (userId) await loadWallet(); }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            const screen = document.getElementById('screen-' + tab);
-            if (screen) screen.classList.add('active');
-            if (tab === 'wallet') document.getElementById('nav-wallet').classList.add('active');
-            if (tab === 'exchange') document.getElementById('nav-exchange').classList.add('active');
-            
-            if (tab === 'history') loadHistory();
-            if (tab === 'settings') loadSettings();
+        async function init(){ if(userId) await loadW(); }
+        function switchTab(t){
+            document.querySelectorAll('.scr').forEach(e=>e.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+            document.getElementById('scr-'+t).classList.add('active');
+            if(t==='wallet') document.getElementById('nav-wallet').classList.add('active');
+            if(t==='exchange') document.getElementById('nav-exchange').classList.add('active');
+            if(t==='history') loadH();
+            if(t==='settings') loadSet();
         }
 
-        function toggleHideBalances() {
-            isBalancesHidden = !isBalancesHidden;
-            document.getElementById('btn-hide').innerText = isBalancesHidden ? 'Показать балансы' : 'Скрыть балансы';
-            
-            if (isBalancesHidden) {
-                document.getElementById('total-bal').innerText = '****';
+        function toggleHideBalances(){
+            isHidden = !isHidden;
+            document.getElementById('btn-hide').innerText = isHidden ? 'Показать балансы' : 'Скрыть балансы';
+            if(isHidden){
+                document.getElementById('tot-bal').innerText = '****';
                 document.getElementById('curr-sym').innerText = '';
                 document.getElementById('curr-lbl').innerText = '';
-                document.getElementById('total-usd').innerText = 'Скрыто';
-                
-                document.getElementById('usdt-balance').innerText = '****';
+                document.getElementById('tot-usd').innerText = 'Скрыто';
+                document.getElementById('usdt-bal').innerText = '****';
                 document.getElementById('usdt-usd').innerText = '****';
-                document.getElementById('gram-balance').innerText = '****';
+                document.getElementById('gram-bal').innerText = '****';
                 document.getElementById('gram-usd').innerText = '****';
-                document.getElementById('sol-balance').innerText = '****';
+                document.getElementById('sol-bal').innerText = '****';
                 document.getElementById('sol-usd').innerText = '****';
-                document.getElementById('trx-balance').innerText = '****';
+                document.getElementById('trx-bal').innerText = '****';
                 document.getElementById('trx-usd').innerText = '****';
-            } else { updateDisplay(); }
+            } else {
+                updateDisp();
+            }
         }
 
-        function updateDisplay() {
-            if (isBalancesHidden) return;
-            const total = (balances.usdt * 1) + (balances.gram * 1.15) + (balances.sol * 93.99) + (balances.trx * 0.12);
-            document.getElementById('total-bal').innerText = total.toFixed(2);
+        function updateDisp(){
+            if(isHidden) return;
+            const tot = (bals.usdt*1) + (bals.gram*1.15) + (bals.sol*93.99) + (bals.trx*0.12);
+            document.getElementById('tot-bal').innerText = tot.toFixed(2);
             document.getElementById('curr-sym').innerText = '$';
             document.getElementById('curr-lbl').innerText = 'USDT';
-            document.getElementById('total-usd').innerText = 'Общий баланс';
-
-            document.getElementById('usdt-balance').innerText = `${balances.usdt} USDT`;
-            document.getElementById('usdt-usd').innerText = `$${balances.usdt.toFixed(2)}`;
-            document.getElementById('gram-balance').innerText = `${balances.gram} GRAM`;
-            document.getElementById('gram-usd').innerText = `$${(balances.gram * 1.15).toFixed(2)}`;
-            document.getElementById('sol-balance').innerText = `${balances.sol} SOL`;
-            document.getElementById('sol-usd').innerText = `$${(balances.sol * 93.99).toFixed(2)}`;
-            document.getElementById('trx-balance').innerText = `${balances.trx} TRX`;
-            document.getElementById('trx-usd').innerText = `$${(balances.trx * 0.12).toFixed(2)}`;
-        }
-
-        function selectCoin(coin, el) {
-            currentCoin = coin;
-            document.querySelectorAll('.coin-pill').forEach(p => p.classList.remove('active'));
-            if (el) el.classList.add('active');
-            calculateCost();
-        }
-        function selectTransferCoin(coin, el) {
-            transferCoin = coin;
-            document.querySelectorAll('.coin-btn').forEach(p => p.classList.remove('active'));
-            if (el) el.classList.add('active');
-        }
-
-        function calculateCost() {
-            const amt = parseFloat(document.getElementById('buy-amount').value) || 0;
-            const prices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
-            document.getElementById('cost-stars').innerText = `${Math.ceil(amt * prices[currentCoin] * 100)} ⭐`;
-        }
-
-        async function buyCrypto() {
-            const amt = parseFloat(document.getElementById('buy-amount').value) || 0;
-            const prices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
-            if (amt <= 0) return tg.showAlert('Введите кол-во');
-            try {
-                const res = await fetch('https://misu-bot-5uwv.onrender.com/buy', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: userId, coin: currentCoin, amount: amt, stars: Math.ceil(amt * prices[currentCoin] * 100) })
-                });
-                if (res.ok) tg.showAlert('Счет отправлен в чат!');
-                else tg.showAlert('Ошибка');
-            } catch(e) { tg.showAlert('Ошибка сети'); }
-        }
-
-        async function makeTransfer() {
-            const to = document.getElementById('transfer-address').value.trim();
-            const amt = parseFloat(document.getElementById('transfer-amount').value);
-            if (!to || !amt || amt <= 0) return tg.showAlert('Заполните поля');
+            document.getElementById('tot-usd').innerText = 'Общий баланс';
             
-            const btn = document.querySelector('#screen-transfer .btn-main');
-            btn.innerText = 'Отправка...'; btn.disabled = true;
-            try {
-                const { data: rec } = await db.from('users').select('user_id').eq('wallet_address', to).limit(1);
-                if (!rec || rec.length === 0) throw new Error('Кошелек не найден');
-                if (rec[0].user_id === userId) throw new Error('Нельзя себе');
-
-                const field = `${transferCoin.toLowerCase()}_balance`;
-                const { data: send } = await db.from('users').select(field).eq('user_id', userId).limit(1);
-                const bal = parseFloat(send[0][field]) || 0;
-                const total = amt + (amt * 0.01);
-                if (bal < total) throw new Error(`Не хватает ${transferCoin}`);
-
-                await db.from('users').update({ [field]: bal - total }).eq('user_id', userId);
-                const { data: recBal } = await db.from('users').select(field).eq('user_id', rec[0].user_id).limit(1);
-                await db.from('users').update({ [field]: (parseFloat(recBal[0][field]) || 0) + amt }).eq('user_id', rec[0].user_id);
-                await db.from('transfers').insert([{ from_user_id: userId, to_user_id: rec[0].user_id, coin: transferCoin, amount: amt }]);
-
-                showSuccess(`-${amt} ${transferCoin}`);
-                document.getElementById('transfer-address').value = '';
-                document.getElementById('transfer-amount').value = '';
-                loadWallet();
-            } catch(e) { tg.showAlert(e.message); }
-            finally { btn.innerText = 'Отправить'; btn.disabled = false; }
+            document.getElementById('usdt-bal').innerText = `${bals.usdt} USDT`;
+            document.getElementById('usdt-usd').innerText = `$${bals.usdt.toFixed(2)}`;
+            document.getElementById('gram-bal').innerText = `${bals.gram} GRAM`;
+            document.getElementById('gram-usd').innerText = `$${(bals.gram*1.15).toFixed(2)}`;
+            document.getElementById('sol-bal').innerText = `${bals.sol} SOL`;
+            document.getElementById('sol-usd').innerText = `$${(bals.sol*93.99).toFixed(2)}`;
+            document.getElementById('trx-bal').innerText = `${bals.trx} TRX`;
+            document.getElementById('trx-usd').innerText = `$${(bals.trx*0.12).toFixed(2)}`;
         }
 
-        async function loadHistory() {
-            const list = document.getElementById('history-list');
-            list.innerHTML = '<p style="text-align: center;">Загрузка...</p>';
-            const { data } = await db.from('transfers').select('*').or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`).order('created_at', { ascending: false });
-            if (!data || data.length === 0) return list.innerHTML = '<p style="text-align: center; color: var(--text-sec);">Пусто</p>';
-            list.innerHTML = data.map(tx => {
-                const isS = tx.from_user_id === userId;
-                const date = new Date(tx.created_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-                return `<div class="hist-item"><div class="hist-info"><div class="hist-type">${isS ? 'Исход' : 'Вход'} ${tx.coin}</div><div class="hist-date">${date}</div></div><div class="hist-amt ${isS ? 'neg' : 'pos'}">${isS ? '-' : '+'}${tx.amount} ${tx.coin}</div></div>`;
+        function selectCoin(c, el){ curCoin = c; document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); if(el) el.classList.add('active'); calc(); }
+        function selectTransCoin(c, el){ transCoin = c; document.querySelectorAll('.coin-btn').forEach(p=>p.classList.remove('active')); if(el) el.classList.add('active'); }
+        function calc(){ const a = parseFloat(document.getElementById('buy-amt').value)||0; const pr = {'USDT':1,'GRAM':1.15,'SOL':93.99,'TRX':0.12}; document.getElementById('cost-stars').innerText = `${Math.ceil(a*pr[curCoin]*100)} ⭐`; }
+
+        async function buyCrypto(){
+            const a = parseFloat(document.getElementById('buy-amt').value)||0;
+            if(a<=0) return tg.showAlert('Введите кол-во');
+            const pr = {'USDT':1,'GRAM':1.15,'SOL':93.99,'TRX':0.12};
+            try{
+                const r = await fetch('https://misu-bot-5uwv.onrender.com/buy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:userId,coin:curCoin,amount:a,stars:Math.ceil(a*pr[curCoin]*100)})});
+                if(r.ok) tg.showAlert('Счет отправлен в чат!'); else tg.showAlert('Ошибка');
+            }catch(e){ tg.showAlert('Ошибка сети'); }
+        }
+
+        async function makeTransfer(){
+            const to = document.getElementById('trans-addr').value.trim();
+            const amt = parseFloat(document.getElementById('trans-amt').value);
+            if(!to || !amt || amt<=0) return tg.showAlert('Заполните поля');
+            
+            const btn = document.querySelector('#scr-transfer .btn-main');
+            btn.innerText = 'Отправка...'; btn.disabled = true;
+            try{
+                const {data:rec} = await db.from('users').select('user_id').eq('wallet_address', to).limit(1);
+                if(!rec || rec.length===0) throw new Error('Кошелек не найден');
+                if(rec[0].user_id === userId) throw new Error('Нельзя себе');
+                
+                const f = `${transCoin.toLowerCase()}_balance`;
+                const {data:send} = await db.from('users').select(f).eq('user_id', userId).limit(1);
+                const bal = parseFloat(send[0][f])||0;
+                const tot = amt + (amt*0.01);
+                if(bal < tot) throw new Error(`Не хватает ${transCoin}`);
+                
+                await db.from('users').update({[f]:bal-tot}).eq('user_id', userId);
+                const {data:recBal} = await db.from('users').select(f).eq('user_id', rec[0].user_id).limit(1);
+                await db.from('users').update({[f]:(parseFloat(recBal[0][f])||0)+amt}).eq('user_id', rec[0].user_id);
+                await db.from('transfers').insert([{from_user_id:userId,to_user_id:rec[0].user_id,coin:transCoin,amount:amt}]);
+                
+                showSuc(`-${amt} ${transCoin}`);
+                document.getElementById('trans-addr').value = '';
+                document.getElementById('trans-amt').value = '';
+                loadW();
+            }catch(e){ tg.showAlert(e.message); }
+            finally{ btn.innerText = 'Отправить'; btn.disabled = false; }
+        }
+
+        async function loadH(){
+            const list = document.getElementById('hist-list');
+            list.innerHTML = '<p style="text-align:center">Загрузка...</p>';
+            const {data} = await db.from('transfers').select('*').or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`).order('created_at',{ascending:false});
+            if(!data||data.length===0) return list.innerHTML = '<p style="text-align:center;color:var(--sec)">Пусто</p>';
+            list.innerHTML = data.map(tx=>{
+                const isS = tx.from_user_id===userId;
+                const d = new Date(tx.created_at).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+                return `<div class="hist-item"><div class="hist-info"><div class="hist-type">${isS?'Исход':'Вход'} ${tx.coin}</div><div class="hist-date">${d}</div></div><div class="hist-amt ${isS?'neg':'pos'}">${isS?'-':'+'}${tx.amount} ${tx.coin}</div></div>`;
             }).join('');
         }
 
-        async function loadSettings() {
-            const { data } = await db.from('users').select('wallet_address').eq('user_id', userId).limit(1);
-            if (data && data.length > 0) document.getElementById('wallet-address').innerText = data[0].wallet_address;
+        async function loadSet(){
+            const {data} = await db.from('users').select('wallet_address').eq('user_id', userId).limit(1);
+            if(data&&data.length>0) document.getElementById('wallet-addr').innerText = data[0].wallet_address;
         }
 
-        function copyAddress() {
-            const addr = document.getElementById('wallet-address').innerText;
-            if (addr && addr !== 'Загрузка...') navigator.clipboard.writeText(addr).then(() => tg.showAlert('Скопировано!'));
-        }
+        function copyAddr(){ const a = document.getElementById('wallet-addr').innerText; if(a&&a!=='Загрузка...') navigator.clipboard.writeText(a).then(()=>tg.showAlert('Скопировано!')); }
 
-        async function loadWallet() {
-            if (!userId) return;
-            const { data } = await db.from('users').select('*').eq('user_id', userId).limit(1);
-            if (!data || data.length === 0) {
-                const newAddr = 'T' + Math.random().toString(36).substring(2, 15).toUpperCase();
-                await db.from('users').insert({ user_id: userId, wallet_address: newAddr });
-                balances = { usdt: 0, gram: 0, sol: 0, trx: 0 };
-                document.getElementById('wallet-address').innerText = newAddr;
-                updateDisplay();
-                return;
+        async function loadW(){
+            if(!userId) return;
+            const {data} = await db.from('users').select('*').eq('user_id', userId).limit(1);
+            if(!data||data.length===0){
+                const n = 'T'+Math.random().toString(36).substring(2,15).toUpperCase();
+                await db.from('users').insert({user_id:userId, wallet_address:n});
+                bals = {usdt:0,gram:0,sol:0,trx:0};
+                document.getElementById('wallet-addr').innerText = n;
+                updateDisp(); return;
             }
             const u = data[0];
-            balances.usdt = parseFloat(u.usdt_balance) || 0;
-            balances.gram = parseFloat(u.gram_balance) || 0;
-            balances.sol = parseFloat(u.sol_balance) || 0;
-            balances.trx = parseFloat(u.trx_balance) || 0;
-            document.getElementById('wallet-address').innerText = u.wallet_address || 'Нет адреса';
-            updateDisplay();
+            bals.usdt = parseFloat(u.usdt_balance)||0;
+            bals.gram = parseFloat(u.gram_balance)||0;
+            bals.sol = parseFloat(u.sol_balance)||0;
+            bals.trx = parseFloat(u.trx_balance)||0;
+            document.getElementById('wallet-addr').innerText = u.wallet_address||'Нет адреса';
+            updateDisp();
         }
 
-        function showSuccess(txt) {
-            document.getElementById('success-amount').innerText = txt;
-            document.getElementById('success-overlay').classList.add('active');
-        }
-        function hideSuccess() { document.getElementById('success-overlay').classList.remove('active'); }
-        function toggleCurrency() { /* Заглушка */ }
-
+        function showSuc(t){ document.getElementById('suc-amt').innerText=t; document.getElementById('suc-overlay').classList.add('active'); }
+        function hideSuc(){ document.getElementById('suc-overlay').classList.remove('active'); }
+        function toggleCurrency(){}
         init();
     </script>
 </body>
-                                                       </html>
+</html>

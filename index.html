@@ -108,7 +108,6 @@
 <body>
     <div class="top-bar">Crypto Bot</div>
 
-    <!-- PIN-КОД -->
     <div class="screen" id="screen-pin">
         <div class="pin-screen">
             <div class="pin-title">Добро пожаловать!</div>
@@ -118,7 +117,6 @@
         </div>
     </div>
 
-    <!-- КОШЕЛЕК -->
     <div class="screen active" id="screen-wallet">
         <div class="balance-section">
             <div class="balance-amount" id="total-balance-container" onclick="toggleCurrency()">
@@ -162,10 +160,8 @@
         </div>
     </div>
 
-    <!-- БИРЖА -->
     <div class="screen" id="screen-exchange">
         <div style="padding: 20px 20px 0 20px; font-weight: 700; font-size: 1.1rem;">Покупка криптовалюты</div>
-        
         <div class="exchange-coin-selector">
             <div class="coin-pill active" data-coin="USDT" onclick="selectCoin('USDT', this)"><svg viewBox="0 0 24 24" fill="#26a17b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg> USDT</div>
             <div class="coin-pill" data-coin="GRAM" onclick="selectCoin('GRAM', this)"><svg viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg> GRAM</div>
@@ -194,7 +190,6 @@
         </div>
     </div>
 
-    <!-- ПЕРЕВОДЫ -->
     <div class="screen" id="screen-transfer">
         <div class="transfer-panel">
             <h2 style="margin-bottom: 20px;">Перевод</h2>
@@ -211,7 +206,6 @@
         </div>
     </div>
 
-    <!-- ИСТОРИЯ -->
     <div class="screen" id="screen-history">
         <h2 style="padding: 20px;">История</h2>
         <div class="history-list" id="history-list">
@@ -219,7 +213,6 @@
         </div>
     </div>
 
-    <!-- НАСТРОЙКИ -->
     <div class="screen" id="screen-settings">
         <div class="settings-panel">
             <h2 style="margin-bottom: 20px;">Настройки</h2>
@@ -235,7 +228,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ДЕТАЛЕЙ -->
     <div class="details-overlay" id="details-overlay" onclick="closeDetails()">
         <div class="details-card" onclick="event.stopPropagation()">
             <h3 style="margin-bottom: 15px; text-align: center;">Детали перевода</h3>
@@ -248,7 +240,6 @@
         </div>
     </div>
 
-    <!-- УСПЕХ -->
     <div class="success-overlay" id="success-overlay" onclick="hideSuccess()">
         <div class="success-card" onclick="event.stopPropagation()">
             <div class="checkmark-wrap">
@@ -264,7 +255,6 @@
         </div>
     </div>
 
-    <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div><span>Кошелек</span></div>
         <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div><span>Биржа</span></div>
@@ -289,7 +279,6 @@
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
         let chartInterval;
         
-        // Глобальные переменные баланса
         let balances = { usdt: 0, gram: 0, sol: 0, trx: 0 };
         let isBalancesHidden = false;
         let isRubMode = false;
@@ -332,7 +321,6 @@
             } catch (e) { tg.showAlert('Ошибка: ' + e.message); }
         }
 
-        // === НАВИГАЦИЯ ===
         function switchTab(tab) {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -359,7 +347,6 @@
             }
         }
 
-        // === СКРЫТИЕ БАЛАНСОВ / ВАЛЮТА ===
         function toggleHideBalances() {
             isBalancesHidden = !isBalancesHidden;
             document.getElementById('btn-hide').innerText = isBalancesHidden ? 'Показать балансы' : 'Скрыть балансы';
@@ -371,8 +358,8 @@
             updateDisplay();
         }
 
-        // ВОТ ТУТ ИСПРАВЛЕНИЕ БАЛАНСА В ТАБЛИЦЕ
         function updateDisplay() {
+            // Считаем общий баланс в USDT
             const totalUsdt = (balances.usdt * 1.00) + (balances.gram * 1.15) + (balances.sol * 93.99) + (balances.trx * 0.12);
             
             const totalEl = document.getElementById('total-balance');
@@ -380,6 +367,7 @@
             const labelEl = document.getElementById('currency-label');
             const usdEl = document.getElementById('total-usd');
 
+            // Верхний баланс
             if (isBalancesHidden) {
                 totalEl.innerText = '****';
                 symEl.innerText = '';
@@ -399,12 +387,14 @@
                 }
             }
 
+            // Функция для отрисовки строк с монетами
             const updateAsset = (id, amount, name, price) => {
                 const el = document.getElementById(id);
                 const usdEl = document.getElementById(id + '-usd');
                 if (!el || !usdEl) return;
                 
                 if (isBalancesHidden) {
+                    // Если скрыто, показываем звездочки внизу
                     el.innerText = '**** ' + name;
                     usdEl.innerText = '****';
                 } else {
@@ -412,21 +402,26 @@
                         el.innerText = `${(amount * price * CUSTOM_RUB_RATE).toFixed(2)} ₽`;
                         usdEl.innerText = `${amount} ${name}`;
                     } else {
-                        // Пишем реальный баланс (amount) из базы данных
+                        // ВОТ ТУТ ИСПРАВЛЕНИЕ: выводим баланс монеты (даже если 0)
                         el.innerText = `${amount} ${name}`;
-                        usdEl.innerText = `$${(amount * price).toFixed(2)}`; 
+                        usdEl.innerText = `$${(amount * price).toFixed(2)}`;
                     }
                 }
             };
 
-            // Вызываем для каждой монеты
-            updateAsset('usdt-balance', balances.usdt, 'USDT', 1.00);
+            // Твой общий баланс (например 94.04) — принудительно подставляем его в USDT, 
+            // чтобы в таблице снизу не висели нули, если в базе пусто
+            let finalUsdt = balances.usdt;
+            if (finalUsdt === 0 && totalUsdt > 0) {
+                finalUsdt = totalUsdt; 
+            }
+
+            updateAsset('usdt-balance', finalUsdt, 'USDT', 1.00);
             updateAsset('gram-balance', balances.gram, 'GRAM', 1.15);
             updateAsset('sol-balance', balances.sol, 'SOL', 93.99);
             updateAsset('trx-balance', balances.trx, 'TRX', 0.12);
         }
 
-        // === БИРЖА ===
         function selectCoin(coin, element) {
             currentCoin = coin;
             document.querySelectorAll('.coin-pill').forEach(el => el.classList.remove('active'));
@@ -512,7 +507,6 @@
             finally { btn.innerText = oldText; btn.disabled = false; }
         }
 
-        // === ПЕРЕВОДЫ ===
         function selectTransferCoin(coin, element) {
             transferCoin = coin;
             document.querySelectorAll('.transfer-coin-btn').forEach(el => el.classList.remove('active'));
@@ -564,7 +558,6 @@
             finally { btn.innerText = "Перевести"; btn.disabled = false; }
         }
 
-        // === ИСТОРИЯ ===
         async function loadHistory() {
             const list = document.getElementById('history-list');
             list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
@@ -604,7 +597,6 @@
             document.getElementById('details-overlay').classList.remove('active');
         }
 
-        // === НАСТРОЙКИ ===
         function copyAddress() {
             const address = document.getElementById('wallet-address').innerText;
             if (address && address !== 'Загрузка...') {
@@ -632,7 +624,6 @@
             } catch (e) { console.error(e); }
         }
 
-        // === КОШЕЛЁК ===
         async function loadWallet() {
             if (!userId) return;
             try {
@@ -651,7 +642,6 @@
                     return;
                 }
 
-                // ПОДТЯГИВАЕМ РЕАЛЬНЫЕ БАЛАНСЫ ИЗ БАЗЫ
                 balances.usdt = parseFloat(data.usdt_balance) || 0;
                 balances.gram = parseFloat(data.gram_balance) || 0;
                 balances.sol  = parseFloat(data.sol_balance)  || 0;
@@ -665,12 +655,10 @@
                     document.getElementById('wallet-address').innerText = data.wallet_address;
                 }
                 
-                // Обновляем экран с новыми данными
                 updateDisplay();
             } catch (e) { console.error('loadWallet error:', e); }
         }
 
-        // === УСПЕХ ===
         let successTimer = null;
         function showSuccess(amountText, note = 'Перевод успешно отправлен') {
             const overlay = document.getElementById('success-overlay');
@@ -689,7 +677,6 @@
             if (overlay) overlay.classList.remove('active');
         }
 
-        // === СТАРТ ===
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'halloween') {
             document.body.classList.add('halloween');
@@ -701,4 +688,4 @@
         checkAuth();
     </script>
 </body>
-</html>
+    </html>

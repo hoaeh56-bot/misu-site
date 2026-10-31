@@ -17,7 +17,6 @@
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* WALLET */
         .balance-section { text-align: center; padding: 20px 0; }
         .balance-amount { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; cursor: pointer; }
         .balance-amount span:first-child { font-size: 1.5rem; color: var(--text-secondary); font-weight: 500; }
@@ -39,7 +38,6 @@
         .asset-info { flex: 1; } .asset-name { font-size: 1rem; font-weight: 600; } .asset-price { font-size: 0.8rem; color: var(--green); }
         .asset-balance { text-align: right; } .asset-amount { font-size: 1rem; font-weight: 600; } .asset-usd { font-size: 0.8rem; color: var(--text-secondary); }
 
-        /* EXCHANGE */
         .exchange-coin-selector { display: flex; gap: 10px; margin: 20px 20px 15px 20px; overflow-x: auto; }
         .coin-pill { display: flex; align-items: center; gap: 5px; padding: 8px 15px; background: var(--card); border-radius: 20px; font-weight: 600; font-size: 0.9rem; cursor: pointer; white-space: nowrap; border: 1px solid transparent; }
         .coin-pill.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
@@ -48,7 +46,6 @@
         .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; color: var(--text-secondary); }
         .btn-buy { width: 100%; padding: 18px; background: var(--green); color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
 
-        /* TRANSFER */
         .transfer-panel { padding: 20px; }
         .transfer-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .transfer-input { padding: 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-size: 1rem; outline: none; }
@@ -56,7 +53,6 @@
         .transfer-coin-btn { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
         .transfer-coin-btn.active { background: var(--accent); color: #fff; }
 
-        /* HISTORY & SETTINGS */
         .history-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
         .history-item { background: var(--card); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .history-info { display: flex; flex-direction: column; gap: 5px; }
@@ -68,13 +64,11 @@
         .wallet-address { background: var(--card); padding: 20px; border-radius: 15px; font-family: monospace; font-size: 1.2rem; word-break: break-all; border: 1px solid var(--border); text-align: center; color: var(--accent); font-weight: 700; margin-bottom: 15px; }
         .btn-copy { background: var(--accent); color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; }
 
-        /* NAV */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 0.7rem; cursor: pointer; width: 20%; }
         .nav-item.active { color: var(--accent); }
         .nav-item .icon { width: 24px; height: 24px; } .nav-item .icon svg { width: 100%; height: 100%; fill: currentColor; }
 
-        /* MODALS */
         .details-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1001; }
         .details-overlay.active { display: flex; } .details-card { background: var(--bg); padding: 20px; border-radius: 20px; width: 90%; max-width: 400px; }
         .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
@@ -88,7 +82,7 @@
 <body>
     <div class="top-bar">Crypto Bot</div>
 
-    <!-- КОШЕЛЕК (СРАЗУ АКТИВЕН, БЕЗ ПИН-КОДА) -->
+    <!-- КОШЕЛЕК -->
     <div class="screen active" id="screen-wallet">
         <div class="balance-section">
             <div class="balance-amount" id="total-balance-container" onclick="toggleCurrency()">
@@ -195,25 +189,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ИСТОРИИ -->
-    <div class="details-overlay" id="details-overlay" onclick="closeDetails()">
-        <div class="details-card" onclick="event.stopPropagation()">
-            <h3 style="margin-bottom: 15px; text-align: center;">Детали</h3>
-            <div class="details-row"><span>Сумма:</span><span id="det-amount">-</span></div>
-            <div class="details-row"><span>Валюта:</span><span id="det-coin">-</span></div>
-            <button class="btn-buy" style="margin-top: 20px;" onclick="closeDetails()">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- УСПЕХ -->
-    <div class="success-overlay" id="success-overlay" onclick="hideSuccess()">
-        <div class="success-card" onclick="event.stopPropagation()">
-            <h3 style="margin-bottom: 10px;">Успешно!</h3>
-            <div id="success-amount" style="font-size: 1.2rem; font-weight: 700; color: var(--green);">-0 USDT</div>
-            <button class="btn-buy" style="margin-top: 20px;" onclick="hideSuccess()">Готово</button>
-        </div>
-    </div>
-
     <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')">
@@ -227,6 +202,15 @@
         <div class="nav-item" onclick="switchTab('settings')">
             <div class="icon"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div>
             <span>Ещё</span>
+        </div>
+    </div>
+
+    <!-- УСПЕХ -->
+    <div class="success-overlay" id="success-overlay" onclick="hideSuccess()">
+        <div class="success-card" onclick="event.stopPropagation()">
+            <h3 style="margin-bottom: 10px;">Успешно!</h3>
+            <div id="success-amount" style="font-size: 1.2rem; font-weight: 700; color: var(--green);">-0 USDT</div>
+            <button class="btn-buy" style="margin-top: 20px;" onclick="hideSuccess()">Готово</button>
         </div>
     </div>
 
@@ -285,23 +269,31 @@
             document.getElementById('btn-hide').innerText = isBalancesHidden ? 'Показать балансы' : 'Скрыть балансы';
             
             if (isBalancesHidden) {
+                // Скрываем верх
                 document.getElementById('total-balance').innerText = '****';
                 document.getElementById('currency-symbol').innerText = '';
                 document.getElementById('currency-label').innerText = '';
                 document.getElementById('total-usd').innerText = 'Скрыто';
                 
-                document.querySelectorAll('.asset-amount').forEach(el => el.innerText = '****');
-                document.querySelectorAll('.asset-usd').forEach(el => el.innerText = '****');
+                // Скрываем низ
+                document.getElementById('usdt-balance').innerText = '****';
+                document.getElementById('usdt-usd').innerText = '****';
+                document.getElementById('gram-balance').innerText = '****';
+                document.getElementById('gram-usd').innerText = '****';
+                document.getElementById('sol-balance').innerText = '****';
+                document.getElementById('sol-usd').innerText = '****';
+                document.getElementById('trx-balance').innerText = '****';
+                document.getElementById('trx-usd').innerText = '****';
             } else {
                 updateDisplay();
             }
         }
 
         function toggleCurrency() {
-            // Заглушка, если захочешь переключение на рубли
+            // Заглушка
         }
 
-        // === ОТРИСОВКА БАЛАНСОВ ===
+        // === ОТРИСОВКА ===
         function updateDisplay() {
             if (isBalancesHidden) return;
 
@@ -356,7 +348,7 @@
             } catch (e) { tg.showAlert("Ошибка сети: " + e.message); }
         }
 
-        // === ПЕРЕВОДЫ (ФИКС) ===
+        // === ПЕРЕВОДЫ ===
         function selectTransferCoin(coin, element) {
             transferCoin = coin;
             document.querySelectorAll('.transfer-coin-btn').forEach(el => el.classList.remove('active'));
@@ -374,26 +366,36 @@
             btn.innerText = "Отправка..."; btn.disabled = true;
 
             try {
-                const { data: recipient, error: recError } = await db.from('users').select('user_id').eq('wallet_address', toAddress).maybeSingle();
+                // Ищем получателя через limit(1)
+                const { data: recDataArr, error: recError } = await db.from('users').select('user_id').eq('wallet_address', toAddress).limit(1);
                 
-                if (recError || !recipient) throw new Error('Кошелек не найден');
+                if (recError) throw new Error(recError.message);
+                if (!recDataArr || recDataArr.length === 0) throw new Error('Кошелек не найден');
+                
+                const recipient = recDataArr[0];
                 if (recipient.user_id === userId) throw new Error('Нельзя перевести себе');
 
                 const balanceField = `${transferCoin.toLowerCase()}_balance`;
-                const { data: sender } = await db.from('users').select(balanceField).eq('user_id', userId).single();
-                const senderBalance = parseFloat(sender[balanceField]) || 0;
                 
+                // Получаем отправителя
+                const { data: senderArr, error: sendError } = await db.from('users').select(balanceField).eq('user_id', userId).limit(1);
+                if (sendError || !senderArr || senderArr.length === 0) throw new Error('Ошибка отправителя');
+                
+                const senderBalance = parseFloat(senderArr[0][balanceField]) || 0;
                 const commission = amount * 0.01;
                 const totalToDeduct = amount + commission;
 
                 if (senderBalance < totalToDeduct) throw new Error(`Недостаточно ${transferCoin} (с учетом 1%)`);
 
+                // Списываем
                 await db.from('users').update({ [balanceField]: senderBalance - totalToDeduct }).eq('user_id', userId);
                 
-                const { data: recData } = await db.from('users').select(balanceField).eq('user_id', recipient.user_id).single();
-                const recBalance = parseFloat(recData[balanceField]) || 0;
+                // Начисляем
+                const { data: recBalArr } = await db.from('users').select(balanceField).eq('user_id', recipient.user_id).limit(1);
+                const recBalance = parseFloat(recBalArr[0][balanceField]) || 0;
                 await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', recipient.user_id);
 
+                // История
                 await db.from('transfers').insert([{ from_user_id: userId, to_user_id: recipient.user_id, coin: transferCoin, amount: amount }]);
 
                 showSuccess(`-${amount} ${transferCoin}`);
@@ -434,8 +436,8 @@
         // === НАСТРОЙКИ ===
         async function loadSettings() {
             try {
-                const { data } = await db.from('users').select('wallet_address').eq('user_id', userId).single();
-                document.getElementById('wallet-address').innerText = data?.wallet_address || 'Загрузка...';
+                const { data } = await db.from('users').select('wallet_address').eq('user_id', userId).limit(1);
+                if(data && data.length > 0) document.getElementById('wallet-address').innerText = data[0].wallet_address;
             } catch (e) { console.error(e); }
         }
 
@@ -446,13 +448,15 @@
             }
         }
 
-        // === ЗАГРУЗКА КОШЕЛЬКА (БЕЗ ПИНА) ===
+        // === ЗАГРУЗКА КОШЕЛЬКА ===
         async function loadWallet() {
             if (!userId) return;
             try {
-                const { data, error } = await db.from('users').select('*').eq('user_id', userId).maybeSingle();
+                const { data, error } = await db.from('users').select('*').eq('user_id', userId).limit(1);
                 
-                if (!data) {
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
                     const newAddress = 'T' + Math.random().toString(36).substring(2, 15).toUpperCase();
                     await db.from('users').insert({
                         user_id: userId,
@@ -465,14 +469,15 @@
                     return;
                 }
 
-                balances.usdt = parseFloat(data.usdt_balance) || 0;
-                balances.gram = parseFloat(data.gram_balance) || 0;
-                balances.sol  = parseFloat(data.sol_balance)  || 0;
-                balances.trx  = parseFloat(data.trx_balance)  || 0;
+                const user = data[0];
+                balances.usdt = parseFloat(user.usdt_balance) || 0;
+                balances.gram = parseFloat(user.gram_balance) || 0;
+                balances.sol  = parseFloat(user.sol_balance)  || 0;
+                balances.trx  = parseFloat(user.trx_balance)  || 0;
                 
-                document.getElementById('wallet-address').innerText = data.wallet_address || 'Нет адреса';
+                document.getElementById('wallet-address').innerText = user.wallet_address || 'Нет адреса';
                 updateDisplay();
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Ошибка загрузки:", e); }
         }
 
         // === УСПЕХ ===

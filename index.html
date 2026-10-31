@@ -8,28 +8,20 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #ffffff; --text: #000000; --text-secondary: #888888;
-            --accent: #1976d2; --accent-light: #e3f2fd; --card: #f9f9f9; --border: #f0f0f0;
-        }
-        body.halloween {
-            --bg: #120a1f; --text: #ffffff; --text-secondary: #aa99bb;
-            --accent: #ff7b00; --accent-light: #2b1b45; --card: #1f1235; --border: #2b1b45;
-        }
+        :root { --bg: #ffffff; --text: #000000; --text-secondary: #888888; --accent: #1976d2; --accent-light: #e3f2fd; --card: #f9f9f9; --border: #f0f0f0; }
+        body.halloween { --bg: #120a1f; --text: #ffffff; --text-secondary: #aa99bb; --accent: #ff7b00; --accent-light: #2b1b45; --card: #1f1235; --border: #2b1b45; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
         .top-bar { padding: 15px 20px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; }
         .screen { display: none; animation: fadeIn 0.3s ease; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
         .pin-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center; padding: 20px; }
         .pin-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; }
         .pin-subtitle { font-size: 1rem; color: var(--text-secondary); margin-bottom: 30px; }
         .pin-input { width: 200px; padding: 15px; font-size: 2rem; text-align: center; letter-spacing: 10px; border: 2px solid var(--border); border-radius: 15px; background: var(--card); color: var(--text); outline: none; margin-bottom: 20px; }
         .pin-input:focus { border-color: var(--accent); }
         .pin-btn { width: 200px; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; }
-
         .balance-section { text-align: center; padding: 20px 0; }
         .balance-amount { font-size: 3rem; font-weight: 700; display: flex; justify-content: center; align-items: baseline; gap: 5px; cursor: pointer; }
         .balance-amount span:first-child { font-size: 1.5rem; color: var(--text-secondary); font-weight: 500; }
@@ -39,17 +31,14 @@
         .action-btn .icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--accent-light); }
         .action-btn .icon svg { width: 24px; height: 24px; fill: var(--accent); }
         .action-btn span { font-size: 0.85rem; color: var(--accent); font-weight: 500; }
-
         .assets-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 15px; }
         .assets-title { font-size: 1rem; font-weight: 600; color: var(--accent); }
         .btn-hide-balances { background: transparent; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 5px; }
-
         .asset-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; }
         .asset-icon { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; }
         .asset-icon svg { width: 24px; height: 24px; }
         .asset-info { flex: 1; } .asset-name { font-size: 1rem; font-weight: 600; } .asset-price { font-size: 0.8rem; color: #4caf50; }
         .asset-balance { text-align: right; } .asset-amount { font-size: 1rem; font-weight: 600; } .asset-usd { font-size: 0.8rem; color: var(--text-secondary); }
-
         .exchange-tabs { display: flex; background: var(--card); margin: 0 20px 15px 20px; border-radius: 12px; padding: 5px; }
         .exchange-tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 8px; color: var(--text-secondary); }
         .exchange-tab.active { background: var(--bg); color: var(--text); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -65,20 +54,17 @@
         .buy-input { width: 100%; padding: 18px; border: 1px solid var(--border); border-radius: 12px; font-size: 1.2rem; font-weight: 700; outline: none; background: var(--bg); color: var(--text); text-align: center; margin-bottom: 15px; }
         .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; color: var(--text-secondary); }
         .btn-buy { width: 100%; padding: 18px; background: #4caf50; color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
-
         .transfer-panel { padding: 20px; }
         .transfer-input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .transfer-input { padding: 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-size: 1rem; outline: none; }
         .transfer-coin-select { display: flex; gap: 10px; margin-bottom: 20px; }
         .transfer-coin-btn { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
         .transfer-coin-btn.active { background: var(--accent); color: #fff; }
-
         .history-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
         .history-item { background: var(--card); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .history-info { display: flex; flex-direction: column; gap: 5px; }
         .history-type { font-size: 0.9rem; font-weight: 600; } .history-date { font-size: 0.75rem; color: var(--text-secondary); }
         .history-amount { font-weight: 700; } .positive { color: #4caf50; } .negative { color: #f44336; }
-
         .settings-panel { padding: 20px; }
         .settings-item { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
         .wallet-address { background: var(--card); padding: 20px; border-radius: 15px; font-family: monospace; font-size: 1.2rem; word-break: break-all; border: 1px solid var(--border); text-align: center; color: var(--accent); font-weight: 700; margin-bottom: 15px; }
@@ -86,17 +72,14 @@
         .theme-toggle { display: flex; gap: 10px; }
         .theme-btn { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-weight: 600; cursor: pointer; }
         .theme-btn.active { border-color: var(--accent); color: var(--accent); }
-
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 0.7rem; cursor: pointer; width: 20%; }
         .nav-item.active { color: var(--accent); }
         .nav-item .icon { width: 24px; height: 24px; } .nav-item .icon svg { width: 100%; height: 100%; fill: currentColor; }
-
         .details-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1001; }
         .details-overlay.active { display: flex; } .details-card { background: var(--bg); padding: 20px; border-radius: 20px; width: 90%; max-width: 400px; }
         .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         .details-row:last-child { border-bottom: none; } .details-row span:first-child { color: var(--text-secondary); } .details-row span:last-child { font-weight: 600; word-break: break-all; }
-
         .success-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
         .success-overlay.active { display: flex; }
         .success-card { background: var(--bg); padding: 48px 32px 32px; border-radius: 28px; text-align: center; width: 90%; max-width: 360px; transform: scale(0.6); opacity: 0; transition: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.35); position: relative; overflow: hidden; }
@@ -157,35 +140,27 @@
         </div>
 
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')">
-            <div class="asset-icon" style="background: #26a17b;">
-                <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v3h2v2h-2v5h-2v-5H9V9h2V7z"/></svg>
-            </div>
+            <div class="asset-icon" style="background: #26a17b;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v3h2v2h-2v5h-2v-5H9V9h2V7z"/></svg></div>
             <div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$1.00</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">Ваш баланс: $0.00</div></div>
         </div>
 
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
-            <div class="asset-icon" style="background: #0088cc;">
-                <svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg>
-            </div>
+            <div class="asset-icon" style="background: #0088cc;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
             <div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price">$1.15</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">Ваш баланс: $0.00</div></div>
         </div>
 
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')">
-            <div class="asset-icon" style="background: #9945ff;">
-                <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM9 11h6v2H9z"/></svg>
-            </div>
+            <div class="asset-icon" style="background: #9945ff;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM9 11h6v2H9z"/></svg></div>
             <div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price">$93.99</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">Ваш баланс: $0.00</div></div>
         </div>
 
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')">
-            <div class="asset-icon" style="background: #ff0000;">
-                <svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg>
-            </div>
+            <div class="asset-icon" style="background: #ff0000;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
             <div class="asset-info"><div class="asset-name">TRON</div><div class="asset-price">$0.12</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">$0.00</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">Ваш баланс: $0.00</div></div>
         </div>
     </div>
 
@@ -252,20 +227,17 @@
     <div class="screen" id="screen-settings">
         <div class="settings-panel">
             <h2 style="margin-bottom: 20px;">Настройки</h2>
-
             <div class="settings-item">
                 <span style="font-weight: 600;">Ваш адрес кошелька:</span>
                 <div class="wallet-address" id="wallet-address">Загрузка...</div>
                 <button class="btn-copy" onclick="copyAddress()">Копировать</button>
             </div>
-
             <div class="settings-item" style="background: var(--card); padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid var(--accent);">
                 <span style="font-weight: 600; color: var(--accent);">Оставить чаевые создателю 🍺</span>
                 <div style="font-size: 0.9rem; color: var(--text-secondary); margin: 5px 0;">Если хотите поддержать проект, переведите USDT на этот адрес:</div>
                 <div class="wallet-address" style="font-size: 1rem; margin: 10px 0; color: var(--text);">T9RIG0JKYDQS0B9EMU0KDO9I</div>
                 <button class="btn-copy" onclick="copyCreatorAddress()">Скопировать адрес</button>
             </div>
-
             <div class="settings-item" style="margin-top: 20px;">
                 <span style="font-weight: 600;">Тема оформления:</span>
                 <div class="theme-toggle"><button class="theme-btn active" id="theme-light" onclick="setTheme('light')">Светлая</button><button class="theme-btn" id="theme-halloween" onclick="setTheme('halloween')">Хэллоуин</button></div>
@@ -307,8 +279,8 @@
         <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div><span>Кошелек</span></div>
         <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div><span>Биржа</span></div>
         <div class="nav-item" onclick="switchTab('settings')"><div class="icon"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div><span>Ещё</span></div>
-    </div>
-    <script>
+                </div>
+                <script>
         const SUPABASE_URL = "https://ptcofqwsvyytcnoerazu.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_CL2wAd6YW9tj5fIq4r9b4A_iVeZtnBx";
         const { createClient } = supabase;

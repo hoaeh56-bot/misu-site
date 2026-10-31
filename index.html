@@ -162,6 +162,7 @@
 
     <div class="screen" id="screen-exchange">
         <div style="padding: 20px 20px 0 20px; font-weight: 700; font-size: 1.1rem;">Покупка криптовалюты</div>
+        
         <div class="exchange-coin-selector">
             <div class="coin-pill active" data-coin="USDT" onclick="selectCoin('USDT', this)"><svg viewBox="0 0 24 24" fill="#26a17b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg> USDT</div>
             <div class="coin-pill" data-coin="GRAM" onclick="selectCoin('GRAM', this)"><svg viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg> GRAM</div>
@@ -348,32 +349,28 @@
             }
         }
 
-        // === СКРЫТИЕ БАЛАНСОВ / ВАЛЮТА ===
+        // === СКРЫТИЕ БАЛАНСОВ ===
         function toggleHideBalances() {
             isBalancesHidden = !isBalancesHidden;
             document.getElementById('btn-hide').innerText = isBalancesHidden ? 'Показать балансы' : 'Скрыть балансы';
             
             if (isBalancesHidden) {
-                // ВЕРХ
+                // ЖЕСТКО СКРЫВАЕМ ВСЕ
                 document.getElementById('total-balance').innerText = '****';
                 document.getElementById('currency-symbol').innerText = '';
                 document.getElementById('currency-label').innerText = '';
                 document.getElementById('total-usd').innerText = 'Скрыто';
                 
-                // НИЗ (принудительно)
                 document.getElementById('usdt-balance').innerText = '**** USDT';
                 document.getElementById('usdt-usd').innerText = '****';
-                
                 document.getElementById('gram-balance').innerText = '**** GRAM';
                 document.getElementById('gram-usd').innerText = '****';
-                
                 document.getElementById('sol-balance').innerText = '**** SOL';
                 document.getElementById('sol-usd').innerText = '****';
-                
                 document.getElementById('trx-balance').innerText = '**** TRX';
                 document.getElementById('trx-usd').innerText = '****';
             } else {
-                // Если "Показать", заново грузим из базы
+                // ПОКАЗЫВАЕМ ЗАНОВО (берем из базы)
                 loadWallet(); 
             }
         }
@@ -383,8 +380,10 @@
             updateDisplay();
         }
 
+        // === ОТРИСОВКА ===
         function updateDisplay() {
-            if (isBalancesHidden) return; // Если скрыто, не перерисовываем
+            // Если скрыто, updateDisplay не должен ничего менять, чтобы не сбить звездочки
+            if (isBalancesHidden) return; 
 
             const totalUsdt = (balances.usdt * 1.00) + (balances.gram * 1.15) + (balances.sol * 93.99) + (balances.trx * 0.12);
             
@@ -405,7 +404,7 @@
                 usdEl.innerText = 'Общий баланс';
             }
 
-            // Если в базе usdt 0, но есть общий баланс, показываем общий баланс
+            // Если usdt в базе 0, подставляем общий баланс
             let usdtToShow = balances.usdt;
             if (usdtToShow === 0 && totalUsdt > 0) {
                 usdtToShow = totalUsdt;

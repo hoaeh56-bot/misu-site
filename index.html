@@ -97,7 +97,6 @@
         .details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         .details-row:last-child { border-bottom: none; } .details-row span:first-child { color: var(--text-secondary); } .details-row span:last-child { font-weight: 600; word-break: break-all; }
 
-        /* УСПЕХ */
         .success-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
         .success-overlay.active { display: flex; }
         .success-card { background: var(--bg); padding: 48px 32px 32px; border-radius: 28px; text-align: center; width: 90%; max-width: 360px; transform: scale(0.6); opacity: 0; transition: 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.35); position: relative; overflow: hidden; }
@@ -318,7 +317,7 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-
+        
         const urlParams = new URLSearchParams(window.location.search);
         const paramId = urlParams.get('user_id');
         const userId = paramId ? parseInt(paramId) : 0;
@@ -328,13 +327,13 @@
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
         let chartInterval;
         let tradeMode = 'buy';
-
+        
         let balances = { usdt: 0, gram: 0, sol: 0, trx: 0 };
         let isBalancesHidden = false;
         let isRubMode = false;
         const CUSTOM_RUB_RATE = 100;
 
-        // ===== PIN =====
+        // === PIN-КОД ===
         async function checkAuth() {
             if (!userId) {
                 document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
@@ -351,8 +350,8 @@
                     document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
                     document.getElementById('screen-pin').classList.add('active');
                 }
-            } catch (e) {
-                console.error(e);
+            } catch (e) { 
+                console.error(e); 
                 document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
                 document.getElementById('screen-wallet').classList.add('active');
                 loadWallet();
@@ -371,7 +370,7 @@
             } catch (e) { tg.showAlert('Ошибка: ' + e.message); }
         }
 
-        // ===== НАВИГАЦИЯ =====
+        // === НАВИГАЦИЯ ===
         function switchTab(tab) {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -398,7 +397,7 @@
             }
         }
 
-        // ===== СКРЫТИЕ / ВАЛЮТА =====
+        // === СКРЫТИЕ БАЛАНСОВ / ВАЛЮТА ===
         function toggleHideBalances() {
             isBalancesHidden = !isBalancesHidden;
             document.getElementById('btn-hide').innerText = isBalancesHidden ? 'Показать балансы' : 'Скрыть балансы';
@@ -412,7 +411,7 @@
 
         function updateDisplay() {
             const totalUsdt = (balances.usdt * 1.00) + (balances.gram * 1.15) + (balances.sol * 93.99) + (balances.trx * 0.12);
-
+            
             const totalEl = document.getElementById('total-balance');
             const symEl = document.getElementById('currency-symbol');
             const labelEl = document.getElementById('currency-label');
@@ -447,10 +446,10 @@
                 } else {
                     if (isRubMode) {
                         el.innerText = `${(amount * price * CUSTOM_RUB_RATE).toFixed(2)} ₽`;
-                        usdEl.innerText = `${amount} ${name}`;
+                        usdEl.innerText = `Ваш баланс: ${amount} ${name}`;
                     } else {
                         el.innerText = `${amount} ${name}`;
-                        usdEl.innerText = `$${(amount * price).toFixed(2)}`;
+                        usdEl.innerText = `Ваш баланс: $${(amount * price).toFixed(2)}`;
                     }
                 }
             };
@@ -461,7 +460,7 @@
             updateAsset('trx-balance', balances.trx, 'TRX', 0.12);
         }
 
-        // ===== БИРЖА =====
+        // === БИРЖА ===
         function selectCoin(coin, element) {
             currentCoin = coin;
             document.querySelectorAll('.coin-pill').forEach(el => el.classList.remove('active'));
@@ -511,7 +510,7 @@
             if (!svg || !line || !area) return;
 
             gridGroup.innerHTML = '';
-            for (let i = 1; i <= 3; i++) {
+            for(let i=1; i<=3; i++) {
                 const y = i * 12.5;
                 const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
                 gridLine.setAttribute("x1", "0"); gridLine.setAttribute("y1", y);
@@ -522,7 +521,7 @@
 
             let points = '';
             const numPoints = 40;
-            const timeSeed = Math.floor(Date.now() / 10000);
+            const timeSeed = Math.floor(Date.now() / 10000); 
             for (let i = 0; i < numPoints; i++) {
                 const x = (i / (numPoints - 1)) * 100;
                 const wave = Math.sin(timeSeed + i * 0.5) * 10 + Math.cos(timeSeed * 0.5 + i * 0.2) * 5;
@@ -560,7 +559,7 @@
                     await db.from('users').update({ balance: (parseInt(data.balance) || 0) + starsToGive }).eq('user_id', userId);
                     tg.showAlert(`✅ Успешно продано ${amount} ${currentCoin} за ${starsToGive} ⭐`);
                     loadWallet();
-                } catch (e) { tg.showAlert("Ошибка: " + e.message); }
+                } catch(e) { tg.showAlert("Ошибка: " + e.message); }
                 finally { btn.innerText = oldText; btn.disabled = false; }
                 return;
             }
@@ -578,7 +577,7 @@
             finally { btn.innerText = oldText; btn.disabled = false; }
         }
 
-        // ===== ПЕРЕВОДЫ =====
+        // === ПЕРЕВОДЫ ===
         function selectTransferCoin(coin, element) {
             transferCoin = coin;
             document.querySelectorAll('.transfer-coin-btn').forEach(el => el.classList.remove('active'));
@@ -602,14 +601,14 @@
                 const { data: sender } = await db.from('users').select('*').eq('user_id', userId).single();
                 const balanceField = `${transferCoin.toLowerCase()}_balance`;
                 const senderBalance = parseFloat(sender[balanceField]) || 0;
-
+                
                 const commission = amount * 0.01;
                 const totalToDeduct = amount + commission;
 
                 if (senderBalance < totalToDeduct) { btn.innerText = "Перевести"; btn.disabled = false; return tg.showAlert(`Недостаточно средств (нужно ${totalToDeduct.toFixed(2)} с учетом комиссии)`); }
 
                 await db.from('users').update({ [balanceField]: senderBalance - totalToDeduct }).eq('user_id', userId);
-
+                
                 const { data: recData } = await db.from('users').select(balanceField).eq('user_id', recipient.user_id).single();
                 const recBalance = parseFloat(recData[balanceField]) || 0;
                 await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', recipient.user_id);
@@ -630,7 +629,7 @@
             finally { btn.innerText = "Перевести"; btn.disabled = false; }
         }
 
-        // ===== ИСТОРИЯ =====
+        // === ИСТОРИЯ ===
         async function loadHistory() {
             const list = document.getElementById('history-list');
             list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
@@ -670,7 +669,7 @@
             document.getElementById('details-overlay').classList.remove('active');
         }
 
-        // ===== НАСТРОЙКИ =====
+        // === НАСТРОЙКИ ===
         function copyAddress() {
             const address = document.getElementById('wallet-address').innerText;
             if (address && address !== 'Загрузка...') {
@@ -706,12 +705,12 @@
             } catch (e) { console.error(e); }
         }
 
-        // ===== КОШЕЛЁК =====
+        // === КОШЕЛЁК ===
         async function loadWallet() {
             if (!userId) return;
             try {
                 const { data } = await db.from('users').select('*').eq('user_id', userId).single();
-
+                
                 if (!data) {
                     const newAddress = 'T' + Math.random().toString(36).substring(2, 15).toUpperCase() + Math.random().toString(36).substring(2, 15).toUpperCase();
                     await db.from('users').upsert({
@@ -729,7 +728,7 @@
                 balances.gram = parseFloat(data.gram_balance) || 0;
                 balances.sol  = parseFloat(data.sol_balance)  || 0;
                 balances.trx  = parseFloat(data.trx_balance)  || 0;
-
+                
                 if (!data.wallet_address) {
                     const newAddress = 'T' + Math.random().toString(36).substring(2, 15).toUpperCase() + Math.random().toString(36).substring(2, 15).toUpperCase();
                     await db.from('users').update({ wallet_address: newAddress }).eq('user_id', userId);
@@ -737,14 +736,12 @@
                 } else {
                     document.getElementById('wallet-address').innerText = data.wallet_address;
                 }
-
+                
                 updateDisplay();
-            } catch (e) {
-                console.error('loadWallet error:', e);
-            }
+            } catch (e) { console.error('loadWallet error:', e); }
         }
 
-        // ===== УСПЕХ =====
+        // === УСПЕХ ===
         let successTimer = null;
         function showSuccess(amountText, note = 'Перевод успешно отправлен') {
             const overlay = document.getElementById('success-overlay');
@@ -756,13 +753,14 @@
             clearTimeout(successTimer);
             successTimer = setTimeout(hideSuccess, 4000);
         }
+        
         function hideSuccess() {
             clearTimeout(successTimer);
             const overlay = document.getElementById('success-overlay');
             if (overlay) overlay.classList.remove('active');
         }
 
-        // ===== СТАРТ =====
+        // === СТАРТ ===
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'halloween') {
             document.body.classList.add('halloween');

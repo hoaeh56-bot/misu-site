@@ -39,10 +39,8 @@
         .asset-icon svg { width: 24px; height: 24px; }
         .asset-info { flex: 1; } .asset-name { font-size: 1rem; font-weight: 600; } .asset-price { font-size: 0.8rem; color: #4caf50; }
         .asset-balance { text-align: right; } .asset-amount { font-size: 1rem; font-weight: 600; } .asset-usd { font-size: 0.8rem; color: var(--text-secondary); }
-        .exchange-tabs { display: flex; background: var(--card); margin: 0 20px 15px 20px; border-radius: 12px; padding: 5px; }
-        .exchange-tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-radius: 8px; color: var(--text-secondary); }
-        .exchange-tab.active { background: var(--bg); color: var(--text); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .exchange-coin-selector { display: flex; gap: 10px; margin: 0 20px 15px 20px; overflow-x: auto; }
+        .exchange-tabs { display: none; } 
+        .exchange-coin-selector { display: flex; gap: 10px; margin: 20px 20px 15px 20px; overflow-x: auto; }
         .coin-pill { display: flex; align-items: center; gap: 5px; padding: 8px 15px; background: var(--card); border-radius: 20px; font-weight: 600; font-size: 0.9rem; cursor: pointer; white-space: nowrap; border: 1px solid transparent; }
         .coin-pill.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
         .coin-pill svg { width: 16px; height: 16px; }
@@ -142,34 +140,32 @@
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('USDT')">
             <div class="asset-icon" style="background: #26a17b;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v3h2v2h-2v5h-2v-5H9V9h2V7z"/></svg></div>
             <div class="asset-info"><div class="asset-name">Tether</div><div class="asset-price">$1.00</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">Ваш баланс: $0.00</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="usdt-balance">0.00 USDT</div><div class="asset-usd" id="usdt-usd">$0.00</div></div>
         </div>
 
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
             <div class="asset-icon" style="background: #0088cc;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
             <div class="asset-info"><div class="asset-name">Gram</div><div class="asset-price">$1.15</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">Ваш баланс: $0.00</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="gram-balance">0.00 GRAM</div><div class="asset-usd" id="gram-usd">$0.00</div></div>
         </div>
 
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('SOL')">
             <div class="asset-icon" style="background: #9945ff;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM9 11h6v2H9z"/></svg></div>
             <div class="asset-info"><div class="asset-name">Solana</div><div class="asset-price">$93.99</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">Ваш баланс: $0.00</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="sol-balance">0.00 SOL</div><div class="asset-usd" id="sol-usd">$0.00</div></div>
         </div>
 
         <div class="asset-item" onclick="switchTab('exchange'); selectCoin('TRX')">
             <div class="asset-icon" style="background: #ff0000;"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
             <div class="asset-info"><div class="asset-name">TRON</div><div class="asset-price">$0.12</div></div>
-            <div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">Ваш баланс: $0.00</div></div>
+            <div class="asset-balance"><div class="asset-amount" id="trx-balance">0.00 TRX</div><div class="asset-usd" id="trx-usd">$0.00</div></div>
         </div>
     </div>
 
     <!-- БИРЖА -->
     <div class="screen" id="screen-exchange">
-        <div class="exchange-tabs">
-            <div class="exchange-tab active" onclick="toggleTradeTab('buy', this)">Купить</div>
-            <div class="exchange-tab" onclick="toggleTradeTab('sell', this)">Продать</div>
-        </div>
+        <div style="padding: 20px 20px 0 20px; font-weight: 700; font-size: 1.1rem;">Покупка криптовалюты</div>
+        
         <div class="exchange-coin-selector">
             <div class="coin-pill active" data-coin="USDT" onclick="selectCoin('USDT', this)"><svg viewBox="0 0 24 24" fill="#26a17b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg> USDT</div>
             <div class="coin-pill" data-coin="GRAM" onclick="selectCoin('GRAM', this)"><svg viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg> GRAM</div>
@@ -292,8 +288,8 @@
         let transferCoin = 'USDT';
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
         let chartInterval;
-        let tradeMode = 'buy';
         
+        // Глобальные переменные баланса
         let balances = { usdt: 0, gram: 0, sol: 0, trx: 0 };
         let isBalancesHidden = false;
         let isRubMode = false;
@@ -375,6 +371,7 @@
             updateDisplay();
         }
 
+        // ВОТ ТУТ ИСПРАВЛЕНИЕ БАЛАНСА В ТАБЛИЦЕ
         function updateDisplay() {
             const totalUsdt = (balances.usdt * 1.00) + (balances.gram * 1.15) + (balances.sol * 93.99) + (balances.trx * 0.12);
             
@@ -406,20 +403,23 @@
                 const el = document.getElementById(id);
                 const usdEl = document.getElementById(id + '-usd');
                 if (!el || !usdEl) return;
+                
                 if (isBalancesHidden) {
                     el.innerText = '**** ' + name;
                     usdEl.innerText = '****';
                 } else {
                     if (isRubMode) {
                         el.innerText = `${(amount * price * CUSTOM_RUB_RATE).toFixed(2)} ₽`;
-                        usdEl.innerText = `Ваш баланс: ${amount} ${name}`;
+                        usdEl.innerText = `${amount} ${name}`;
                     } else {
+                        // Пишем реальный баланс (amount) из базы данных
                         el.innerText = `${amount} ${name}`;
-                        usdEl.innerText = `Ваш баланс: $${(amount * price).toFixed(2)}`;
+                        usdEl.innerText = `$${(amount * price).toFixed(2)}`; 
                     }
                 }
             };
 
+            // Вызываем для каждой монеты
             updateAsset('usdt-balance', balances.usdt, 'USDT', 1.00);
             updateAsset('gram-balance', balances.gram, 'GRAM', 1.15);
             updateAsset('sol-balance', balances.sol, 'SOL', 93.99);
@@ -437,21 +437,6 @@
                 });
             }
             startChart();
-            calculateCost();
-        }
-
-        function toggleTradeTab(mode, element) {
-            tradeMode = mode;
-            document.querySelectorAll('.exchange-tab').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-            const btn = document.getElementById('action-btn');
-            if (mode === 'buy') {
-                btn.innerText = 'Купить';
-                btn.style.background = '#4caf50';
-            } else {
-                btn.innerText = 'Продать';
-                btn.style.background = '#f44336';
-            }
             calculateCost();
         }
 
@@ -513,22 +498,6 @@
             const btn = document.getElementById('action-btn');
             const oldText = btn.innerText;
             btn.innerText = "Отправка..."; btn.disabled = true;
-
-            if (tradeMode === 'sell') {
-                try {
-                    const { data } = await db.from('users').select('*').eq('user_id', userId).single();
-                    const balanceField = `${currentCoin.toLowerCase()}_balance`;
-                    const balance = parseFloat(data[balanceField]) || 0;
-                    if (balance < amount) { btn.innerText = oldText; btn.disabled = false; return tg.showAlert('Недостаточно средств'); }
-                    await db.from('users').update({ [balanceField]: balance - amount }).eq('user_id', userId);
-                    const starsToGive = Math.floor(starsCost);
-                    await db.from('users').update({ balance: (parseInt(data.balance) || 0) + starsToGive }).eq('user_id', userId);
-                    tg.showAlert(`✅ Успешно продано ${amount} ${currentCoin} за ${starsToGive} ⭐`);
-                    loadWallet();
-                } catch(e) { tg.showAlert("Ошибка: " + e.message); }
-                finally { btn.innerText = oldText; btn.disabled = false; }
-                return;
-            }
 
             try {
                 const response = await fetch('https://misu-bot-5uwv.onrender.com/buy', {
@@ -682,6 +651,7 @@
                     return;
                 }
 
+                // ПОДТЯГИВАЕМ РЕАЛЬНЫЕ БАЛАНСЫ ИЗ БАЗЫ
                 balances.usdt = parseFloat(data.usdt_balance) || 0;
                 balances.gram = parseFloat(data.gram_balance) || 0;
                 balances.sol  = parseFloat(data.sol_balance)  || 0;
@@ -695,6 +665,7 @@
                     document.getElementById('wallet-address').innerText = data.wallet_address;
                 }
                 
+                // Обновляем экран с новыми данными
                 updateDisplay();
             } catch (e) { console.error('loadWallet error:', e); }
         }

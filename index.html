@@ -46,11 +46,9 @@
         .asset-info { flex: 1; } .asset-name { font-size: 1rem; font-weight: 600; } .asset-price { font-size: 0.8rem; color: var(--green); }
         .asset-balance { text-align: right; } .asset-amount { font-size: 1rem; font-weight: 600; } .asset-usd { font-size: 0.8rem; color: var(--text-secondary); }
 
-        /* CHART */
+        /* CHART & EXCHANGE */
         .chart-container { height: 250px; background: var(--card); border-radius: 15px; margin: 0 20px 20px 20px; position: relative; border: 1px solid var(--border); overflow: hidden; padding: 10px; }
         .chart-svg { width: 100%; height: 100%; overflow: visible; }
-        
-        /* EXCHANGE / WITHDRAW */
         .exchange-coin-selector { display: flex; gap: 10px; margin: 20px 20px 15px 20px; overflow-x: auto; }
         .coin-pill { display: flex; align-items: center; gap: 5px; padding: 8px 15px; background: var(--card); border-radius: 20px; font-weight: 600; font-size: 0.9rem; cursor: pointer; white-space: nowrap; border: 1px solid transparent; }
         .coin-pill.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
@@ -58,7 +56,6 @@
         .buy-input { width: 100%; padding: 18px; border: 1px solid var(--border); border-radius: 12px; font-size: 1.2rem; font-weight: 700; outline: none; background: var(--bg); color: var(--text); text-align: center; margin-bottom: 15px; }
         .buy-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; color: var(--text-secondary); }
         .btn-buy { width: 100%; padding: 18px; background: var(--green); color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
-        .btn-buy.red { background: var(--red); }
 
         /* MODAL */
         .details-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(4px); }
@@ -66,7 +63,6 @@
         .details-card { background: var(--bg); padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .details-card h3 { margin-bottom: 15px; text-align: center; }
         .details-card input, .details-card select { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 1rem; outline: none; }
-        .switch { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
         
         /* NAV (BOTTOM) */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 100; }
@@ -75,11 +71,9 @@
         .nav-item .icon { width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; }
         .nav-item .icon img { width: 22px; height: 22px; object-fit: contain; }
         
-        /* HISTORY */
+        /* HISTORY & SETTINGS */
         .history-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
         .history-item { background: var(--card); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* SETTINGS */
         .settings-panel { padding: 20px; }
         .settings-item { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
         .wallet-address { background: var(--card); padding: 20px; border-radius: 15px; font-family: monospace; font-size: 1.2rem; word-break: break-all; border: 1px solid var(--border); text-align: center; color: var(--accent); font-weight: 700; margin-bottom: 15px; }
@@ -94,7 +88,6 @@
 <body>
     <div class="top-bar">Crypto Bot</div>
 
-    <!-- PIN-КОД -->
     <div class="screen" id="screen-pin">
         <div class="pin-screen">
             <div class="pin-title">Добро пожаловать!</div>
@@ -104,7 +97,6 @@
         </div>
     </div>
 
-    <!-- КОШЕЛЕК -->
     <div class="screen active" id="screen-wallet">
         <div class="balance-section">
             <div class="balance-amount" id="total-balance-container" onclick="toggleCurrency()">
@@ -122,9 +114,9 @@
                 <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Перевод"></div>
                 <span>Перевод</span>
             </div>
-            <div class="action-btn" onclick="switchTab('check')">
-                <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/1000/1000968.png" alt="Создать чек"></div>
-                <span>Создать чек</span>
+            <div class="action-btn" onclick="switchTab('history')">
+                <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/1000/1000968.png" alt="История"></div>
+                <span>История</span>
             </div>
         </div>
 
@@ -158,34 +150,24 @@
         </div>
     </div>
 
-    <!-- БИРЖА (ГРАФИК) -->
     <div class="screen" id="screen-exchange">
-        <div style="padding: 20px 20px 0 20px; font-weight: 700; font-size: 1.1rem;">Курс валют</div>
-        
+        <div style="padding: 20px 20px 0 20px; font-weight: 700; font-size: 1.1rem;">Курс</div>
         <div class="exchange-coin-selector">
             <div class="coin-pill active" data-coin="USDT" onclick="selectCoin('USDT', this)">USDT</div>
             <div class="coin-pill" data-coin="GRAM" onclick="selectCoin('GRAM', this)">GRAM</div>
             <div class="coin-pill" data-coin="SOL" onclick="selectCoin('SOL', this)">SOL</div>
             <div class="coin-pill" data-coin="TRX" onclick="selectCoin('TRX', this)">TRX</div>
         </div>
-
         <div class="chart-container">
             <svg class="chart-svg" id="chart-svg" viewBox="0 0 100 50" preserveAspectRatio="none">
-                <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:var(--accent);stop-opacity:0.4" />
-                        <stop offset="100%" style="stop-color:var(--accent);stop-opacity:0" />
-                    </linearGradient>
-                </defs>
+                <defs><linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:var(--accent);stop-opacity:0.5" /><stop offset="100%" style="stop-color:var(--accent);stop-opacity:0" /></linearGradient></defs>
                 <path id="chart-area" class="chart-area" fill="url(#gradient)" d="" />
                 <polyline id="chart-line" class="chart-line" fill="none" stroke="var(--accent)" stroke-width="2" points="" />
             </svg>
         </div>
-
         <div class="buy-panel">
             <div class="buy-row" style="font-size: 1.5rem; font-weight: 700; color: var(--text);">
                 <span id="current-price">$1.00</span>
-                <span id="price-change" style="font-size: 1rem; color: var(--green);">+0.00%</span>
             </div>
             <input type="number" class="buy-input" id="buy-amount" placeholder="Количество" oninput="calculateCost()">
             <div class="buy-row"><span>К оплате:</span><span id="cost-stars">0 ⭐</span></div>
@@ -193,7 +175,7 @@
         </div>
     </div>
 
-    <!-- ПЕРЕВОД -->
+    <!-- ЭКРАН ПЕРЕВОДА -->
     <div class="screen" id="screen-transfer">
         <div class="details-card" style="margin: 20px auto; width: 90%;">
             <h3>Перевод</h3>
@@ -209,27 +191,6 @@
         </div>
     </div>
 
-    <!-- СОЗДАТЬ ЧЕК -->
-    <div class="screen" id="screen-check">
-        <div class="details-card" style="margin: 20px auto; width: 90%;">
-            <h3>Создать чек</h3>
-            <select id="check-coin" class="buy-input" style="appearance: none;">
-                <option value="USDT">USDT</option>
-                <option value="GRAM">GRAM</option>
-                <option value="SOL">SOL</option>
-                <option value="TRX">TRX</option>
-            </select>
-            <input type="number" id="check-amount" class="buy-input" placeholder="Сумма">
-            <div class="switch">
-                <span>С паролем?</span>
-                <input type="checkbox" id="check-with-password" onchange="toggleCheckPassword()">
-            </div>
-            <input type="password" id="check-password" class="buy-input" placeholder="Пароль" style="display: none;">
-            <button class="btn-buy" onclick="createCheck()">Создать чек</button>
-        </div>
-    </div>
-
-    <!-- ИСТОРИЯ -->
     <div class="screen" id="screen-history">
         <h2 style="padding: 20px;">История</h2>
         <div class="history-list" id="history-list">
@@ -237,23 +198,6 @@
         </div>
     </div>
 
-    <!-- ВЫВОД -->
-    <div class="screen" id="screen-withdraw">
-        <div class="details-card" style="margin: 20px auto; width: 90%;">
-            <h3>Вывод средств</h3>
-            <select id="withdraw-coin" class="buy-input" style="appearance: none;">
-                <option value="USDT">USDT</option>
-                <option value="GRAM">GRAM</option>
-                <option value="SOL">SOL</option>
-                <option value="TRX">TRX</option>
-            </select>
-            <input type="number" id="withdraw-amount" class="buy-input" placeholder="Сумма" oninput="calculateWithdraw()">
-            <div class="buy-row"><span>Вы получите:</span><span id="withdraw-stars">0 ⭐</span></div>
-            <button class="btn-buy red" onclick="makeWithdraw()">Вывести</button>
-        </div>
-    </div>
-
-    <!-- НАСТРОЙКИ -->
     <div class="screen" id="screen-settings">
         <div class="settings-panel">
             <h2 style="margin-bottom: 20px;">Настройки</h2>
@@ -265,46 +209,35 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ДЕТАЛЕЙ -->
     <div class="details-overlay" id="details-overlay" onclick="closeDetails()">
         <div class="details-card" onclick="event.stopPropagation()">
             <h3 style="margin-bottom: 15px; text-align: center;">Детали</h3>
             <div class="buy-row"><span>Сумма:</span><span id="det-amount">-</span></div>
             <div class="buy-row"><span>Валюта:</span><span id="det-coin">-</span></div>
-            <div class="buy-row"><span>Дата:</span><span id="det-date">-</span></div>
             <button class="btn-buy" style="margin-top: 20px;" onclick="closeDetails()">Закрыть</button>
         </div>
     </div>
 
-    <!-- УСПЕХ -->
     <div class="success-overlay" id="success-overlay" onclick="hideSuccess()">
         <div class="success-card" onclick="event.stopPropagation()">
-            <div class="checkmark-wrap">
-                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                    <circle class="checkmark-circle" cx="26" cy="26" r="24"/>
-                    <path class="checkmark-check" d="M14.1 27.2 l7.1 7.2 l16.7 -16.8"/>
-                </svg>
-            </div>
-            <div class="success-text">Успешно!</div>
-            <div class="success-sub" id="success-amount">-0 USDT</div>
-            <div class="success-note" id="success-note">Транзакция выполнена</div>
-            <button class="success-btn" onclick="hideSuccess()">Готово</button>
+            <h3 style="margin-bottom: 10px;">Успешно!</h3>
+            <div id="success-amount" style="font-size: 1.2rem; font-weight: 700; color: var(--green);">-0 USDT</div>
+            <button class="btn-buy" style="margin-top: 20px;" onclick="hideSuccess()">Готово</button>
         </div>
     </div>
 
-    <!-- НИЖНЕЕ МЕНЮ (С КАРТИНКАМИ) -->
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')">
             <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/1077/1077976.png" alt="Wallet"></div>
             <span>Кошелек</span>
         </div>
         <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')">
-            <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" alt="Chart"></div>
-            <span>График</span>
+            <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" alt="Exchange"></div>
+            <span>Биржа</span>
         </div>
-        <div class="nav-item" onclick="switchTab('withdraw')">
-            <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/2983/2983082.png" alt="Withdraw"></div>
-            <span>Вывод</span>
+        <div class="nav-item" onclick="switchTab('history')">
+            <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/2983/2983082.png" alt="History"></div>
+            <span>История</span>
         </div>
         <div class="nav-item" onclick="switchTab('settings')">
             <div class="icon"><img src="https://cdn-icons-png.flaticon.com/512/126/126472.png" alt="Settings"></div>
@@ -326,16 +259,12 @@
         const userId = paramId ? parseInt(paramId) : 0;
 
         let currentCoin = 'USDT';
-        let transferCoin = 'USDT';
         let currentPrices = { 'USDT': 1.00, 'GRAM': 1.15, 'SOL': 93.99, 'TRX': 0.12 };
-        let chartInterval;
-        
         let balances = { usdt: 0, gram: 0, sol: 0, trx: 0 };
         let isBalancesHidden = false;
-        let isRubMode = false;
-        const CUSTOM_RUB_RATE = 100;
+        let chartInterval;
 
-        // === PIN-КОД ===
+        // === АВТОРИЗАЦИЯ ===
         async function checkAuth() {
             if (!userId) {
                 document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
@@ -392,12 +321,6 @@
             } else if (tab === 'transfer') {
                 document.getElementById('screen-transfer').classList.add('active');
                 clearInterval(chartInterval);
-            } else if (tab === 'check') {
-                document.getElementById('screen-check').classList.add('active');
-                clearInterval(chartInterval);
-            } else if (tab === 'withdraw') {
-                document.getElementById('screen-withdraw').classList.add('active');
-                clearInterval(chartInterval);
             } else if (tab === 'settings') {
                 document.getElementById('screen-settings').classList.add('active');
                 clearInterval(chartInterval);
@@ -405,57 +328,58 @@
             }
         }
 
-        // === СКРЫТИЕ / ПОКАЗ ===
+        // === СКРЫТИЕ БАЛАНСОВ ===
         function toggleHideBalances() {
             isBalancesHidden = !isBalancesHidden;
             document.getElementById('btn-hide').innerText = isBalancesHidden ? 'Показать балансы' : 'Скрыть балансы';
-            
-            if (isBalancesHidden) {
-                document.getElementById('total-balance').innerText = '****';
-                document.getElementById('currency-symbol').innerText = '';
-                document.getElementById('currency-label').innerText = '';
-                document.getElementById('total-usd').innerText = 'Скрыто';
-                
-                document.querySelectorAll('.asset-amount').forEach(el => el.innerText = '****');
-                document.querySelectorAll('.asset-usd').forEach(el => el.innerText = '****');
-            } else {
-                updateDisplay(); 
-            }
-        }
-
-        function toggleCurrency() {
-            isRubMode = !isRubMode;
             updateDisplay();
         }
 
-        // === ОТРИСОВКА ===
+        // === ОТРИСОВКА БАЛАНСА ===
         function updateDisplay() {
-            if (isBalancesHidden) return; 
-
             const totalUsdt = (balances.usdt * 1.00) + (balances.gram * 1.15) + (balances.sol * 93.99) + (balances.trx * 0.12);
             
-            document.getElementById('total-balance').innerText = totalUsdt.toFixed(2);
-            document.getElementById('currency-symbol').innerText = '$';
-            document.getElementById('currency-label').innerText = 'USDT';
-            document.getElementById('total-usd').innerText = 'Общий баланс';
+            const totalEl = document.getElementById('total-balance');
+            const symEl = document.getElementById('currency-symbol');
+            const labelEl = document.getElementById('currency-label');
+            const usdEl = document.getElementById('total-usd');
+
+            if (isBalancesHidden) {
+                totalEl.innerText = '****';
+                symEl.innerText = '';
+                labelEl.innerText = '';
+                usdEl.innerText = 'Скрыто';
+            } else {
+                symEl.innerText = '$';
+                totalEl.innerText = totalUsdt.toFixed(2);
+                labelEl.innerText = 'USDT';
+                usdEl.innerText = 'Общий баланс';
+            }
 
             let usdtToShow = balances.usdt;
             if (usdtToShow === 0 && totalUsdt > 0) usdtToShow = totalUsdt;
 
-            document.getElementById('usdt-balance').innerText = `${usdtToShow} USDT`;
-            document.getElementById('usdt-usd').innerText = `$${(usdtToShow * 1.00).toFixed(2)}`;
-            
-            document.getElementById('gram-balance').innerText = `${balances.gram} GRAM`;
-            document.getElementById('gram-usd').innerText = `$${(balances.gram * 1.15).toFixed(2)}`;
-            
-            document.getElementById('sol-balance').innerText = `${balances.sol} SOL`;
-            document.getElementById('sol-usd').innerText = `$${(balances.sol * 93.99).toFixed(2)}`;
-            
-            document.getElementById('trx-balance').innerText = `${balances.trx} TRX`;
-            document.getElementById('trx-usd').innerText = `$${(balances.trx * 0.12).toFixed(2)}`;
+            const updateAsset = (id, amount, name, price) => {
+                const el = document.getElementById(id);
+                const usdEl = document.getElementById(id + '-usd');
+                if (!el || !usdEl) return;
+                
+                if (isBalancesHidden) {
+                    el.innerText = '**** ' + name;
+                    usdEl.innerText = '****';
+                } else {
+                    el.innerText = `${amount} ${name}`;
+                    usdEl.innerText = `$${(amount * price).toFixed(2)}`;
+                }
+            };
+
+            updateAsset('usdt-balance', usdtToShow, 'USDT', 1.00);
+            updateAsset('gram-balance', balances.gram, 'GRAM', 1.15);
+            updateAsset('sol-balance', balances.sol, 'SOL', 93.99);
+            updateAsset('trx-balance', balances.trx, 'TRX', 0.12);
         }
 
-        // === БИРЖА / ГРАФИК ===
+        // === БИРЖА И ГРАФИК ===
         function selectCoin(coin, element) {
             currentCoin = coin;
             document.querySelectorAll('.coin-pill').forEach(el => el.classList.remove('active'));
@@ -467,15 +391,7 @@
         function startChart() {
             clearInterval(chartInterval);
             drawChart();
-            chartInterval = setInterval(() => {
-                // Легкое колебание для визуального эффекта (цена в базе не меняется)
-                let change = (Math.random() - 0.5) * 0.005;
-                currentPrices[currentCoin] += currentPrices[currentCoin] * change;
-                
-                const priceEl = document.getElementById('current-price');
-                if (priceEl) priceEl.innerText = `$${currentPrices[currentCoin].toFixed(2)}`;
-                drawChart();
-            }, 2000);
+            chartInterval = setInterval(drawChart, 3000);
         }
 
         function drawChart() {
@@ -484,14 +400,11 @@
             if (!line || !area) return;
 
             let points = '';
-            const numPoints = 50;
-            // Используем время как базу, чтобы у всех график был одинаковый
-            const timeSeed = Math.floor(Date.now() / 5000); 
-            
+            const numPoints = 40;
+            const timeSeed = Math.floor(Date.now() / 10000); 
             for (let i = 0; i < numPoints; i++) {
                 const x = (i / (numPoints - 1)) * 100;
-                // Красивая волна
-                const wave = Math.sin((timeSeed - i) * 0.5) * 10 + Math.cos((timeSeed - i) * 0.2) * 5;
+                const wave = Math.sin(timeSeed + i * 0.5) * 10 + Math.cos(timeSeed * 0.5 + i * 0.2) * 5;
                 const y = 25 - wave;
                 points += `${x},${y} `;
             }
@@ -502,33 +415,25 @@
         function calculateCost() {
             const amount = parseFloat(document.getElementById('buy-amount').value) || 0;
             const price = currentPrices[currentCoin];
-            const usdCost = amount * price;
-            const starsCost = Math.ceil(usdCost * 100);
-            document.getElementById('cost-stars').innerText = `${starsCost} ⭐`;
-            return { amount, starsCost };
+            document.getElementById('cost-stars').innerText = `${Math.ceil(amount * price * 100)} ⭐`;
         }
 
         async function buyCrypto() {
-            const { amount, starsCost } = calculateCost();
+            const amount = parseFloat(document.getElementById('buy-amount').value) || 0;
+            const starsCost = Math.ceil(amount * currentPrices[currentCoin] * 100);
             if (amount <= 0) return tg.showAlert('Введите количество');
-            const btn = document.querySelector('#screen-exchange .btn-buy');
-            const oldText = btn.innerText;
-            btn.innerText = "Отправка..."; btn.disabled = true;
-
+            
             try {
                 const response = await fetch('https://misu-bot-5uwv.onrender.com/buy', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ user_id: userId, coin: currentCoin, amount: amount, stars: starsCost })
                 });
-                if (response.ok) {
-                    tg.showAlert(`Счет на ${starsCost} ⭐ отправлен в чат!`);
-                    loadWallet();
-                } else tg.showAlert("Ошибка сервера.");
+                if (response.ok) tg.showAlert(`Счет на ${starsCost} ⭐ отправлен в чат!`);
+                else tg.showAlert("Ошибка сервера.");
             } catch (e) { tg.showAlert("Ошибка сети: " + e.message); }
-            finally { btn.innerText = oldText; btn.disabled = false; }
         }
 
-        // === ПЕРЕВОДЫ ===
+        // === ПЕРЕВОДЫ (ИСПРАВЛЕНО) ===
         async function makeTransfer() {
             const toAddress = document.getElementById('transfer-address').value.trim();
             const amount = parseFloat(document.getElementById('transfer-amount').value);
@@ -537,94 +442,57 @@
             if (!toAddress || !amount || amount <= 0) return tg.showAlert('Заполните все поля');
             
             const btn = document.querySelector('#screen-transfer .btn-buy');
+            const oldText = btn.innerText;
             btn.innerText = "Отправка..."; btn.disabled = true;
 
             try {
-                const { data: recipient } = await db.from('users').select('user_id').eq('wallet_address', toAddress).single();
-                if (!recipient) { btn.innerText = "Отправить"; btn.disabled = false; return tg.showAlert('Кошелек не найден'); }
+                // 1. Ищем получателя (используем maybeSingle, чтобы избежать ошибки, если никого нет)
+                const { data: recipient, error: recError } = await db.from('users').select('user_id').eq('wallet_address', toAddress).maybeSingle();
                 
+                if (recError) throw new Error('Ошибка поиска: ' + recError.message);
+                if (!recipient) throw new Error('Кошелек не найден. Проверьте адрес.');
+                if (recipient.user_id === userId) throw new Error('Нельзя перевести самому себе.');
+
+                // 2. Проверяем баланс отправителя
                 const balanceField = `${coin.toLowerCase()}_balance`;
-                const { data: sender } = await db.from('users').select('*').eq('user_id', userId).single();
-                const senderBalance = parseFloat(sender[balanceField]) || 0;
+                const { data: sender, error: sendError } = await db.from('users').select(balanceField).eq('user_id', userId).maybeSingle();
                 
+                if (sendError) throw new Error('Ошибка баланса: ' + sendError.message);
+                
+                const senderBalance = parseFloat(sender[balanceField]) || 0;
                 const commission = amount * 0.01;
                 const totalToDeduct = amount + commission;
 
-                if (senderBalance < totalToDeduct) { btn.innerText = "Отправить"; btn.disabled = false; return tg.showAlert(`Недостаточно средств`); }
+                if (senderBalance < totalToDeduct) {
+                    throw new Error(`Недостаточно ${coin}. Нужно: ${totalToDeduct.toFixed(2)} (с учетом комиссии 1%)`);
+                }
 
-                await db.from('users').update({ [balanceField]: senderBalance - totalToDeduct }).eq('user_id', userId);
+                // 3. Списываем у отправителя
+                const { error: deductError } = await db.from('users').update({ [balanceField]: senderBalance - totalToDeduct }).eq('user_id', userId);
+                if (deductError) throw new Error('Ошибка списания: ' + deductError.message);
+
+                // 4. Начисляем получателю
+                const { data: recData, error: getRecError } = await db.from('users').select(balanceField).eq('user_id', recipient.user_id).maybeSingle();
+                if (getRecError) throw new Error('Ошибка получения баланса получателя.');
                 
-                const { data: recData } = await db.from('users').select(balanceField).eq('user_id', recipient.user_id).single();
                 const recBalance = parseFloat(recData[balanceField]) || 0;
-                await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', recipient.user_id);
+                const { error: addError } = await db.from('users').update({ [balanceField]: recBalance + amount }).eq('user_id', recipient.user_id);
+                if (addError) throw new Error('Ошибка начисления: ' + addError.message);
 
+                // 5. Записываем историю
                 await db.from('transfers').insert([{ from_user_id: userId, to_user_id: recipient.user_id, coin: coin, amount: amount }]);
 
-                showSuccess(`-${amount} ${coin}`, `Перевод отправлен`);
+                // 6. Успех
+                showSuccess(`-${amount} ${coin}`, 'Перевод отправлен');
                 document.getElementById('transfer-address').value = '';
                 document.getElementById('transfer-amount').value = '';
                 loadWallet();
-            } catch (e) { tg.showAlert("Ошибка: " + e.message); }
-            finally { btn.innerText = "Отправить"; btn.disabled = false; }
-        }
 
-        // === ЧЕКИ ===
-        function toggleCheckPassword() {
-            const isChecked = document.getElementById('check-with-password').checked;
-            document.getElementById('check-password').style.display = isChecked ? 'block' : 'none';
-        }
-
-        async function createCheck() {
-            const amount = parseFloat(document.getElementById('check-amount').value);
-            const coin = document.getElementById('check-coin').value;
-            const hasPassword = document.getElementById('check-with-password').checked;
-            const password = hasPassword ? document.getElementById('check-password').value : null;
-            
-            if (amount <= 0) return tg.showAlert('Введите сумму');
-            if (hasPassword && !password) return tg.showAlert('Введите пароль');
-            
-            const btn = document.querySelector('#screen-check .btn-buy');
-            btn.innerText = "Создание..."; btn.disabled = true;
-
-            try {
-                const balanceField = `${coin.toLowerCase()}_balance`;
-                const { data: user } = await db.from('users').select('*').eq('user_id', userId).single();
-                
-                if (user[balanceField] < amount) { 
-                    btn.innerText = "Создать чек"; btn.disabled = false; 
-                    return tg.showAlert('Недостаточно средств'); 
-                }
-                
-                // Списываем
-                await db.from('users').update({ [balanceField]: user[balanceField] - amount }).eq('user_id', userId);
-                
-                // Создаем чек
-                const { data: check, error } = await db.from('checks').insert([{
-                    creator_id: userId, amount, coin, password
-                }]).select().single();
-                
-                if (error) throw error;
-                
-                tg.showAlert(`Чек создан! Ссылка для активации: https://t.me/cryptobot?start=check_${check.id}`);
-                document.getElementById('check-amount').value = '';
-                loadWallet();
-            } catch (e) { tg.showAlert("Ошибка: " + e.message); }
-            finally { btn.innerText = "Создать чек"; btn.disabled = false; }
-        }
-
-        // === ВЫВОД ===
-        function calculateWithdraw() {
-            const amount = parseFloat(document.getElementById('withdraw-amount').value) || 0;
-            const coin = document.getElementById('withdraw-coin').value;
-            const price = currentPrices[coin] || 1;
-            
-            // Простая формула: 1 USDT = 100 звезд (можешь поменять)
-            const stars = Math.floor(amount * price * 100);
-            document.getElementById('withdraw-stars').innerText = `${stars} ⭐`;
-        }
-
-        function makeWithdraw() {
-            tg.showAlert('Вывод пока в разработке. Скоро добавим!');
+            } catch (e) { 
+                tg.showAlert(e.message || "Произошла неизвестная ошибка");
+            } finally { 
+                btn.innerText = oldText; btn.disabled = false; 
+            }
         }
 
         // === ИСТОРИЯ ===
@@ -633,7 +501,10 @@
             list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Загрузка...</p>';
             try {
                 const { data } = await db.from('transfers').select('*').or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`).order('created_at', { ascending: false });
-                if (!data || data.length === 0) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">История пуста</p>'; return; }
+                if (!data || data.length === 0) { 
+                    list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">История пуста</p>'; 
+                    return; 
+                }
                 list.innerHTML = '';
                 data.forEach(tx => {
                     const isSender = tx.from_user_id === userId;
@@ -643,16 +514,38 @@
                     const div = document.createElement('div');
                     div.className = 'history-item';
                     div.innerHTML = `
-                        <div class="history-info"><div class="history-type">${typeText} ${tx.coin}</div><div class="history-date">${date}</div></div>
+                        <div class="history-info">
+                            <div class="history-type">${typeText} ${tx.coin}</div>
+                            <div class="history-date">${date}</div>
+                        </div>
                         <div class="history-amount ${isSender ? 'negative' : 'positive'}">${sign}${tx.amount} ${tx.coin}</div>
                     `;
-                    div.onclick = () => openDetails(tx, isSender, date);
+                    div.onclick = () => openDetails(tx, isSender);
                     list.appendChild(div);
                 });
-            } catch (e) { list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ошибка загрузки</p>'; }
+            } catch (e) { 
+                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ошибка загрузки</p>'; 
+            }
+        }
+
+        function openDetails(tx, isSender) {
+            document.getElementById('det-amount').innerText = `${isSender ? '-' : '+'}${tx.amount}`;
+            document.getElementById('det-coin').innerText = tx.coin;
+            document.getElementById('details-overlay').classList.add('active');
+        }
+
+        function closeDetails() {
+            document.getElementById('details-overlay').classList.remove('active');
         }
 
         // === НАСТРОЙКИ ===
+        async function loadSettings() {
+            try {
+                const { data } = await db.from('users').select('wallet_address').eq('user_id', userId).maybeSingle();
+                document.getElementById('wallet-address').innerText = data?.wallet_address || 'Загрузка...';
+            } catch (e) { console.error(e); }
+        }
+
         function copyAddress() {
             const address = document.getElementById('wallet-address').innerText;
             if (address && address !== 'Загрузка...') {
@@ -660,26 +553,22 @@
             }
         }
 
-        async function loadSettings() {
-            try {
-                const { data } = await db.from('users').select('wallet_address').eq('user_id', userId).single();
-                document.getElementById('wallet-address').innerText = data?.wallet_address || 'Загрузка...';
-            } catch (e) { console.error(e); }
-        }
-
         // === КОШЕЛЁК ===
         async function loadWallet() {
             if (!userId) return;
             try {
-                const { data } = await db.from('users').select('*').eq('user_id', userId).single();
+                const { data, error } = await db.from('users').select('*').eq('user_id', userId).maybeSingle();
                 
+                if (error) throw error;
+
                 if (!data) {
+                    // Если юзера нет, создаем
                     const newAddress = 'T' + Math.random().toString(36).substring(2, 15).toUpperCase() + Math.random().toString(36).substring(2, 15).toUpperCase();
-                    await db.from('users').upsert({
+                    await db.from('users').insert({
                         user_id: userId,
                         wallet_address: newAddress,
                         usdt_balance: 0, gram_balance: 0, sol_balance: 0, trx_balance: 0
-                    }, { onConflict: 'user_id' });
+                    });
                     balances = { usdt: 0, gram: 0, sol: 0, trx: 0 };
                     document.getElementById('wallet-address').innerText = newAddress;
                     updateDisplay();
@@ -704,22 +593,15 @@
         }
 
         // === УСПЕХ ===
-        let successTimer = null;
         function showSuccess(amountText, note = 'Транзакция выполнена') {
             const overlay = document.getElementById('success-overlay');
             overlay.classList.remove('active');
-            void overlay.offsetWidth;
             document.getElementById('success-amount').innerText = amountText;
-            document.getElementById('success-note').innerText = note;
             overlay.classList.add('active');
-            clearTimeout(successTimer);
-            successTimer = setTimeout(hideSuccess, 4000);
         }
         
         function hideSuccess() {
-            clearTimeout(successTimer);
-            const overlay = document.getElementById('success-overlay');
-            if (overlay) overlay.classList.remove('active');
+            document.getElementById('success-overlay').classList.remove('active');
         }
 
         // === СТАРТ ===

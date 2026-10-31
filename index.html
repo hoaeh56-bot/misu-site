@@ -65,6 +65,9 @@
     </style>
 </head>
 <body>
+    <!-- ДОБАВИЛ НАДПИСЬ ЧТОБЫ ТЫ ВИДЕЛ ЧТО ЭТО НОВЫЙ КОД -->
+    <div style="background: red; color: white; text-align: center; padding: 5px; font-weight: bold; font-size: 12px;">NEW VERSION</div>
+    
     <div class="top">Crypto Bot</div>
 
     <div class="scr active" id="scr-wallet">
@@ -169,6 +172,9 @@
     </div>
 
     <script>
+        // ЭТО ОКНО ПОКАЖЕТ, ЧТО ЗАГРУЗИЛСЯ НОВЫЙ КОД
+        alert("НОВАЯ ВЕРСИЯ ЗАГРУЖЕНА! ПИН-КОДА НЕТ.");
+
         const supabaseUrl = "https://ptcofqwsvyytcnoerazu.supabase.co";
         const supabaseKey = "sb_publishable_CL2wAd6YW9tj5fIq4r9b4A_iVeZtnBx";
         const db = supabase.createClient(supabaseUrl, supabaseKey);

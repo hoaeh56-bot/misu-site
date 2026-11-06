@@ -8,7 +8,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: radial-gradient(circle at 50% 20%, #1a1a24 0%, #000000 70%); color: #fff; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        body { 
+            background: radial-gradient(circle at 50% 20%, #1a1a24 0%, #000000 70%); 
+            color: #fff; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            overflow-y: auto; 
+            overflow-x: hidden;
+        }
 
         /* --- ХЕДЕР --- */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px; z-index: 10; }
@@ -16,22 +25,37 @@
         .btn-topup { background: #ffd700; color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; }
 
         /* --- БАРАБАН --- */
-        .wheel-zone { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .wheel-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 0; position: relative; }
         
         .wheel-outer { position: relative; width: 260px; height: 260px; display: flex; justify-content: center; align-items: center; }
         
-        .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid #14141e; background: #09090e; box-shadow: inset 0 0 20px rgba(0,0,0,1); }
+        .wheel-bg { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            border: 16px solid #14141e; 
+            background: #09090e; 
+            box-shadow: inset 0 0 20px rgba(0,0,0,1); 
+        }
         
-        /* Canvas для оранжевой дуги */
-        .progress-canvas { position: absolute; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+        /* Оранжевая полоса */
+        .wheel-progress {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 25%), #14141e var(--progress, 25%), #14141e 100%);
+            -webkit-mask: radial-gradient(transparent 122px, #000 123px);
+            mask: radial-gradient(transparent 122px, #000 123px);
+            z-index: 1;
+        }
 
-        /* Внутренний круг */
         .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
         
         .percent-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; color: #fff; }
         .percent-lbl { font-size: 10px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
 
-        /* Анимация результата */
         .result-container { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; background: #000; }
         .result-container.show { opacity: 1; }
         
@@ -47,8 +71,8 @@
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
         /* Стрелка */
-        .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); }
-        .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
+        .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); transform: rotate(0deg); }
+        .arrow-svg { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
 
         /* --- КАРТОЧКИ ПОДАРКОВ --- */
         .gift-cards { display: flex; justify-content: center; gap: 12px; margin-top: 15px; z-index: 10; }
@@ -100,7 +124,6 @@
         .btn-boost:active { transform: scale(0.98); }
         .btn-boost:disabled { background: #1a1a24; color: #444; }
         
-        /* Шансы (Строго по центру) */
         .chances-grid { display: flex; justify-content: center; gap: 6px; width: 100%; }
         .chance-btn { flex: 1; max-width: 60px; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; }
         .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
@@ -114,8 +137,8 @@
         .tab { flex: 1; text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #555; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         .tab.active { background: #1c1c28; color: #fff; border: 1px solid #2a2a35; }
 
-        /* --- СПИСКИ (Сетка с карточками) --- */
-        .list-container { padding: 0 15px 15px; flex-grow: 1; overflow-y: auto; max-height: 180px; }
+        /* --- СПИСКИ --- */
+        .list-container { padding: 0 15px 30px; flex-grow: 1; }
         
         .grid-list {
             display: grid;
@@ -150,15 +173,14 @@
 <body>
 
     <div class="header">
-        <div class="balance-pill"><span>⭐</span> <span id="balanceDisplay">900.00</span></div>
+        <div class="balance-pill"><span>⭐</span> <span id="balanceDisplay">800.00</span></div>
         <button class="btn-topup">+ Пополнить</button>
     </div>
 
     <div class="wheel-zone">
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
-            <!-- Canvas -->
-            <canvas class="progress-canvas" id="progressCanvas" width="260" height="260"></canvas>
+            <div class="wheel-progress" id="wheelProgress" style="--progress: 25%;"></div>
             
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
@@ -189,9 +211,8 @@
         <div class="gift-card westside active" onclick="selectGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <!-- ТВОЯ КАРТИНКА ИЗ JSON (THUMBNAIL) -->
-                <!-- ВАЖНО: Вставь сюда свой токен бота вместо YOUR_BOT_TOKEN -->
-                <img src="https://api.telegram.org/file/botYOUR_BOT_TOKEN/AAMCAgADGQEAAVdV32ruHng5fX29i-Wuey2q_9GHx91eAALPfgACgMx5SzDmkT_oltSwAQAHbQADPQQ.png" class="gift-img" alt="Westside Ring" onerror="this.src='https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png'">
+                <!-- ВСТАВЛЕНА ТВОЯ ССЫЛКА -->
+                <img src="https://videovssylku.ru/i/AgADz34AAoDMeUs.UDvHh" class="gift-img" alt="Westside Ring">
             </div>
             <div class="gift-name">Westside Ring</div>
             <div class="gift-sub">#136</div>
@@ -238,7 +259,8 @@
         <div class="grid-list">
             <div class="grid-item westside">
                 <div class="gift-price">⭐ 100</div>
-                <img src="https://api.telegram.org/file/botYOUR_BOT_TOKEN/AAMCAgADGQEAAVdV32ruHng5fX29i-Wuey2q_9GHx91eAALPfgACgMx5SzDmkT_oltSwAQAHbQADPQQ.png" class="gift-img" alt="Westside Ring" onerror="this.src='https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png'">
+                <!-- ВСТАВЛЕНА ТВОЯ ССЫЛКА -->
+                <img src="https://videovssylku.ru/i/AgADz34AAoDMeUs.UDvHh" class="gift-img" alt="Westside Ring">
                 <div class="gift-name">Westside Ring</div>
                 <div class="gift-sub">#136</div>
                 <button class="btn-upgrade" onclick="startUpgrade('Westside Ring')">Апгрейд</button>
@@ -276,7 +298,7 @@
         let tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); tg.setHeaderColor('#000000'); }
 
-        let balance = 900.00;
+        let balance = 800.00;
         let chance = 25;
         let rotation = 0;
         let isSpinning = false;
@@ -284,32 +306,11 @@
         let currentGiftName = 'Westside Ring';
         let currentGiftId = '#136';
 
-        const canvas = document.getElementById('progressCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function drawArc(percent) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = 122; 
-            
-            // ВАЖНО: Рисуем от 6 часов (снизу) по часовой стрелке.
-            // 90 градусов в радианах = Math.PI / 2.
-            const startAngle = Math.PI / 2; 
-            const endAngle = startAngle + (percent / 100) * (Math.PI * 2);
-
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-            ctx.strokeStyle = '#ff8c00';
-            ctx.lineWidth = 16;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-        }
-
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
-            drawArc(chance);
+            const progressEl = document.getElementById('wheelProgress');
+            progressEl.style.setProperty('--progress', chance + '%');
         }
 
         function setChance(val, el) {
@@ -398,12 +399,12 @@
             let targetDeg = 0;
             
             if (isWin) {
-                const startAngle = 90;
-                const endAngle = 90 + (chance / 100) * 360;
+                const startAngle = 180;
+                const endAngle = 180 + (chance / 100) * 360;
                 targetDeg = Math.floor(Math.random() * (endAngle - startAngle) + startAngle);
             } else {
-                const startAngle = 90;
-                const endAngle = 90 + (chance / 100) * 360;
+                const startAngle = 180;
+                const endAngle = 180 + (chance / 100) * 360;
                 do {
                     targetDeg = Math.floor(Math.random() * 360);
                 } while (targetDeg > startAngle && targetDeg < endAngle);
@@ -420,7 +421,10 @@
                 arrow.style.transition = 'none';
                 rotation = rotation % 360;
                 arrow.style.transform = `rotate(${rotation}deg)`;
-                setTimeout(() => { arrow.style.transition = 'transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1)'; }, 50);
+                
+                setTimeout(() => { 
+                    arrow.style.transition = 'transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1)'; 
+                }, 50);
 
                 percentContainer.style.opacity = '0';
 
@@ -461,7 +465,7 @@
                     btn.innerText = "Забустить";
                 }, 3000);
 
-            }, 2500);
+            }, 3600);
         }
 
         updateUI();

@@ -19,10 +19,12 @@
             overflow-x: hidden;
         }
 
+        /* --- ХЕДЕР --- */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px; z-index: 10; }
         .balance-pill { display: flex; align-items: center; border: 1px solid #ffd700; padding: 6px 14px; border-radius: 20px; gap: 6px; color: #ffd700; font-weight: 700; font-size: 14px; background: rgba(255, 215, 0, 0.05); }
         .btn-topup { background: #ffd700; color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; }
 
+        /* --- БАРАБАН --- */
         .wheel-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 0; position: relative; }
         
         .wheel-outer { position: relative; width: 260px; height: 260px; display: flex; justify-content: center; align-items: center; }
@@ -37,32 +39,29 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        /* ОРАНЖЕВАЯ ПОЛОСА (СТРОГО СНИЗУ) */
-        .wheel-progress {
+        /* ОРАНЖЕВАЯ ПОЛОСА (SVG) */
+        .wheel-progress-svg {
             position: absolute;
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            /* Начинаем ровно с 180 градусов (6 часов) */
-            background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 25%), #14141e var(--progress, 25%), #14141e 100%);
-            -webkit-mask: radial-gradient(transparent 122px, #000 123px);
-            mask: radial-gradient(transparent 122px, #000 123px);
             z-index: 1;
+            transform: rotate(-90deg); /* Чтобы 0 градусов было справа */
         }
 
+        /* Центральный круг */
         .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
         
         .percent-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; color: #fff; }
         .percent-lbl { font-size: 10px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
 
-        /* АНИМАЦИЯ РЕЗУЛЬТАТА */
+        /* Анимация результата */
         .result-container { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; background: #000; }
         .result-container.show { opacity: 1; }
         
         .result-icon { width: 40px; height: 40px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.5s ease forwards; }
         .result-text { font-size: 15px; font-weight: 800; text-align: center; }
         .result-text.win { color: #4cd964; }
-        .result-text.lose { color: #ff4444; font-size: 14px; } /* КРАСНЫЙ ЦВЕТ ПРИ ПРОИГРЫШЕ */
+        .result-text.lose { color: #ff4444; font-size: 14px; }
         
         .result-gift-info { text-align: center; margin-top: 2px; }
         .result-gift-name { font-size: 11px; font-weight: 600; color: #fff; }
@@ -70,9 +69,11 @@
 
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
+        /* Стрелка */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); transform: rotate(0deg); }
-        .arrow-svg { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
+        .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%) rotate(180deg); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
 
+        /* --- КАРТОЧКИ ПОДАРКОВ --- */
         .gift-cards { display: flex; justify-content: center; gap: 12px; margin-top: 15px; z-index: 10; }
         
         .gift-card { 
@@ -111,6 +112,7 @@
         .gift-name { font-size: 13px; font-weight: 700; text-align: center; color: #fff; }
         .gift-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
 
+        /* --- УПРАВЛЕНИЕ --- */
         .controls { padding: 15px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
         
         .action-row { display: flex; gap: 8px; }
@@ -128,11 +130,13 @@
         .chance-btn.yellow { border-color: #ffd700; color: #ffd700; }
         .chance-btn.green { border-color: #44ff44; color: #44ff44; }
 
+        /* --- ВКЛАДКИ --- */
         .tabs-container { padding: 0 15px 15px; }
         .tabs { display: flex; background: #0a0a0f; border-radius: 14px; padding: 5px; border: 1px solid #1a1a25; }
         .tab { flex: 1; text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #555; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         .tab.active { background: #1c1c28; color: #fff; border: 1px solid #2a2a35; }
 
+        /* --- СПИСКИ --- */
         .list-container { padding: 0 15px 30px; flex-grow: 1; }
         
         .grid-list {
@@ -175,7 +179,11 @@
     <div class="wheel-zone">
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
-            <div class="wheel-progress" id="wheelProgress" style="--progress: 25%;"></div>
+            
+            <!-- ОРАНЖЕВАЯ ПОЛОСА (SVG) -->
+            <svg class="wheel-progress-svg" viewBox="0 0 260 260">
+                <circle id="progressCircle" cx="130" cy="130" r="122" fill="none" stroke="#ff8c00" stroke-width="16" stroke-dasharray="0 1000" stroke-linecap="round" transform="rotate(90 130 130)"/>
+            </svg>
             
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
@@ -205,7 +213,6 @@
         <div class="gift-card westside active" onclick="selectGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <!-- РАБОЧАЯ КАРТИНКА (3D РУКА) -->
                 <img src="https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png" class="gift-img" alt="Westside Ring">
             </div>
             <div class="gift-name">Westside Ring</div>
@@ -248,7 +255,6 @@
 
     <div class="list-container" id="inv-section">
         <div class="grid-list" id="inv-list">
-            <!-- Сюда будут добавляться предметы при выигрыше -->
             <div class="grid-item westside">
                 <div class="gift-price">⭐ 100</div>
                 <img src="https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png" class="gift-img" alt="Westside Ring">
@@ -290,14 +296,18 @@
         let currentGiftId = '#136';
         let currentGiftImg = 'https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png';
 
+        const circle = document.getElementById('progressCircle');
+        const circumference = 2 * Math.PI * 122; // Длина окружности
+
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
             // Визуальный минимум 5% для полосы
             let visualProgress = chance < 5 ? 5 : chance;
-            const progressEl = document.getElementById('wheelProgress');
-            progressEl.style.setProperty('--progress', visualProgress + '%');
+            // Обновляем SVG stroke-dasharray
+            let strokeLength = (visualProgress / 100) * circumference;
+            circle.style.strokeDasharray = `${strokeLength} ${circumference}`;
         }
 
         function setChance(val, el) {
@@ -359,7 +369,6 @@
             updateUI();
         }
 
-        // ДОБАВЛЕНИЕ ПРЕДМЕТА В ИНВЕНТАРЬ
         function addToInventory(name, id, imgSrc) {
             const list = document.getElementById('inv-list');
             const newItem = document.createElement('div');
@@ -448,13 +457,12 @@
                     let winAmount = Math.floor(betAmount * multiplier);
                     balance += winAmount;
                     
-                    // ДОБАВЛЯЕМ В ИНВЕНТАРЬ
                     addToInventory(currentGiftName, currentGiftId, currentGiftImg);
 
                     if (tg) tg.showAlert(`🎉 ВЫИГРАЛ!\n+${winAmount} ⭐`);
                 } else {
                     resultIcon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
-                    resultIcon.style.color = '#ff4444'; // КРАСНЫЙ
+                    resultIcon.style.color = '#ff4444';
                     resultText.innerText = 'Неудача';
                     resultText.className = 'result-text lose';
                     resultGiftInfo.style.display = 'none';

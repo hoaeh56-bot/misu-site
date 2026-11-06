@@ -22,46 +22,14 @@
         
         .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid #14141e; background: #09090e; box-shadow: inset 0 0 20px rgba(0,0,0,1); }
         
-        /* Canvas для дуги */
-        .progress-canvas { position: absolute; width: 100%; height: 100%; z-index: 1; }
+        /* Canvas для оранжевой дуги */
+        .progress-canvas { position: absolute; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
 
         /* Внутренний круг */
-        .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
+        .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
         
         .percent-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; color: #fff; }
         .percent-lbl { font-size: 10px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
-
-        /* ТОП ДРОП (Только снизу) */
-        .top-drop-zone {
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%) scale(0);
-            width: 40px;
-            height: 40px;
-            background: radial-gradient(circle, #ffd700 0%, #b8860b 100%);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: 900;
-            color: #000;
-            z-index: 6;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-        .top-drop-zone.active {
-            transform: translateX(-50%) scale(1);
-            opacity: 1;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
-            50% { box-shadow: 0 0 25px rgba(255, 215, 0, 1); }
-            100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
-        }
 
         /* Анимация результата */
         .result-container { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; background: #000; }
@@ -80,7 +48,7 @@
 
         /* Стрелка (Смотрит вниз) */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); }
-        .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%) rotate(180deg); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
+        .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
 
         /* --- КАРТОЧКИ ПОДАРКОВ --- */
         .gift-cards { display: flex; justify-content: center; gap: 12px; margin-top: 15px; z-index: 10; }
@@ -132,7 +100,7 @@
         .btn-boost:active { transform: scale(0.98); }
         .btn-boost:disabled { background: #1a1a24; color: #444; }
         
-        /* Шансы (Строго по центру) */
+        /* Шансы строго по центру */
         .chances-grid { display: flex; justify-content: center; gap: 6px; width: 100%; }
         .chance-btn { flex: 1; max-width: 60px; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; }
         .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
@@ -146,10 +114,26 @@
         .tab { flex: 1; text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #555; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         .tab.active { background: #1c1c28; color: #fff; border: 1px solid #2a2a35; }
 
-        /* --- СПИСКИ (Сетка) --- */
-        .list-container { padding: 0 15px 15px; flex-grow: 1; overflow-y: auto; max-height: 200px; }
-        .grid-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .grid-item { background: #111116; border: 1px solid #22222a; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; position: relative; }
+        /* --- СПИСКИ (Сетка с карточками) --- */
+        .list-container { padding: 0 15px 15px; flex-grow: 1; overflow-y: auto; max-height: 180px; }
+        
+        .grid-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .grid-item {
+            background: #111116;
+            border: 1px solid #22222a;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
         .grid-item.westside { background: linear-gradient(180deg, #1a2a5a 0%, #0a1030 100%); border-color: #2a3a6a; }
         .grid-item.xmas { background: linear-gradient(180deg, #3a1a4a 0%, #1a0a2a 100%); border-color: #5a2a7a; }
         
@@ -175,9 +159,6 @@
             <div class="wheel-bg"></div>
             <canvas class="progress-canvas" id="progressCanvas" width="260" height="260"></canvas>
             
-            <!-- Топ дроп (скрыт по умолчанию) -->
-            <div class="top-drop-zone" id="topDropZone">?</div>
-
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
                     <div class="percent-num" id="chanceDisplay">25.00%</div>
@@ -207,6 +188,7 @@
         <div class="gift-card westside active" onclick="selectGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
+                <!-- НОРМАЛЬНАЯ ССЫЛКА НА 3D-РУКУ -->
                 <img src="https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png" class="gift-img" alt="Westside Ring">
             </div>
             <div class="gift-name">Westside Ring</div>
@@ -309,8 +291,6 @@
         let betAmount = 100;
         let currentGiftName = 'Westside Ring';
         let currentGiftId = '#136';
-        
-        let lossStreak = 0;
 
         const canvas = document.getElementById('progressCanvas');
         const ctx = canvas.getContext('2d');
@@ -410,7 +390,6 @@
             const resultGiftInfo = document.getElementById('resultGiftInfo');
             const resultGiftName = document.getElementById('resultGiftName');
             const resultGiftId = document.getElementById('resultGiftId');
-            const topDropZone = document.getElementById('topDropZone');
 
             resultContainer.classList.remove('show');
             percentContainer.style.opacity = '1';
@@ -421,25 +400,11 @@
             balance -= betAmount;
             updateUI();
 
-            if (lossStreak >= 10 || Math.random() < 0.05) { 
-                topDropZone.classList.add('active'); 
-            } else {
-                topDropZone.classList.remove('active');
-            }
-
             let isWin = (Math.random() * 100) <= chance;
-            let isTopDrop = false;
-            
-            if (topDropZone.classList.contains('active') && Math.random() < 0.4) { 
-                isTopDrop = true;
-                isWin = false;
-            }
 
             let targetDeg = 0;
             
-            if (isTopDrop) {
-                targetDeg = 0; 
-            } else if (isWin) {
+            if (isWin) {
                 const startAngle = 90;
                 const endAngle = 90 + (chance / 100) * 360;
                 targetDeg = Math.floor(Math.random() * (endAngle - startAngle) + startAngle);
@@ -465,30 +430,8 @@
                 setTimeout(() => { arrow.style.transition = 'transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1)'; }, 50);
 
                 percentContainer.style.opacity = '0';
-                topDropZone.classList.remove('active');
 
-                if (isTopDrop) {
-                    lossStreak = 0;
-                    if (tg && tg.HapticFeedback) {
-                        tg.HapticFeedback.notificationOccurred('success');
-                        tg.HapticFeedback.impactOccurred('heavy'); 
-                    }
-                    
-                    resultIcon.innerHTML = '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>';
-                    resultIcon.style.color = '#ffd700';
-                    resultText.innerText = 'ТОП ДРОП!';
-                    resultText.className = 'result-text win';
-                    resultText.style.color = '#ffd700';
-                    resultGiftInfo.style.display = 'block';
-                    resultGiftName.innerText = currentGiftName + " x2";
-                    resultGiftId.innerText = currentGiftId;
-                    
-                    let winAmount = Math.floor(betAmount * 2); 
-                    balance += winAmount;
-                    
-                    if (tg) tg.showAlert(`🔥 ТОП ДРОП!\nВы выбили ${currentGiftName} x2!\n+${winAmount} ⭐`);
-                } else if (isWin) {
-                    lossStreak = 0;
+                if (isWin) {
                     resultIcon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
                     resultIcon.style.color = '#4cd964';
                     resultText.innerText = 'Удача!';
@@ -504,7 +447,6 @@
                     
                     if (tg) tg.showAlert(`🎉 ВЫИГРАЛ!\n+${winAmount} ⭐`);
                 } else {
-                    lossStreak++;
                     resultIcon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
                     resultIcon.style.color = '#666';
                     resultText.innerText = 'Неудача';

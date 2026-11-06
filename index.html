@@ -3,323 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Crypto Bot</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Gift Boost</title>
     <style>
-        :root{--bg:#fff;--text:#000;--sec:#888;--accent:#1976d2;--accent-l:#e3f2fd;--card:#f9f9f9;--border:#f0f0f0;--green:#4caf50;--red:#f44336}
-        body.halloween{--bg:#120a1f;--text:#fff;--sec:#aa99bb;--accent:#ff7b00;--accent-l:#2b1b45;--card:#1f1235;--border:#2b1b45}
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;user-select:none;-webkit-tap-highlight-color:transparent}
-        body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;padding-bottom:80px;overflow-x:hidden;transition:background .3s,color .3s}
-        .top{text-align:center;padding:15px;font-size:1.1rem;font-weight:700}
-        .scr{display:none;animation:fade .3s}
-        .scr.active{display:block}
-        @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-        .bal-sec{text-align:center;padding:20px 0}
-        .bal-amt{font-size:3rem;font-weight:700;display:flex;justify-content:center;align-items:baseline;gap:5px;cursor:pointer}
-        .bal-amt span:first-child{font-size:1.5rem;color:var(--sec)}
-        .bal-usd{font-size:.9rem;color:var(--sec);margin-top:5px}
-        .acts{display:flex;justify-content:space-around;margin:20px 10px 30px}
-        .act-btn{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;width:25%}
-        .act-btn .ic{width:55px;height:55px;border-radius:50%;display:flex;justify-content:center;align-items:center;background:var(--accent-l)}
-        .act-btn .ic svg{width:24px;height:24px;fill:var(--accent)}
-        .act-btn span{font-size:.75rem;color:var(--accent);font-weight:600;text-align:center}
-        .ass-head{display:flex;justify-content:space-between;align-items:center;padding:0 20px;margin-bottom:15px}
-        .ass-title{font-size:1rem;font-weight:600;color:var(--accent)}
-        .btn-hide{background:none;border:none;color:var(--accent);font-size:.85rem;font-weight:600;cursor:pointer}
-        .ass-item{display:flex;align-items:center;padding:15px 20px;border-bottom:1px solid var(--border);cursor:pointer}
-        .ass-ic{width:40px;height:40px;border-radius:50%;margin-right:15px;display:flex;justify-content:center;align-items:center}
-        .ass-ic svg{width:24px;height:24px}
-        .ass-info{flex:1}.ass-name{font-size:1rem;font-weight:600}.ass-price{font-size:.8rem;color:var(--green)}
-        .ass-bal{text-align:right}.ass-amt{font-size:1rem;font-weight:600}.ass-usd{font-size:.8rem;color:var(--sec)}
-        .coin-sel{display:flex;gap:10px;margin:20px 20px 15px;overflow-x:auto}
-        .pill{padding:8px 15px;background:var(--card);border-radius:20px;font-weight:600;font-size:.9rem;cursor:pointer;white-space:nowrap;border:1px solid transparent}
-        .pill.active{border-color:var(--accent);background:var(--accent-l);color:var(--accent)}
-        .panel{background:var(--card);padding:20px;border-radius:15px;margin:0 20px;border:1px solid var(--border)}
-        .input-main{width:100%;padding:18px;border:1px solid var(--border);border-radius:12px;font-size:1.2rem;font-weight:700;outline:none;background:var(--bg);color:var(--text);text-align:center;margin-bottom:15px}
-        .row{display:flex;justify-content:space-between;margin-bottom:15px;font-size:.9rem;color:var(--sec)}
-        .btn-main{width:100%;padding:18px;background:var(--green);color:#fff;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer}
-        .trans-panel{padding:20px}
-        .inp-grp{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
-        .inp-trans{padding:15px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:1rem;outline:none}
-        .coin-btns{display:flex;gap:10px;margin-bottom:20px}
-        .coin-btn{flex:1;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-weight:600;cursor:pointer}
-        .coin-btn.active{background:var(--accent);color:#fff}
-        .hist-list{padding:0 20px;display:flex;flex-direction:column;gap:10px}
-        .hist-item{background:var(--card);border-radius:12px;padding:15px;display:flex;justify-content:space-between}
-        .hist-info{display:flex;flex-direction:column;gap:5px}
-        .hist-type{font-size:.9rem;font-weight:600}.hist-date{font-size:.75rem;color:var(--sec)}
-        .hist-amt{font-weight:700}.pos{color:var(--green)}.neg{color:var(--red)}
-        .set-panel{padding:20px}
-        .set-item{padding:15px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
-        .wallet-addr{background:var(--card);padding:20px;border-radius:15px;font-family:monospace;font-size:1.2rem;word-break:break-all;border:1px solid var(--border);text-align:center;color:var(--accent);font-weight:700;margin-bottom:15px}
-        .btn-copy{background:var(--accent);color:#fff;border:none;padding:15px;border-radius:10px;font-weight:600;cursor:pointer;width:100%}
-        .nav{position:fixed;bottom:0;left:0;width:100%;background:var(--bg);display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid var(--border);z-index:100}
-        .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--sec);font-size:.7rem;cursor:pointer;width:20%}
-        .nav-item.active{color:var(--accent)}
-        .nav-item .ic{width:24px;height:24px}.nav-item .ic svg{width:100%;height:100%;fill:currentColor}
-        .suc-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;justify-content:center;align-items:center;z-index:1000;backdrop-filter:blur(8px)}
-        .suc-overlay.active{display:flex}
-        .suc-card{background:var(--bg);padding:48px 32px 32px;border-radius:28px;text-align:center;width:90%;max-width:360px}
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { background: #000; color: #fff; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+        /* --- ХЕДЕР --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; z-index: 10; }
+        .balance-pill { display: flex; align-items: center; border: 1px solid #ffd700; padding: 4px 10px; border-radius: 15px; gap: 5px; color: #ffd700; font-weight: 600; font-size: 13px; }
+        .btn-topup { background: #ffd700; color: #000; border: none; padding: 6px 12px; border-radius: 15px; font-weight: 700; font-size: 12px; }
+
+        /* --- БАННЕР --- */
+        .banner { margin: 0 15px 10px; background: #111; border-radius: 10px; padding: 8px 12px; display: flex; align-items: center; position: relative; }
+        .banner-text { font-size: 12px; font-weight: 600; }
+        .banner-icon { width: 24px; height: 24px; background: #ff4500; border-radius: 6px; margin-right: 10px; }
+        .banner-close { position: absolute; right: 12px; color: #555; font-size: 12px; }
+
+        /* --- БАРАБАН --- */
+        .wheel-zone { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; margin-top: 10px; }
+        
+        .wheel-outer { position: relative; width: 240px; height: 240px; display: flex; justify-content: center; align-items: center; }
+        
+        /* Внешнее кольцо */
+        .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid #111; background: #050505; box-shadow: inset 0 0 20px rgba(0,0,0,1); }
+        
+        /* Оранжевая заливка (прогресс) */
+        .wheel-progress { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid transparent; border-bottom-color: #ff8c00; border-right-color: #ff8c00; transform: rotate(-45deg); opacity: 0; transition: opacity 0.3s; }
+        .wheel-progress.active { opacity: 1; }
+
+        /* Внутренний круг */
+        .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; border: 10px solid #080808; background: #000; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
+        
+        .percent-num { font-size: 32px; font-weight: 700; letter-spacing: -1px; transition: opacity 0.3s; }
+        .percent-lbl { font-size: 11px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
+
+        /* Анимация результата */
+        .result-container { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s ease; z-index: 3; }
+        .result-container.show { opacity: 1; }
+        
+        .result-icon { width: 50px; height: 50px; margin-bottom: 5px; }
+        .result-text { font-size: 18px; font-weight: 700; }
+        .result-text.win { color: #4cd964; }
+        .result-text.lose { color: #666; font-size: 14px; font-weight: 500; }
+        
+        .result-gift-info { text-align: center; margin-top: 2px; }
+        .result-gift-name { font-size: 11px; font-weight: 600; color: #fff; }
+        .result-gift-id { font-size: 9px; color: #888; }
+
+        /* Стрелка */
+        .arrow-container { position: absolute; width: 240px; height: 240px; pointer-events: none; z-index: 5; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); }
+        .arrow-shape { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 14px; height: 24px; background: #ffd700; clip-path: polygon(50% 0%, 100% 40%, 70% 40%, 70% 100%, 30% 100%, 30% 40%, 0% 40%); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8)); }
+
+        .labels { display: flex; justify-content: space-between; width: 260px; font-size: 10px; color: #444; font-weight: 600; margin-top: 5px; }
+
+        /* --- КАРТОЧКИ ПОДАРКОВ --- */
+        .gift-cards { display: flex; justify-content: center; gap: 12px; margin-top: 15px; z-index: 10; }
+        .gift-card { width: 130px; background: #151515; border: 1px solid #222; border-radius: 16px; padding: 8px; display: flex; flex-direction: column; align-items: center; position: relative; cursor: pointer; transition: 0.2s; }
+        .gift-card.active { border-color: #ffd700; background: rgba(255, 215, 0, 0.05); }
+        .gift-price { position: absolute; top: 6px; right: 6px; background: #222; color: #fff; padding: 2px 6px; border-radius: 8px; font-size: 10px; font-weight: 600; }
+        .gift-price.blue { background: #007bff; }
+        .gift-img { width: 50px; height: 50px; object-fit: contain; margin: 15px 0 5px; }
+        .gift-name { font-size: 12px; font-weight: 600; text-align: center; }
+        .gift-sub { font-size: 10px; color: #666; }
+
+        /* --- УПРАВЛЕНИЕ --- */
+        .controls { padding: 15px; z-index: 10; }
+        .action-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .btn-icon { width: 40px; height: 40px; background: #111; border: 1px solid #222; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: #ffd700; }
+        .btn-boost { flex-grow: 1; background: #ffd700; color: #000; border: none; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; }
+        
+        .chances-grid { display: flex; gap: 5px; }
+        .chance-btn { flex: 1; background: #111; border: 1px solid #222; color: #666; padding: 8px 0; border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; }
+        .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
+        .chance-btn.red { border-color: #ff4444; color: #ff4444; }
+        .chance-btn.yellow { border-color: #ffd700; color: #ffd700; }
+        .chance-btn.green { border-color: #44ff44; color: #44ff44; }
+
+        /* --- ВКЛАДКИ --- */
+        .tabs-container { padding: 0 15px; margin-bottom: 10px; }
+        .tabs { display: flex; background: #111; border-radius: 10px; padding: 4px; }
+        .tab { flex: 1; text-align: center; padding: 8px; font-size: 12px; font-weight: 600; color: #666; border-radius: 6px; cursor: pointer; }
+        .tab.active { background: #222; color: #fff; }
+
+        /* --- ПОИСК --- */
+        .search-area { padding: 0 15px 15px; }
+        .search-box { background: #111; border-radius: 10px; padding: 10px; }
+        .search-title { font-size: 12px; color: #fff; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .search-title .icon { color: #ffd700; }
+        .search-inputs { display: flex; gap: 6px; }
+        .search-input { flex: 1; background: #050505; border: 1px solid #222; border-radius: 6px; padding: 8px; color: #fff; font-size: 12px; outline: none; }
+        .search-btn { width: 35px; background: #222; border: none; border-radius: 6px; color: #888; display: flex; justify-content: center; align-items: center; }
+
+        /* --- СПИСОК ПОДАРКОВ --- */
+        .gift-list { padding: 0 15px 15px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; max-height: 200px; }
+        .gift-list-item { background: #151515; border: 1px solid #222; border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .gift-list-item .name { font-size: 13px; font-weight: 600; }
+        .gift-list-item .price { font-size: 12px; color: #ffd700; font-weight: 600; }
+
+        /* --- ПОДВАЛ --- */
+        .footer-nav { display: flex; justify-content: space-around; background: #0a0a0a; padding: 12px 0; border-top: 1px solid #111; }
+        .nav-item { color: #444; cursor: pointer; }
+        .nav-item.active { color: #ffd700; }
+        .nav-icon { width: 22px; height: 22px; fill: currentColor; }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-    <div class="top">Crypto Bot</div>
 
-    <div class="scr active" id="scr-wallet">
-        <div class="bal-sec">
-            <div class="bal-amt" id="tot-bal-cont" onclick="toggleCurrency()">
-                <span id="curr-sym">$</span><span id="tot-bal">0.00</span><span id="curr-lbl" style="font-size:1.5rem;color:var(--sec);font-weight:500;margin-left:5px">USDT</span>
+    <!-- ХЕДЕР -->
+    <div class="header">
+        <div class="balance-pill"><span>⭐</span> <span id="balanceDisplay">1000.00</span></div>
+        <button class="btn-topup">+ Пополнить</button>
+    </div>
+
+    <!-- БАННЕР -->
+    <div class="banner">
+        <div class="banner-icon"></div>
+        <div class="banner-text">Бесплатный NFT Кейс</div>
+        <div class="banner-close">✕</div>
+    </div>
+
+    <!-- БАРАБАН -->
+    <div class="wheel-zone">
+        <div class="labels"><span>50%</span><span>100%</span><span>50%</span></div>
+        <div class="wheel-outer">
+            <div class="wheel-bg"></div>
+            <div class="wheel-progress" id="wheelProgress"></div>
+            
+            <!-- Внутренний круг с процентами -->
+            <div class="wheel-inner" id="wheelInner">
+                <div class="percent-num" id="chanceDisplay">25.00%</div>
+                <div class="percent-lbl" id="chanceLabel">Средний шанс</div>
+
+                <!-- Блок результата (скрыт по умолчанию) -->
+                <div class="result-container" id="resultContainer">
+                    <svg class="result-icon" id="resultIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></svg>
+                    <div class="result-text" id="resultText"></div>
+                    <div class="result-gift-info" id="resultGiftInfo">
+                        <div class="result-gift-name" id="resultGiftName"></div>
+                        <div class="result-gift-id" id="resultGiftId"></div>
+                    </div>
+                </div>
             </div>
-            <div class="bal-usd" id="tot-usd">Общий баланс</div>
-        </div>
-        <div class="acts">
-            <div class="act-btn" onclick="switchTab('exchange')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div><span>Пополнить</span></div>
-            <div class="act-btn" onclick="switchTab('transfer')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><span>Перевод</span></div>
-            <div class="act-btn" onclick="switchTab('history')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div><span>История</span></div>
-        </div>
-
-        <div class="ass-head">
-            <div class="ass-title">Мои активы →</div>
-            <button class="btn-hide" id="btn-hide" onclick="toggleHideBalances()">Скрыть балансы</button>
-        </div>
-
-        <div class="ass-item" onclick="switchTab('exchange'); selectCoin('USDT')">
-            <div class="ass-ic" style="background:#26a17b"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v3h2v2h-2v5h-2v-5H9V9h2V7z"/></svg></div>
-            <div class="ass-info"><div class="ass-name">Tether</div><div class="ass-price">$1.00</div></div>
-            <div class="ass-bal"><div class="ass-amt" id="usdt-bal">0.00 USDT</div><div class="ass-usd" id="usdt-usd">$0.00</div></div>
-        </div>
-        <div class="ass-item" onclick="switchTab('exchange'); selectCoin('GRAM')">
-            <div class="ass-ic" style="background:#0088cc"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
-            <div class="ass-info"><div class="ass-name">Gram</div><div class="ass-price">$1.15</div></div>
-            <div class="ass-bal"><div class="ass-amt" id="gram-bal">0.00 GRAM</div><div class="ass-usd" id="gram-usd">$0.00</div></div>
-        </div>
-        <div class="ass-item" onclick="switchTab('exchange'); selectCoin('SOL')">
-            <div class="ass-ic" style="background:#9945ff"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM9 11h6v2H9z"/></svg></div>
-            <div class="ass-info"><div class="ass-name">Solana</div><div class="ass-price">$93.99</div></div>
-            <div class="ass-bal"><div class="ass-amt" id="sol-bal">0.00 SOL</div><div class="ass-usd" id="sol-usd">$0.00</div></div>
-        </div>
-        <div class="ass-item" onclick="switchTab('exchange'); selectCoin('TRX')">
-            <div class="ass-ic" style="background:#ff0000"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg></div>
-            <div class="ass-info"><div class="ass-name">TRON</div><div class="ass-price">$0.12</div></div>
-            <div class="ass-bal"><div class="ass-amt" id="trx-bal">0.00 TRX</div><div class="ass-usd" id="trx-usd">$0.00</div></div>
-        </div>
-    </div>
-
-    <div class="scr" id="scr-exchange">
-        <div style="padding:20px 20px 0;font-weight:700;font-size:1.1rem">Покупка</div>
-        <div class="coin-sel">
-            <div class="pill active" onclick="selectCoin('USDT', this)">USDT</div>
-            <div class="pill" onclick="selectCoin('GRAM', this)">GRAM</div>
-            <div class="pill" onclick="selectCoin('SOL', this)">SOL</div>
-            <div class="pill" onclick="selectCoin('TRX', this)">TRX</div>
-        </div>
-        <div class="panel">
-            <input type="number" class="input-main" id="buy-amt" placeholder="Количество" oninput="calculateCost()">
-            <div class="row"><span>К оплате:</span><span id="cost-stars">0 ⭐</span></div>
-            <button class="btn-main" onclick="buyCrypto()">Купить</button>
-        </div>
-    </div>
-
-    <div class="scr" id="scr-transfer">
-        <div class="trans-panel">
-            <h2 style="margin-bottom:20px">Перевод</h2>
-            <div class="coin-btns">
-                <div class="coin-btn active" onclick="selectTransCoin('USDT', this)">USDT</div>
-                <div class="coin-btn" onclick="selectTransCoin('GRAM', this)">GRAM</div>
-                <div class="coin-btn" onclick="selectTransCoin('SOL', this)">SOL</div>
-                <div class="coin-btn" onclick="selectTransCoin('TRX', this)">TRX</div>
-            </div>
-            <div class="inp-grp"><label>Адрес:</label><input type="text" class="inp-trans" id="trans-addr" placeholder="Введите адрес (T...)"></div>
-            <div class="inp-grp"><label>Сумма:</label><input type="number" class="inp-trans" id="trans-amt" placeholder="0.00"></div>
-            <div style="font-size:.8rem;color:var(--sec);text-align:center;margin-top:-10px">Комиссия: 1%</div>
-            <button class="btn-main" style="margin-top:20px" onclick="makeTransfer()">Отправить</button>
-        </div>
-    </div>
-
-    <div class="scr" id="scr-history">
-        <h2 style="padding:20px">История</h2>
-        <div class="hist-list" id="hist-list"><p style="color:var(--sec);text-align:center">Пока пусто</p></div>
-    </div>
-
-    <div class="scr" id="scr-settings">
-        <div class="set-panel">
-            <h2 style="margin-bottom:20px">Настройки</h2>
-            <div class="set-item">
-                <span style="font-weight:600">Ваш адрес:</span>
-                <div class="wallet-addr" id="wallet-addr">Загрузка...</div>
-                <button class="btn-copy" onclick="copyAddr()">Копировать</button>
+            
+            <div class="arrow-container" id="arrowContainer">
+                <div class="arrow-shape"></div>
             </div>
         </div>
+        <div class="labels"><span>0%</span></div>
     </div>
 
-    <div class="nav">
-        <div class="nav-item active" id="nav-wallet" onclick="switchTab('wallet')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div><span>Кошелек</span></div>
-        <div class="nav-item" id="nav-exchange" onclick="switchTab('exchange')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg></div><span>Биржа</span></div>
-        <div class="nav-item" onclick="switchTab('settings')"><div class="ic"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div><span>Ещё</span></div>
-    </div>
-
-    <div class="suc-overlay" id="suc-overlay" onclick="hideSuc()">
-        <div class="suc-card" onclick="event.stopPropagation()">
-            <h3 style="margin-bottom:10px">Успешно!</h3>
-            <div id="suc-amt" style="font-size:1.2rem;font-weight:700;color:var(--green)">-0 USDT</div>
-            <button class="btn-main" style="margin-top:20px" onclick="hideSuc()">Готово</button>
+    <!-- КАРТОЧКИ ПОДАРКОВ -->
+    <div class="gift-cards">
+        <div class="gift-card active" onclick="selectGift(this, 100, 'Кубок', '#12345')">
+            <div class="gift-price">⭐ 100</div>
+            <img src="https://cdn-icons-png.flaticon.com/512/3113/3113549.png" class="gift-img" alt="Кубок">
+            <div class="gift-name">Кубок</div>
+            <div class="gift-sub">Обычный</div>
+        </div>
+        <div class="gift-card" onclick="selectGift(this, 3.19, 'Xmas Stocking', '#200912')">
+            <div class="gift-price blue">🌍 3.19</div>
+            <img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img" alt="Подарок">
+            <div class="gift-name">Xmas Stocking</div>
+            <div class="gift-sub">#200912</div>
         </div>
     </div>
 
+    <!-- УПРАВЛЕНИЕ -->
+    <div class="controls">
+        <div class="action-row">
+            <div class="btn-icon">⚡</div>
+            <button class="btn-boost" id="spinBtn" onclick="spin()">Забустить</button>
+            <div class="btn-icon" onclick="openSettings()">⚙️</div>
+        </div>
+        <div class="chances-grid">
+            <div class="chance-btn" onclick="setChance(50, this)">x2</div>
+            <div class="chance-btn active" onclick="setChance(25, this)">x4</div>
+            <div class="chance-btn" onclick="setChance(1, this)">x100</div>
+            <div class="chance-btn red" onclick="setChance(35, this)">35%</div>
+            <div class="chance-btn yellow" onclick="setChance(55, this)">55%</div>
+            <div class="chance-btn green" onclick="setChance(75, this)">75%</div>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКИ -->
+    <div class="tabs-container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('inv', this)">Мой инвентарь</div>
+            <div class="tab" onclick="switchTab('wish', this)">Желаемые подарки</div>
+        </div>
+    </div>
+
+    <!-- ИНВЕНТАРЬ -->
+    <div id="inv-section">
+        <div class="search-area">
+            <div class="search-box">
+                <div class="search-title"><span class="icon">🎁</span> Выберите подарок</div>
+                <div class="search-inputs">
+                    <input type="text" class="search-input" placeholder="Цена От">
+                    <input type="text" class="search-input" placeholder="Цена До">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+        </div>
+        <div class="gift-list" style="max-height: 150px;">
+            <div class="gift-list-item">
+                <div class="name">🎁 Redo</div>
+                <div class="price">100,000 ⭐</div>
+                <button onclick="addToWish('Redo', 100000)" style="background:#222;color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:11px;">Добавить</button>
+            </div>
+            <div class="gift-list-item">
+                <div class="name">🎄 Xmas Stocking</div>
+                <div class="price">3.19 🌍</div>
+                <button onclick="addToWish('Xmas Stocking', 3.19)" style="background:#222;color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:11px;">Добавить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЖЕЛАЕМЫЕ ПОДАРКИ -->
+    <div id="wish-section" class="hidden">
+        <div class="gift-list" id="wish-list">
+            <div class="gift-list-item">
+                <div class="name">🎁 Redo</div>
+                <div class="price">100,000 ⭐</div>
+            </div>
+            <div class="gift-list-item">
+                <div class="name">🎄 Xmas Stocking</div>
+                <div class="price">3.19 🌍</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ПОДВАЛ -->
+    <div class="footer-nav">
+        <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg></div>
+        <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg></div>
+        <div class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 10h16v11H4zM4 4h16v6H4z"/></svg></div>
+        <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+        <div class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>
+    </div>
+
+    <!-- МОДАЛКА -->
+    <div id="settingsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100; justify-content:center; align-items:center;">
+        <div style="background:#111; padding:20px; border-radius:12px; width:80%; text-align:center; border:1px solid #222;">
+            <h3 style="margin-bottom:15px;">Свой шанс</h3>
+            <input type="number" id="customChanceInput" style="width:100%; padding:10px; margin-bottom:15px; background:#050505; border:1px solid #333; color:#fff; text-align:center; border-radius:8px;">
+            <button onclick="applyCustomChance()" style="width:100%; padding:12px; background:#ffd700; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Применить</button>
+            <button onclick="document.getElementById('settingsModal').style.display='none'" style="width:100%; padding:10px; background:transparent; border:none; color:#888; margin-top:10px; cursor:pointer;">Отмена</button>
+        </div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        const supabaseUrl = "https://ptcofqwsvyytcnoerazu.supabase.co";
-        const supabaseKey = "sb_publishable_CL2wAd6YW9tj5fIq4r9b4A_iVeZtnBx";
-        const db = supabase.createClient(supabaseUrl, supabaseKey);
-        const tg = window.Telegram.WebApp;
-        tg.ready(); tg.expand();
-        
-        const urlP = new URLSearchParams(window.location.search);
-        const userId = parseInt(urlP.get('user_id')) || 0;
-        let curCoin = 'USDT', transCoin = 'USDT';
-        let bals = {usdt:0, gram:0, sol:0, trx:0};
-        let isHidden = false;
+        let tg = window.Telegram?.WebApp;
+        if (tg) { tg.expand(); tg.setHeaderColor('#000000'); }
 
-        async function init(){ if(userId) await loadW(); }
-        function switchTab(t){
-            document.querySelectorAll('.scr').forEach(e=>e.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
-            document.getElementById('scr-'+t).classList.add('active');
-            if(t==='wallet') document.getElementById('nav-wallet').classList.add('active');
-            if(t==='exchange') document.getElementById('nav-exchange').classList.add('active');
-            if(t==='history') loadH();
-            if(t==='settings') loadSet();
+        let balance = 1000.00;
+        let chance = 25;
+        let rotation = 0;
+        let isSpinning = false;
+        let betAmount = 100;
+        let currentGiftName = 'Кубок';
+        let currentGiftId = '#12345';
+
+        function updateUI() {
+            document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
+            document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
         }
 
-        function toggleHideBalances(){
-            isHidden = !isHidden;
-            document.getElementById('btn-hide').innerText = isHidden ? 'Показать балансы' : 'Скрыть балансы';
+        function setChance(val, el) {
+            if (isSpinning) return;
+            chance = val;
+            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            updateUI();
+        }
+
+        function selectGift(el, price, name, id) {
+            if (isSpinning) return;
+            document.querySelectorAll('.gift-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            betAmount = price;
+            currentGiftName = name;
+            currentGiftId = id;
+        }
+
+        function switchTab(tab, el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
             
-            if(isHidden){
-                document.getElementById('tot-bal').innerText = '****';
-                document.getElementById('curr-sym').innerText = '';
-                document.getElementById('curr-lbl').innerText = '';
-                document.getElementById('tot-usd').innerText = 'Скрыто';
-                
-                document.getElementById('usdt-bal').innerText = '****';
-                document.getElementById('usdt-usd').innerText = '****';
-                document.getElementById('gram-bal').innerText = '****';
-                document.getElementById('gram-usd').innerText = '****';
-                document.getElementById('sol-bal').innerText = '****';
-                document.getElementById('sol-usd').innerText = '****';
-                document.getElementById('trx-bal').innerText = '****';
-                document.getElementById('trx-usd').innerText = '****';
+            if (tab === 'inv') {
+                document.getElementById('inv-section').classList.remove('hidden');
+                document.getElementById('wish-section').classList.add('hidden');
             } else {
-                updateDisp();
+                document.getElementById('inv-section').classList.add('hidden');
+                document.getElementById('wish-section').classList.remove('hidden');
             }
         }
 
-        function updateDisp(){
-            if(isHidden) return;
-            const tot = (bals.usdt*1) + (bals.gram*1.15) + (bals.sol*93.99) + (bals.trx*0.12);
-            document.getElementById('tot-bal').innerText = tot.toFixed(2);
-            document.getElementById('curr-sym').innerText = '$';
-            document.getElementById('curr-lbl').innerText = 'USDT';
-            document.getElementById('tot-usd').innerText = 'Общий баланс';
-            
-            document.getElementById('usdt-bal').innerText = `${bals.usdt} USDT`;
-            document.getElementById('usdt-usd').innerText = `$${bals.usdt.toFixed(2)}`;
-            document.getElementById('gram-bal').innerText = `${bals.gram} GRAM`;
-            document.getElementById('gram-usd').innerText = `$${(bals.gram*1.15).toFixed(2)}`;
-            document.getElementById('sol-bal').innerText = `${bals.sol} SOL`;
-            document.getElementById('sol-usd').innerText = `$${(bals.sol*93.99).toFixed(2)}`;
-            document.getElementById('trx-bal').innerText = `${bals.trx} TRX`;
-            document.getElementById('trx-usd').innerText = `$${(bals.trx*0.12).toFixed(2)}`;
+        function addToWish(name, price) {
+            const list = document.getElementById('wish-list');
+            const item = document.createElement('div');
+            item.className = 'gift-list-item';
+            item.innerHTML = `
+                <div class="name">🎁 ${name}</div>
+                <div class="price">${price} ${name.includes('Xmas') ? '🌍' : '⭐'}</div>
+            `;
+            list.appendChild(item);
+            if(tg) tg.showAlert(`Подарок ${name} добавлен в желаемые!`);
         }
 
-        function selectCoin(c, el){ curCoin = c; document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); if(el) el.classList.add('active'); calc(); }
-        function selectTransCoin(c, el){ transCoin = c; document.querySelectorAll('.coin-btn').forEach(p=>p.classList.remove('active')); if(el) el.classList.add('active'); }
-        function calc(){ const a = parseFloat(document.getElementById('buy-amt').value)||0; const pr = {'USDT':1,'GRAM':1.15,'SOL':93.99,'TRX':0.12}; document.getElementById('cost-stars').innerText = `${Math.ceil(a*pr[curCoin]*100)} ⭐`; }
-
-        async function buyCrypto(){
-            const a = parseFloat(document.getElementById('buy-amt').value)||0;
-            if(a<=0) return tg.showAlert('Введите кол-во');
-            const pr = {'USDT':1,'GRAM':1.15,'SOL':93.99,'TRX':0.12};
-            try{
-                const r = await fetch('https://misu-bot-5uwv.onrender.com/buy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:userId,coin:curCoin,amount:a,stars:Math.ceil(a*pr[curCoin]*100)})});
-                if(r.ok) tg.showAlert('Счет отправлен в чат!'); else tg.showAlert('Ошибка');
-            }catch(e){ tg.showAlert('Ошибка сети'); }
+        function openSettings() {
+            if (isSpinning) return;
+            document.getElementById('settingsModal').style.display = 'flex';
+            document.getElementById('customChanceInput').value = chance;
         }
 
-        async function makeTransfer(){
-            const to = document.getElementById('trans-addr').value.trim();
-            const amt = parseFloat(document.getElementById('trans-amt').value);
-            if(!to || !amt || amt<=0) return tg.showAlert('Заполните поля');
-            
-            const btn = document.querySelector('#scr-transfer .btn-main');
-            btn.innerText = 'Отправка...'; btn.disabled = true;
-            try{
-                const {data:rec} = await db.from('users').select('user_id').eq('wallet_address', to).limit(1);
-                if(!rec || rec.length===0) throw new Error('Кошелек не найден');
-                if(rec[0].user_id === userId) throw new Error('Нельзя себе');
-                
-                const f = `${transCoin.toLowerCase()}_balance`;
-                const {data:send} = await db.from('users').select(f).eq('user_id', userId).limit(1);
-                const bal = parseFloat(send[0][f])||0;
-                const tot = amt + (amt*0.01);
-                if(bal < tot) throw new Error(`Не хватает ${transCoin}`);
-                
-                await db.from('users').update({[f]:bal-tot}).eq('user_id', userId);
-                const {data:recBal} = await db.from('users').select(f).eq('user_id', rec[0].user_id).limit(1);
-                await db.from('users').update({[f]:(parseFloat(recBal[0][f])||0)+amt}).eq('user_id', rec[0].user_id);
-                await db.from('transfers').insert([{from_user_id:userId,to_user_id:rec[0].user_id,coin:transCoin,amount:amt}]);
-                
-                showSuc(`-${amt} ${transCoin}`);
-                document.getElementById('trans-addr').value = '';
-                document.getElementById('trans-amt').value = '';
-                loadW();
-            }catch(e){ tg.showAlert(e.message); }
-            finally{ btn.innerText = 'Отправить'; btn.disabled = false; }
+        function applyCustomChance() {
+            let val = parseFloat(document.getElementById('customChanceInput').value);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > 99) val = 99;
+            chance = val;
+            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('settingsModal').style.display = 'none';
+            updateUI();
         }
 
-        async function loadH(){
-            const list = document.getElementById('hist-list');
-            list.innerHTML = '<p style="text-align:center">Загрузка...</p>';
-            const {data} = await db.from('transfers').select('*').or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`).order('created_at',{ascending:false});
-            if(!data||data.length===0) return list.innerHTML = '<p style="text-align:center;color:var(--sec)">Пусто</p>';
-            list.innerHTML = data.map(tx=>{
-                const isS = tx.from_user_id===userId;
-                const d = new Date(tx.created_at).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-                return `<div class="hist-item"><div class="hist-info"><div class="hist-type">${isS?'Исход':'Вход'} ${tx.coin}</div><div class="hist-date">${d}</div></div><div class="hist-amt ${isS?'neg':'pos'}">${isS?'-':'+'}${tx.amount} ${tx.coin}</div></div>`;
-            }).join('');
-        }
-
-        async function loadSet(){
-            const {data} = await db.from('users').select('wallet_address').eq('user_id', userId).limit(1);
-            if(data&&data.length>0) document.getElementById('wallet-addr').innerText = data[0].wallet_address;
-        }
-
-        function copyAddr(){ const a = document.getElementById('wallet-addr').innerText; if(a&&a!=='Загрузка...') navigator.clipboard.writeText(a).then(()=>tg.showAlert('Скопировано!')); }
-
-        async function loadW(){
-            if(!userId) return;
-            const {data} = await db.from('users').select('*').eq('user_id', userId).limit(1);
-            if(!data||data.length===0){
-                const n = 'T'+Math.random().toString(36).substring(2,15).toUpperCase();
-                await db.from('users').insert({user_id:userId, wallet_address:n});
-                bals = {usdt:0,gram:0,sol:0,trx:0};
-                document.getElementById('wallet-addr').innerText = n;
-                updateDisp(); return;
+        function spin() {
+            if (isSpinning) return;
+            if (balance < betAmount) {
+                if (tg) tg.showAlert("Недостаточно средств!");
+                return;
             }
-            const u = data[0];
-            bals.usdt = parseFloat(u.usdt_balance)||0;
-            bals.gram = parseFloat(u.gram_balance)||0;
-            bals.sol = parseFloat(u.sol_balance)||0;
-            bals.trx = parseFloat(u.trx_balance)||0;
-            document.getElementById('wallet-addr').innerText = u.wallet_address||'Нет адреса';
-            updateDisp();
+
+            isSpinning = true;
+            const btn = document.getElementById('spinBtn');
+            const arrow = document.getElementById('arrowContainer');
+            const progress = document.getElementById('wheelProgress');
+            const percentNum = document.getElementById('chanceDisplay');
+            const percentLbl = document.getElementById('chanceLabel');
+            const resultContainer = document.getElementById('resultContainer');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultText = document.getElementById('resultText');
+            const resultGiftInfo = document.getElementById('resultGiftInfo');
+            const resultGiftName = document.getElementById('resultGiftName');
+            const resultGiftId = document.getElementById('resultGiftId');
+
+            resultContainer.classList.remove('show');
+            percentNum.style.opacity = '1';
+            percentLbl.style.opacity = '1';
+
+            btn.innerText = "Крутим...";
+            btn.disabled = true;
+            progress.classList.add('active');
+
+            balance -= betAmount;
+            updateUI();
+
+            const isWin = (Math.random() * 100) <= chance;
+
+            let targetDeg = isWin ? 0 : 180;
+            targetDeg += (Math.random() * 40 - 20);
+
+            let currentMod = rotation % 360;
+            let diff = targetDeg - currentMod;
+            if (diff < 0) diff += 360;
+
+            rotation += (5 * 360) + diff;
+            arrow.style.transform = `rotate(${rotation}deg)`;
+
+            setTimeout(() => {
+                progress.classList.remove('active');
+                arrow.style.transition = 'none';
+                rotation = rotation % 360;
+                arrow.style.transform = `rotate(${rotation}deg)`;
+                setTimeout(() => { arrow.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)'; }, 50);
+
+                percentNum.style.opacity = '0';
+                percentLbl.style.opacity = '0';
+
+                if (isWin) {
+                    resultIcon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
+                    resultIcon.style.color = '#4cd964';
+                    resultText.innerText = 'Удача!';
+                    resultText.className = 'result-text win';
+                    resultGiftInfo.style.display = 'block';
+                    resultGiftName.innerText = currentGiftName;
+                    resultGiftId.innerText = currentGiftId;
+                    
+                    let multiplier = 100 / chance;
+                    let winAmount = Math.floor(betAmount * multiplier);
+                    balance += winAmount;
+                    
+                    if (tg) tg.showAlert(`🎉 ВЫИГРАЛ!\n+${winAmount} ⭐`);
+                } else {
+                    resultIcon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
+                    resultIcon.style.color = '#666';
+                    resultText.innerText = 'Неудача';
+                    resultText.className = 'result-text lose';
+                    resultGiftInfo.style.display = 'none';
+                    
+                    if (tg) tg.showAlert(`💀 ПРОИГРАЛ!\n-${betAmount} ⭐`);
+                }
+
+                resultContainer.classList.add('show');
+                updateUI();
+
+                setTimeout(() => {
+                    resultContainer.classList.remove('show');
+                    percentNum.style.opacity = '1';
+                    percentLbl.style.opacity = '1';
+                    
+                    isSpinning = false;
+                    btn.disabled = false;
+                    btn.innerText = "Забустить";
+                }, 3000);
+
+            }, 4100);
         }
 
-        function showSuc(t){ document.getElementById('suc-amt').innerText=t; document.getElementById('suc-overlay').classList.add('active'); }
-        function hideSuc(){ document.getElementById('suc-overlay').classList.remove('active'); }
-        function toggleCurrency(){}
-        init();
+        updateUI();
     </script>
 </body>
 </html>

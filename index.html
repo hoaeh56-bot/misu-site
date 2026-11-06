@@ -21,24 +21,24 @@
         .wheel-outer { position: relative; width: 260px; height: 260px; display: flex; justify-content: center; align-items: center; }
         
         /* Темное кольцо */
-        .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 18px solid #14141e; background: #09090e; box-shadow: inset 0 0 30px rgba(0,0,0,1); }
+        .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid #14141e; background: #09090e; box-shadow: inset 0 0 20px rgba(0,0,0,1); }
         
-        /* Оранжевая заливка (Прогресс) */
-        .wheel-progress { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 18px solid transparent; border-bottom-color: #ff8c00; border-right-color: #ff8c00; transform: rotate(-45deg); opacity: 0; transition: opacity 0.3s, transform 0.5s; }
+        /* Оранжевая заливка (прогресс) */
+        .wheel-progress { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid transparent; border-bottom-color: #ff8c00; border-right-color: #ff8c00; transform: rotate(-45deg); opacity: 0; transition: opacity 0.3s; }
         .wheel-progress.active { opacity: 1; }
 
         /* Внутренний круг с процентами */
-        .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
         
-        .percent-num { font-size: 42px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; }
+        .percent-num { font-size: 44px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; }
         .percent-lbl { font-size: 11px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
 
-        /* Анимация результата (Внутри) */
-        .result-container { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; }
+        /* Анимация результата (появляется поверх процентов) */
+        .result-container { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; background: #000; }
         .result-container.show { opacity: 1; }
         
-        .result-icon { width: 45px; height: 45px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.5s ease forwards; }
-        .result-text { font-size: 16px; font-weight: 800; text-align: center; }
+        .result-icon { width: 50px; height: 50px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.5s ease forwards; }
+        .result-text { font-size: 18px; font-weight: 800; text-align: center; }
         .result-text.win { color: #4cd964; }
         .result-text.lose { color: #666; font-size: 14px; }
         
@@ -50,7 +50,7 @@
 
         /* Стрелка */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); }
-        .arrow-svg { position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 16px; height: 28px; filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8)); }
+        .arrow-svg { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
 
         /* --- КАРТОЧКИ ПОДАРКОВ --- */
         .gift-cards { display: flex; justify-content: center; gap: 12px; margin-top: 15px; z-index: 10; }
@@ -67,25 +67,25 @@
         
         .action-row { display: flex; gap: 8px; }
         .btn-icon { width: 45px; height: 45px; background: #111116; border: 1px solid #22222a; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        .btn-icon svg { width: 20px; height: 20px; stroke: #888; fill: none; stroke-width: 2; transition: 0.2s; }
+        .btn-icon svg { width: 20px; height: 20px; stroke: #888; fill: none; stroke-width: 2; }
         
         .btn-boost { flex-grow: 1; background: #ffd700; color: #000; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s; }
         .btn-boost:active { transform: scale(0.98); }
         .btn-boost:disabled { background: #1a1a24; color: #444; }
         
-        /* Кнопки шансов */
-        .chances-grid { display: flex; justify-content: space-between; gap: 6px; }
-        .chance-btn { flex: 1; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; }
-        .chance-btn.active { border-color: #ffd700; color: #ffd700; }
+        /* Кнопки шансов (Центр) */
+        .chances-grid { display: flex; justify-content: center; gap: 6px; }
+        .chance-btn { flex: 1; max-width: 60px; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; }
+        .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
         .chance-btn.red { border-color: #ff4444; color: #ff4444; }
         .chance-btn.yellow { border-color: #ffd700; color: #ffd700; }
         .chance-btn.green { border-color: #44ff44; color: #44ff44; }
 
-        /* --- ВКЛАДКИ --- */
+        /* --- ВКЛАДКИ (Объемные, прямоугольные) --- */
         .tabs-container { padding: 0 15px 15px; }
-        .tabs { display: flex; background: #111116; border-radius: 12px; padding: 4px; }
-        .tab { flex: 1; text-align: center; padding: 10px; font-size: 13px; font-weight: 600; color: #666; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .tab.active { background: #22222a; color: #fff; }
+        .tabs { display: flex; background: #0a0a0f; border-radius: 14px; padding: 5px; border: 1px solid #1a1a25; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); }
+        .tab { flex: 1; text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #555; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .tab.active { background: #1c1c28; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 1px solid #2a2a35; }
 
         /* --- СПИСКИ --- */
         .list-container { padding: 0 15px 15px; flex-grow: 1; overflow-y: auto; max-height: 140px; }
@@ -109,6 +109,7 @@
     <div class="wheel-zone">
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
+            <!-- Оранжевый прогресс -->
             <div class="wheel-progress" id="wheelProgress"></div>
             
             <div class="wheel-inner">
@@ -117,6 +118,7 @@
                     <div class="percent-lbl" id="chanceLabel">Средний шанс</div>
                 </div>
 
+                <!-- Блок результата -->
                 <div class="result-container" id="resultContainer">
                     <svg class="result-icon" id="resultIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></svg>
                     <div class="result-text" id="resultText"></div>
@@ -127,6 +129,7 @@
                 </div>
             </div>
             
+            <!-- Стрелка -->
             <div class="arrow-container" id="arrowContainer">
                 <svg class="arrow-svg" viewBox="0 0 20 32" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10 32 L0 12 L6 12 L6 0 L14 0 L14 12 L20 12 Z" fill="#ffd700"/>
@@ -159,6 +162,7 @@
             <div class="btn-icon" onclick="openSettings()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
         </div>
         
+        <!-- Шансы по центру -->
         <div class="chances-grid">
             <div class="chance-btn" onclick="setChance(50, this)">x2</div>
             <div class="chance-btn active" onclick="setChance(25, this)">x4</div>
@@ -225,22 +229,20 @@
         let currentGiftName = 'Кубок';
         let currentGiftId = '#12345';
 
-        // Функция обновления оранжевой дуги (прогресса)
-        function updateProgress(chanceVal) {
-            const progress = document.getElementById('wheelProgress');
-            // 360 градусов = 100%. Сектор начинается снизу, поэтому считаем от 0.
-            // Дуга накрывает 2/3 круга, поэтому умножаем на 1.5 для визуала (как в оригинале)
-            const deg = (chanceVal / 100) * 360; 
-            progress.style.transform = `rotate(-45deg)`; // Фиксированный сдвиг
-            // В CSS граница крутится, поэтому для визуала просто включаем/выключаем её
-            if (chanceVal > 0) progress.classList.add('active');
-            else progress.classList.remove('active');
-        }
-
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
-            updateProgress(chance);
+            
+            // Визуальное отображение оранжевой полоски (шанса)
+            const progress = document.getElementById('wheelProgress');
+            progress.style.opacity = '1';
+            
+            // Делаем так, чтобы полоска шла от низа (6 часов) по часовой стрелке
+            // В CSS: 0% = 0deg (справа), 25% = 90deg (снизу), 50% = 180deg (слева), 75% = 270deg (сверху)
+            // Нам нужно, чтобы начало было внизу (90deg), а конец зависел от шанса.
+            // Для простоты сделаем так: полоска всегда растет вправо-вверх от низа.
+            const deg = (chance / 100) * 360;
+            progress.style.transform = `rotate(${deg - 90}deg)`; 
         }
 
         function setChance(val, el) {
@@ -307,7 +309,6 @@
             isSpinning = true;
             const btn = document.getElementById('spinBtn');
             const arrow = document.getElementById('arrowContainer');
-            const progress = document.getElementById('wheelProgress');
             const percentContainer = document.getElementById('percentContainer');
             const resultContainer = document.getElementById('resultContainer');
             const resultIcon = document.getElementById('resultIcon');
@@ -343,6 +344,7 @@
                 arrow.style.transform = `rotate(${rotation}deg)`;
                 setTimeout(() => { arrow.style.transition = 'transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1)'; }, 50);
 
+                // Прячем проценты
                 percentContainer.style.opacity = '0';
 
                 if (isWin) {

@@ -24,13 +24,13 @@
         .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid #14141e; background: #09090e; box-shadow: inset 0 0 20px rgba(0,0,0,1); }
         
         /* Оранжевая заливка (прогресс) */
-        .wheel-progress { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid transparent; border-bottom-color: #ff8c00; border-right-color: #ff8c00; transform: rotate(-45deg); opacity: 0; transition: opacity 0.3s; }
+        .wheel-progress { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid transparent; border-bottom-color: #ff8c00; border-right-color: #ff8c00; border-top-color: #ff8c00; transform: rotate(-45deg); opacity: 0; transition: opacity 0.3s; z-index: 1; }
         .wheel-progress.active { opacity: 1; }
 
         /* Внутренний круг с процентами */
         .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
         
-        .percent-num { font-size: 44px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; }
+        .percent-num { font-size: 44px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
         .percent-lbl { font-size: 11px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
 
         /* Анимация результата (появляется поверх процентов) */
@@ -81,7 +81,7 @@
         .chance-btn.yellow { border-color: #ffd700; color: #ffd700; }
         .chance-btn.green { border-color: #44ff44; color: #44ff44; }
 
-        /* --- ВКЛАДКИ (Объемные, прямоугольные) --- */
+        /* --- ВКЛАДКИ (Объемные) --- */
         .tabs-container { padding: 0 15px 15px; }
         .tabs { display: flex; background: #0a0a0f; border-radius: 14px; padding: 5px; border: 1px solid #1a1a25; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); }
         .tab { flex: 1; text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #555; border-radius: 10px; cursor: pointer; transition: 0.2s; }

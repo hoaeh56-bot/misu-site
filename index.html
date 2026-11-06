@@ -37,9 +37,15 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        .progress-canvas { position: absolute; width: 100%; height: 100%; z-index: 1; }
+        /* ОРАНЖЕВАЯ ПОЛОСА (SVG) */
+        .wheel-progress-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            transform: rotate(90deg); /* Разворачиваем, чтобы 0 был сверху */
+        }
 
-        /* ТОП ДРОП (Золотой знак вопроса) */
         .top-drop-zone {
             position: absolute;
             bottom: -24px;
@@ -198,10 +204,11 @@
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
             
-            <!-- Canvas для полосы -->
-            <canvas class="progress-canvas" id="progressCanvas" width="260" height="260"></canvas>
+            <!-- ОРАНЖЕВАЯ ПОЛОСА (SVG) -->
+            <svg class="wheel-progress-svg" viewBox="0 0 260 260">
+                <circle id="progressCircle" cx="130" cy="130" r="122" fill="none" stroke="#ff8c00" stroke-width="16" stroke-dasharray="0 1000" stroke-linecap="round" transform="rotate(90 130 130)"/>
+            </svg>
             
-            <!-- ТОП ДРОП (скрыт по умолчанию) -->
             <div class="top-drop-zone" id="topDropZone">?</div>
 
             <div class="wheel-inner">
@@ -232,7 +239,6 @@
         <div class="gift-card westside active" onclick="selectGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <!-- Рабочая картинка -->
                 <img src="https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png" class="gift-img" alt="Westside Ring">
             </div>
             <div class="gift-name">Westside Ring</div>
@@ -317,32 +323,16 @@
         let currentGiftImg = 'https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png';
         let spinCount = 0;
 
-        const canvas = document.getElementById('progressCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function drawArc(percent) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = 122; 
-            
-            const startAngle = Math.PI / 2; 
-            const endAngle = startAngle + (percent / 100) * (Math.PI * 2);
-
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-            ctx.strokeStyle = '#ff8c00';
-            ctx.lineWidth = 16;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-        }
+        const circle = document.getElementById('progressCircle');
+        const circumference = 2 * Math.PI * 122;
 
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
             let visualProgress = chance < 5 ? 5 : chance;
-            drawArc(visualProgress);
+            let strokeLength = (visualProgress / 100) * circumference;
+            circle.style.strokeDasharray = `${strokeLength} ${circumference}`;
         }
 
         function setChance(val, el) {
@@ -382,26 +372,6 @@
             } else {
                 alert(`Выбран предмет для апгрейда: ${giftName}.`);
             }
-        }
-
-        function openSettings() {
-            if (isSpinning) return;
-            document.getElementById('settingsModal').style.display = 'flex';
-            document.getElementById('customChanceInput').value = chance;
-        }
-
-        function closeSettings() {
-            document.getElementById('settingsModal').style.display = 'none';
-        }
-
-        function applyCustomChance() {
-            let val = parseFloat(document.getElementById('customChanceInput').value);
-            if (isNaN(val) || val < 1) val = 1;
-            if (val > 99) val = 99;
-            chance = val;
-            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
-            closeSettings();
-            updateUI();
         }
 
         function addToInventory(name, id, imgSrc) {
@@ -448,7 +418,6 @@
             spinCount++;
 
             // ТОП ДРОП ЛОГИКА
-            // Появляется раз в 5 спинов или с шансом 10%
             if (spinCount % 5 === 0 || Math.random() < 0.1) { 
                 topDropZone.classList.add('active');
             } else {
@@ -458,7 +427,6 @@
             let isWin = (Math.random() * 100) <= chance;
             let isTopDrop = false;
             
-            // Если топ дроп активен, шанс попасть в него 20%
             if (topDropZone.classList.contains('active') && Math.random() < 0.2) {
                 isTopDrop = true;
                 isWin = false;
@@ -467,7 +435,7 @@
             let targetDeg = 0;
             
             if (isTopDrop) {
-                targetDeg = 0; // Стрелка падает на знак вопроса
+                targetDeg = 0;
             } else if (isWin) {
                 const startAngle = 180;
                 const endAngle = 180 + (chance / 100) * 360;
@@ -499,7 +467,6 @@
                 percentContainer.style.opacity = '0';
                 topDropZone.classList.remove('active');
 
-                // ОТОБРАЖЕНИЕ АНИМАЦИИ
                 if (isTopDrop) {
                     if (tg && tg.HapticFeedback) {
                         tg.HapticFeedback.notificationOccurred('success');

@@ -31,12 +31,12 @@
         .percent-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; color: #fff; }
         .percent-lbl { font-size: 10px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
 
-        /* ТОП ДРОП (Золотой знак вопроса снизу) */
+        /* ТОП ДРОП (Появляется рандомно) */
         .top-drop-zone {
             position: absolute;
-            bottom: -24px;
+            bottom: -20px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) scale(0);
             width: 40px;
             height: 40px;
             background: radial-gradient(circle, #ffd700 0%, #b8860b 100%);
@@ -49,7 +49,13 @@
             color: #000;
             z-index: 6;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-            animation: pulse 2s infinite;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .top-drop-zone.active {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+            animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
             0% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
@@ -97,10 +103,6 @@
         /* Фон для Westside Ring (Синий) */
         .gift-card.westside {
             background: linear-gradient(180deg, #1a2a5a 0%, #0a1030 100%);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.05) 2px, transparent 2px),
-                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.05) 2px, transparent 2px),
-                radial-gradient(circle at 50% 50%, #2a3a6a 0%, #0a1030 100%);
         }
 
         .gift-price { 
@@ -168,8 +170,8 @@
             <div class="wheel-bg"></div>
             <canvas class="progress-canvas" id="progressCanvas" width="260" height="260"></canvas>
             
-            <!-- Золотой знак вопроса (Топ Дроп) -->
-            <div class="top-drop-zone">?</div>
+            <!-- Топ дроп (скрыт по умолчанию) -->
+            <div class="top-drop-zone" id="topDropZone">?</div>
 
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
@@ -197,12 +199,12 @@
 
     <!-- КАРТОЧКИ ПОДАРКОВ -->
     <div class="gift-cards">
-        <!-- Westside Ring (Синяя рука) -->
+        <!-- Westside Ring -->
         <div class="gift-card westside active" onclick="selectGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <!-- Ссылка на картинку Westside Ring (синяя рука) -->
-                <img src="https://i.ibb.co/6PZ4Z9Z/westside-ring.png" class="gift-img" alt="Westside Ring" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3113/3113549.png'">
+                <!-- РАБОЧАЯ ССЫЛКА НА РУКУ -->
+                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png" class="gift-img" alt="Westside Ring">
             </div>
             <div class="gift-name">Westside Ring</div>
             <div class="gift-sub">#136</div>
@@ -227,6 +229,7 @@
             <div class="btn-icon" onclick="openSettings()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
         </div>
         
+        <!-- ШАНСЫ ПО ЦЕНТРУ -->
         <div class="chances-grid">
             <div class="chance-btn" onclick="setChance(50, this)">x2</div>
             <div class="chance-btn active" onclick="setChance(25, this)">x4</div>
@@ -292,17 +295,22 @@
         let betAmount = 100;
         let currentGiftName = 'Westside Ring';
         let currentGiftId = '#136';
+        
+        // Переменная для топ-дропа
+        let isTopDropActive = false;
+        let spinCount = 0;
 
         const canvas = document.getElementById('progressCanvas');
         const ctx = canvas.getContext('2d');
 
+        // Рисуем оранжевую дугу (строго снизу)
         function drawArc(percent) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             const radius = 122; 
             
-            // Начинаем строго снизу (90 градусов в радианах)
+            // Начинаем снизу (6 часов) = Math.PI / 2
             const startAngle = Math.PI / 2; 
             const endAngle = startAngle + (percent / 100) * (Math.PI * 2);
 
@@ -391,6 +399,7 @@
             const resultGiftInfo = document.getElementById('resultGiftInfo');
             const resultGiftName = document.getElementById('resultGiftName');
             const resultGiftId = document.getElementById('resultGiftId');
+            const topDropZone = document.getElementById('topDropZone');
 
             resultContainer.classList.remove('show');
             percentContainer.style.opacity = '1';
@@ -400,18 +409,35 @@
 
             balance -= betAmount;
             updateUI();
+            spinCount++;
 
-            const isWin = (Math.random() * 100) <= chance;
+            // --- ЛОГИКА ТОП ДРОПА ---
+            // Появляется рандомно (например, раз в 5-10 прокруток)
+            if (spinCount % 7 === 0 || Math.random() < 0.1) { 
+                isTopDropActive = true;
+                topDropZone.classList.add('active'); // Показываем золотой знак вопроса
+            } else {
+                isTopDropActive = false;
+                topDropZone.classList.remove('active');
+            }
+
+            let isWin = (Math.random() * 100) <= chance;
+            let isTopDrop = false;
             
-            // Проверка на ТОП ДРОП (например, шанс 5%)
-            const isTopDrop = (Math.random() * 100) <= 5;
+            // Если топ дроп активен и стрелка должна упасть на него
+            if (isTopDropActive) {
+                // Шанс попасть в топ дроп (например, 30% от всех прокруток, когда он активен)
+                if (Math.random() < 0.3) {
+                    isTopDrop = true;
+                    isWin = false; // Топ дроп перебивает обычный выигрыш
+                }
+            }
 
-            // Стрелка крутится
             let targetDeg = 0;
             
             if (isTopDrop) {
-                // Если топ дроп, стрелка едет четко вниз (0 градусов)
-                targetDeg = 0;
+                // Стрелка едет ровно вниз на знак вопроса
+                targetDeg = 0; 
             } else if (isWin) {
                 const startAngle = 90;
                 const endAngle = 90 + (chance / 100) * 360;
@@ -438,24 +464,25 @@
                 setTimeout(() => { arrow.style.transition = 'transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1)'; }, 50);
 
                 percentContainer.style.opacity = '0';
+                topDropZone.classList.remove('active'); // Скрываем знак после прокрутки
 
                 if (isTopDrop) {
                     // Логика ТОП ДРОПА
                     if (tg && tg.HapticFeedback) {
-                        tg.HapticFeedback.notificationOccurred('success'); // Вибрация
-                        tg.HapticFeedback.impactOccurred('heavy');
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.HapticFeedback.impactOccurred('heavy'); // Сильная вибрация
                     }
                     
                     resultIcon.innerHTML = '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>';
-                    resultIcon.style.color = '#ffd700'; // Золотая звезда
+                    resultIcon.style.color = '#ffd700';
                     resultText.innerText = 'ТОП ДРОП!';
                     resultText.className = 'result-text win';
                     resultText.style.color = '#ffd700';
                     resultGiftInfo.style.display = 'block';
-                    resultGiftName.innerText = currentGiftName + " x2"; // Указываем х2
+                    resultGiftName.innerText = currentGiftName + " x2";
                     resultGiftId.innerText = currentGiftId;
                     
-                    let winAmount = Math.floor(betAmount * 2); // Даем х2 за топ дроп
+                    let winAmount = Math.floor(betAmount * 2); 
                     balance += winAmount;
                     
                     if (tg) tg.showAlert(`🔥 ТОП ДРОП!\nВы выбили ${currentGiftName} x2!\n+${winAmount} ⭐`);
@@ -464,6 +491,7 @@
                     resultIcon.style.color = '#4cd964';
                     resultText.innerText = 'Удача!';
                     resultText.className = 'result-text win';
+                    resultText.style.color = '#4cd964';
                     resultGiftInfo.style.display = 'block';
                     resultGiftName.innerText = currentGiftName;
                     resultGiftId.innerText = currentGiftId;

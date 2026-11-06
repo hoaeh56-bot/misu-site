@@ -5,45 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gift Boost</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { 
-            background: radial-gradient(circle at 50% 20%, #1a1a24 0%, #000000 70%);
-            color: #fff; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh; 
-            overflow: hidden; 
-        }
+        body { background: radial-gradient(circle at 50% 20%, #1a1a24 0%, #000000 70%); color: #fff; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
         /* --- ХЕДЕР --- */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px; z-index: 10; }
         .balance-pill { display: flex; align-items: center; border: 1px solid #ffd700; padding: 6px 14px; border-radius: 20px; gap: 6px; color: #ffd700; font-weight: 700; font-size: 14px; background: rgba(255, 215, 0, 0.05); }
-        .btn-topup { background: #ffd700; color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .btn-topup { background: #ffd700; color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; }
 
         /* --- БАРАБАН --- */
         .wheel-zone { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         
         .wheel-outer { position: relative; width: 260px; height: 260px; display: flex; justify-content: center; align-items: center; }
         
+        /* Темное кольцо */
         .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 18px solid #14141e; background: #09090e; box-shadow: inset 0 0 30px rgba(0,0,0,1); }
         
+        /* Оранжевая заливка (Прогресс) */
+        .wheel-progress { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 18px solid transparent; border-bottom-color: #ff8c00; border-right-color: #ff8c00; transform: rotate(-45deg); opacity: 0; transition: opacity 0.3s, transform 0.5s; }
+        .wheel-progress.active { opacity: 1; }
+
+        /* Внутренний круг с процентами */
         .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
-        .percent-num { font-size: 36px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; }
+        .percent-num { font-size: 42px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; }
         .percent-lbl { font-size: 11px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
 
-        /* Результат внутри колеса */
+        /* Анимация результата (Внутри) */
         .result-container { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; }
         .result-container.show { opacity: 1; }
-        .result-icon { width: 40px; height: 40px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.5s ease forwards; }
-        .result-text { font-size: 16px; font-weight: 700; text-align: center; }
+        
+        .result-icon { width: 45px; height: 45px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.5s ease forwards; }
+        .result-text { font-size: 16px; font-weight: 800; text-align: center; }
         .result-text.win { color: #4cd964; }
-        .result-text.lose { color: #666; font-size: 13px; }
+        .result-text.lose { color: #666; font-size: 14px; }
+        
+        .result-gift-info { text-align: center; margin-top: 2px; }
+        .result-gift-name { font-size: 12px; font-weight: 600; color: #fff; }
+        .result-gift-id { font-size: 9px; color: #888; }
+
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
-        /* Стрелка (желтая, на баре) */
+        /* Стрелка */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); }
         .arrow-svg { position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 16px; height: 28px; filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8)); }
 
@@ -61,9 +66,8 @@
         .controls { padding: 15px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
         
         .action-row { display: flex; gap: 8px; }
-        .btn-icon { width: 45px; height: 45px; background: #111116; border: 1px solid #22222a; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
+        .btn-icon { width: 45px; height: 45px; background: #111116; border: 1px solid #22222a; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
         .btn-icon svg { width: 20px; height: 20px; stroke: #888; fill: none; stroke-width: 2; transition: 0.2s; }
-        .btn-icon:hover svg { stroke: #ffd700; }
         
         .btn-boost { flex-grow: 1; background: #ffd700; color: #000; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s; }
         .btn-boost:active { transform: scale(0.98); }
@@ -105,6 +109,7 @@
     <div class="wheel-zone">
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
+            <div class="wheel-progress" id="wheelProgress"></div>
             
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
@@ -115,6 +120,10 @@
                 <div class="result-container" id="resultContainer">
                     <svg class="result-icon" id="resultIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></svg>
                     <div class="result-text" id="resultText"></div>
+                    <div class="result-gift-info" id="resultGiftInfo">
+                        <div class="result-gift-name" id="resultGiftName"></div>
+                        <div class="result-gift-id" id="resultGiftId"></div>
+                    </div>
                 </div>
             </div>
             
@@ -145,16 +154,11 @@
     <!-- УПРАВЛЕНИЕ -->
     <div class="controls">
         <div class="action-row">
-            <div class="btn-icon">
-                <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-            </div>
+            <div class="btn-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
             <button class="btn-boost" id="spinBtn" onclick="spin()">Забустить</button>
-            <div class="btn-icon" onclick="openSettings()">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            </div>
+            <div class="btn-icon" onclick="openSettings()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
         </div>
         
-        <!-- Кнопки шансов -->
         <div class="chances-grid">
             <div class="chance-btn" onclick="setChance(50, this)">x2</div>
             <div class="chance-btn active" onclick="setChance(25, this)">x4</div>
@@ -219,10 +223,24 @@
         let isSpinning = false;
         let betAmount = 100;
         let currentGiftName = 'Кубок';
+        let currentGiftId = '#12345';
+
+        // Функция обновления оранжевой дуги (прогресса)
+        function updateProgress(chanceVal) {
+            const progress = document.getElementById('wheelProgress');
+            // 360 градусов = 100%. Сектор начинается снизу, поэтому считаем от 0.
+            // Дуга накрывает 2/3 круга, поэтому умножаем на 1.5 для визуала (как в оригинале)
+            const deg = (chanceVal / 100) * 360; 
+            progress.style.transform = `rotate(-45deg)`; // Фиксированный сдвиг
+            // В CSS граница крутится, поэтому для визуала просто включаем/выключаем её
+            if (chanceVal > 0) progress.classList.add('active');
+            else progress.classList.remove('active');
+        }
 
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
+            updateProgress(chance);
         }
 
         function setChance(val, el) {
@@ -233,12 +251,13 @@
             updateUI();
         }
 
-        function selectGift(el, price, name) {
+        function selectGift(el, price, name, id) {
             if (isSpinning) return;
             document.querySelectorAll('.gift-card').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             betAmount = price;
             currentGiftName = name;
+            currentGiftId = id;
         }
 
         function switchTab(tab, el) {
@@ -288,10 +307,14 @@
             isSpinning = true;
             const btn = document.getElementById('spinBtn');
             const arrow = document.getElementById('arrowContainer');
+            const progress = document.getElementById('wheelProgress');
             const percentContainer = document.getElementById('percentContainer');
             const resultContainer = document.getElementById('resultContainer');
             const resultIcon = document.getElementById('resultIcon');
             const resultText = document.getElementById('resultText');
+            const resultGiftInfo = document.getElementById('resultGiftInfo');
+            const resultGiftName = document.getElementById('resultGiftName');
+            const resultGiftId = document.getElementById('resultGiftId');
 
             resultContainer.classList.remove('show');
             percentContainer.style.opacity = '1';
@@ -327,6 +350,9 @@
                     resultIcon.style.color = '#4cd964';
                     resultText.innerText = 'Удача!';
                     resultText.className = 'result-text win';
+                    resultGiftInfo.style.display = 'block';
+                    resultGiftName.innerText = currentGiftName;
+                    resultGiftId.innerText = currentGiftId;
                     
                     let multiplier = 100 / chance;
                     let winAmount = Math.floor(betAmount * multiplier);
@@ -338,6 +364,7 @@
                     resultIcon.style.color = '#666';
                     resultText.innerText = 'Неудача';
                     resultText.className = 'result-text lose';
+                    resultGiftInfo.style.display = 'none';
                     
                     if (tg) tg.showAlert(`💀 ПРОИГРАЛ!\n-${betAmount} ⭐`);
                 }

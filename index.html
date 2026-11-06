@@ -22,35 +22,34 @@
         
         .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 16px solid #14141e; background: #09090e; box-shadow: inset 0 0 20px rgba(0,0,0,1); }
         
-        /* Оранжевый прогресс (рисуется через canvas) */
-        .progress-canvas { position: absolute; width: 100%; height: 100%; z-index: 1; transform: rotate(90deg); /* Поворот, чтобы начиналось снизу */ }
+        .progress-canvas { position: absolute; width: 100%; height: 100%; z-index: 1; transform: rotate(90deg); }
 
-        /* Внутренний круг с процентами */
+        /* Внутренний круг */
         .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
         
-        .percent-num { font-size: 44px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; color: #fff; }
-        .percent-lbl { font-size: 11px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
+        /* Проценты (уменьшены, чтобы не вылезали) */
+        .percent-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; color: #fff; }
+        .percent-lbl { font-size: 10px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
 
         /* Анимация результата */
         .result-container { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; background: #000; }
         .result-container.show { opacity: 1; }
         
-        .result-icon { width: 50px; height: 50px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.5s ease forwards; }
-        .result-text { font-size: 18px; font-weight: 800; text-align: center; }
+        .result-icon { width: 40px; height: 40px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.5s ease forwards; }
+        .result-text { font-size: 15px; font-weight: 800; text-align: center; }
         .result-text.win { color: #4cd964; }
-        .result-text.lose { color: #666; font-size: 14px; }
+        .result-text.lose { color: #666; font-size: 12px; }
         
         .result-gift-info { text-align: center; margin-top: 2px; }
-        .result-gift-name { font-size: 12px; font-weight: 600; color: #fff; }
-        .result-gift-id { font-size: 9px; color: #888; }
+        .result-gift-name { font-size: 11px; font-weight: 600; color: #fff; }
+        .result-gift-id { font-size: 8px; color: #888; }
 
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
-        /* Стрелка */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); }
         .arrow-svg { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
 
-        /* --- КАРТОЧКИ ПОДАРКОВ (ТОЧЬ-В-ТОЧЬ КАК В ТГ) --- */
+        /* --- КАРТОЧКИ ПОДАРКОВ --- */
         .gift-cards { display: flex; justify-content: center; gap: 12px; margin-top: 15px; z-index: 10; }
         
         .gift-card { 
@@ -64,21 +63,11 @@
             cursor: pointer; 
             transition: 0.2s;
             border: 2px solid transparent;
-            /* Это базовый фон, который переопределяется ниже */
             background: #111116; 
         }
+        .gift-card.active { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); }
 
-        /* Активное состояние (когда выбрано) */
-        .gift-card.active { 
-            border-color: #ffd700; 
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); 
-        }
-
-        /* Кубок (Темный фон с легким градиентом) */
-        .gift-card.cup {
-            background: linear-gradient(180deg, #2a2a35 0%, #0f0f16 100%);
-        }
-        /* Xmas Stocking (Фиолетовый фон с узором) */
+        .gift-card.cup { background: linear-gradient(180deg, #2a2a35 0%, #0f0f16 100%); }
         .gift-card.xmas {
             background-color: #4a2a6a;
             background-image: 
@@ -88,46 +77,20 @@
         }
 
         .gift-price { 
-            position: absolute; 
-            top: 8px; 
-            right: 8px; 
-            background: rgba(0,0,0,0.6); 
-            color: #fff; 
-            padding: 3px 8px; 
-            border-radius: 10px; 
-            font-size: 11px; 
-            font-weight: 700; 
-            display: flex; 
-            align-items: center; 
-            gap: 4px;
-            backdrop-filter: blur(4px);
+            position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; 
+            padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; 
+            display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px);
         }
         .gift-price.blue { background: #007bff; }
         
-        /* Контейнер для картинки с анимацией левитации */
         .gift-image-wrapper {
-            width: 70px;
-            height: 70px;
-            margin: 20px 0 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: float 3s ease-in-out infinite; /* Плавное парение */
+            width: 70px; height: 70px; margin: 20px 0 10px;
+            display: flex; justify-content: center; align-items: center;
+            animation: float 3s ease-in-out infinite;
         }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-            100% { transform: translateY(0px); }
-        }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0px); } }
 
-        .gift-img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
-        }
-        
+        .gift-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); }
         .gift-name { font-size: 13px; font-weight: 700; text-align: center; color: #fff; }
         .gift-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
 
@@ -142,7 +105,7 @@
         .btn-boost:active { transform: scale(0.98); }
         .btn-boost:disabled { background: #1a1a24; color: #444; }
         
-        /* Кнопки шансов */
+        /* Кнопки шансов (Центр) */
         .chances-grid { display: flex; justify-content: center; gap: 6px; }
         .chance-btn { flex: 1; max-width: 60px; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; }
         .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
@@ -206,21 +169,18 @@
 
     <!-- КАРТОЧКИ ПОДАРКОВ -->
     <div class="gift-cards">
-        <!-- Карточка 1: Кубок -->
         <div class="gift-card cup active" onclick="selectGift(this, 100, 'Кубок', '#12345')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <!-- Ссылка на картинку кубка (ты можешь заменить на свою локальную в папке assets) -->
                 <img src="https://cdn-icons-png.flaticon.com/512/3113/3113549.png" class="gift-img" alt="Кубок">
             </div>
             <div class="gift-name">Кубок</div>
             <div class="gift-sub">Обычный</div>
         </div>
         
-        <!-- Карточка 2: Xmas Stocking -->
         <div class="gift-card xmas" onclick="selectGift(this, 3.19, 'Xmas Stocking', '#200912')">
             <div class="gift-price blue">🌍 3.19</div>
-            <div class="gift-image-wrapper" style="animation-delay: 1s;"> <!-- Сдвиг анимации, чтобы они парили в разное время -->
+            <div class="gift-image-wrapper" style="animation-delay: 1s;">
                 <img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img" alt="Подарок">
             </div>
             <div class="gift-name">Xmas Stocking</div>
@@ -236,6 +196,7 @@
             <div class="btn-icon" onclick="openSettings()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
         </div>
         
+        <!-- ШАНСЫ ПО ЦЕНТРУ -->
         <div class="chances-grid">
             <div class="chance-btn" onclick="setChance(50, this)">x2</div>
             <div class="chance-btn active" onclick="setChance(25, this)">x4</div>
@@ -305,15 +266,13 @@
         const canvas = document.getElementById('progressCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Рисуем оранжевую дугу (начинается снизу, идет по часовой)
         function drawArc(percent) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             const radius = 122; 
             
-            // В Canvas 0 градусов - это справа (3 часа). 
-            // Нам нужно начать снизу (6 часов), это 90 градусов (Math.PI / 2).
+            // Начинаем снизу (6 часов) = Math.PI / 2
             const startAngle = Math.PI / 2; 
             const endAngle = startAngle + (percent / 100) * (Math.PI * 2);
 
@@ -418,12 +377,10 @@
             let targetDeg = 0;
             
             if (isWin) {
-                // Если выиграли, останавливаем внутри дуги (от 90 до 90+угол)
                 const startAngle = 90;
                 const endAngle = 90 + (chance / 100) * 360;
                 targetDeg = Math.floor(Math.random() * (endAngle - startAngle) + startAngle);
             } else {
-                // Если проиграли, останавливаем вне дуги
                 const startAngle = 90;
                 const endAngle = 90 + (chance / 100) * 360;
                 do {

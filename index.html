@@ -39,13 +39,12 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        /* Оранжевая полоса (CSS conic-gradient) */
+        /* Оранжевая полоса */
         .wheel-progress {
             position: absolute;
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            /* Если шанс меньше 5%, визуально рисуем 5%, чтобы было видно */
             background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 25%), #14141e var(--progress, 25%), #14141e 100%);
             -webkit-mask: radial-gradient(transparent 122px, #000 123px);
             mask: radial-gradient(transparent 122px, #000 123px);
@@ -213,7 +212,8 @@
         <div class="gift-card westside active" onclick="selectGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <img src="https://videovssylku.ru/i/AgADz34AAoDMeUs.UDvHh" class="gift-img" alt="Westside Ring">
+                <!-- ТУТ РАБОЧАЯ 3D РУКА -->
+                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png" class="gift-img" alt="Westside Ring">
             </div>
             <div class="gift-name">Westside Ring</div>
             <div class="gift-sub">#136</div>
@@ -260,7 +260,7 @@
         <div class="grid-list">
             <div class="grid-item westside">
                 <div class="gift-price">⭐ 100</div>
-                <img src="https://videovssylku.ru/i/AgADz34AAoDMeUs.UDvHh" class="gift-img" alt="Westside Ring">
+                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png" class="gift-img" alt="Westside Ring">
                 <div class="gift-name">Westside Ring</div>
                 <div class="gift-sub">#136</div>
                 <button class="btn-upgrade" onclick="startUpgrade('Westside Ring')">Апгрейд</button>
@@ -310,7 +310,7 @@
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
-            // Если шанс меньше 5%, визуально рисуем хотя бы 5%, чтобы полоска была заметной
+            // Если шанс 1%, визуально рисуем 5%, чтобы полоска не была пикселем
             let visualProgress = chance < 5 ? 5 : chance;
             const progressEl = document.getElementById('wheelProgress');
             progressEl.style.setProperty('--progress', visualProgress + '%');

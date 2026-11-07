@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gift Boost - Clean</title>
+    <title>Gift Boost - Final Fix</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -15,19 +15,23 @@
             display: flex; flex-direction: column; min-height: 100vh; overflow-y: auto;
         }
 
+        /* Уведомления */
         .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px; }
         .toast { background: #1c1c28; border: 1px solid #ffd700; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.5); opacity: 0; transform: translateY(-20px); transition: 0.3s; }
         .toast.show { opacity: 1; transform: translateY(0); }
 
+        /* Шапка */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
         .balance-pill { display: flex; align-items: center; border: 1px solid #ffd700; padding: 6px 14px; border-radius: 20px; gap: 6px; color: #ffd700; font-weight: 800; font-size: 15px; background: rgba(255, 215, 0, 0.1); }
         .btn-topup { background: #ffd700; color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 13px; cursor: pointer; }
 
+        /* Панель апгрейда */
         .upgrade-bar { display: none; justify-content: space-between; align-items: center; background: #1c1c28; margin: 0 20px 10px; padding: 10px 15px; border-radius: 12px; border: 1px solid #4cd964; }
         .upgrade-bar.active { display: flex; }
         .upgrade-info { font-size: 12px; font-weight: 600; color: #4cd964; }
         .btn-cancel-upgrade { background: none; border: none; color: #ff4444; font-size: 20px; font-weight: 800; cursor: pointer; padding: 0 5px; }
 
+        /* Колесо */
         .wheel-zone { display: flex; justify-content: center; padding: 10px 0 30px; position: relative; }
         .wheel-outer { position: relative; width: 260px; height: 260px; }
         
@@ -72,6 +76,7 @@
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 2.5s cubic-bezier(0.1, 0.7, 0.1, 1); }
         .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 1)); }
 
+        /* Карточки */
         .gift-cards { display: flex; justify-content: center; gap: 12px; z-index: 10; }
         .gift-card { width: 135px; border-radius: 16px; padding: 8px; display: flex; flex-direction: column; align-items: center; position: relative; cursor: pointer; transition: 0.2s; border: 2px solid transparent; background: #111116; }
         .gift-card.active { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); }
@@ -102,6 +107,7 @@
         .gift-name { font-size: 13px; font-weight: 700; text-align: center; }
         .gift-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
 
+        /* Управление */
         .controls { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
         .action-row { display: flex; gap: 8px; }
         .btn-icon { width: 45px; height: 45px; background: #111116; border: 1px solid #22222a; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
@@ -116,6 +122,7 @@
         .chance-btn { flex: 1; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; }
         .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
 
+        /* Табы и Инвентарь */
         .tabs-container { padding: 0 20px 20px; }
         .tabs { display: flex; background: #0a0a0f; border-radius: 14px; padding: 5px; border: 1px solid #1a1a25; }
         .tab { flex: 1; text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #555; border-radius: 10px; cursor: pointer; transition: 0.2s; }
@@ -137,6 +144,7 @@
         .btn-upgrade { background: #ffd700; color: #000; }
         .btn-withdraw { background: #4cd964; color: #000; }
 
+        /* Модалка для ввода */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.show { display: flex; }
         .modal-content { background: #1c1c28; padding: 20px; border-radius: 16px; width: 80%; max-width: 300px; text-align: center; border: 1px solid #2a2a35; }
@@ -173,8 +181,8 @@
             <div class="progress-ring" id="progressRing"></div>
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="percent-num" id="chanceDisplay">5.00%</div>
-                    <div class="percent-lbl" id="chanceLabel">ВЫСОКИЙ РИСК</div>
+                    <div class="percent-num" id="chanceDisplay">10.00%</div>
+                    <div class="percent-lbl" id="chanceLabel">ШАНС</div>
                 </div>
                 <div class="result-container" id="resultContainer"></div>
             </div>
@@ -190,7 +198,8 @@
         <div class="gift-card westside active" onclick="selectBetGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <div class="lottie-container" id="lottie-main"></div>
+                <!-- Только картинка, без Lottie (Lottie только при выигрыше) -->
+                <img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             <div class="gift-name">Westside Ring</div>
             <div class="gift-sub">#136</div>
@@ -199,7 +208,7 @@
         <div class="gift-card xmas" onclick="selectBetGift(this, 3.19, 'Xmas Stocking', '#200912')">
             <div class="gift-price blue">🌍 3.19</div>
             <div class="gift-image-wrapper">
-                <div class="lottie-container" id="lottie-xmas"></div>
+                <img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             <div class="gift-name">Xmas Stocking</div>
             <div class="gift-sub">#200912</div>
@@ -241,7 +250,8 @@
             <div class="grid-item" onclick="selectWishItem(this, 1000, 'Redo')">
                 <div class="gift-price">⭐ 1000</div>
                 <div class="gift-image-wrapper">
-                    <div class="lottie-container" id="lottie-wish-redo"></div>
+                    <!-- Пока заглушка, но уже без Lottie -->
+                    <img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <div class="gift-name">Redo</div>
                 <div class="gift-sub">#99999</div>
@@ -249,6 +259,7 @@
             <div class="grid-item" onclick="selectWishItem(this, 15000, 'Liberty Figure')">
                 <div class="gift-price">⭐ 15000</div>
                 <div class="gift-image-wrapper">
+                    <!-- Тут статуя -->
                     <div class="lottie-container" id="lottie-wish-liberty"></div>
                 </div>
                 <div class="gift-name">Liberty Figure</div>
@@ -302,27 +313,18 @@
         let wishItem = null; 
 
         let inventory = [
-            { id: '#136', name: 'Westside Ring', price: 2500 } // Цена 2500
+            { id: '#136', name: 'Westside Ring', price: 2500, img: 'https://cdn-icons-png.flaticon.com/512/10691/10691802.png' }
         ];
 
-        // ССЫЛКИ НА АНИМАЦИИ
         const LOTTIE_WESTSIDE = 'https://files.catbox.moe/6plnk8.json'; 
         const LOTTIE_LIBERTY = 'https://files.catbox.moe/nfcvgh.json';
-        const LOTTIE_XMAS = 'https://files.catbox.moe/6plnk8.json'; // Пока заглушка, если у тебя есть своя - замени
-        const LOTTIE_REDO = 'https://files.catbox.moe/6plnk8.json'; // Пока заглушка
 
-        // Загрузка Lottie
+        // Загрузка статуи в желаемые
         try {
             if (typeof lottie !== 'undefined') {
-                // Главная
-                lottie.loadAnimation({ container: document.getElementById('lottie-main'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE });
-                // Xmas
-                lottie.loadAnimation({ container: document.getElementById('lottie-xmas'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_XMAS });
-                // Желаемые
-                lottie.loadAnimation({ container: document.getElementById('lottie-wish-redo'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_REDO });
                 lottie.loadAnimation({ container: document.getElementById('lottie-wish-liberty'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_LIBERTY });
             }
-        } catch(e) { console.log(e); }
+        } catch(e) {}
 
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
@@ -356,13 +358,10 @@
                 const el = document.createElement('div');
                 el.className = 'grid-item westside';
                 
-                let lottieId = `inv-lottie-${index}`;
-                let lottiePath = item.name.includes('Liberty') ? LOTTIE_LIBERTY : (item.name.includes('Xmas') ? LOTTIE_XMAS : LOTTIE_WESTSIDE);
-
                 el.innerHTML = `
                     <div class="gift-price">⭐ ${item.price}</div>
                     <div class="gift-image-wrapper">
-                        <div class="lottie-container" id="${lottieId}"></div>
+                        <img src="${item.img}" class="gift-img" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
                     <div class="gift-name">${item.name}</div>
                     <div class="gift-sub">${item.id}</div>
@@ -372,10 +371,6 @@
                     </div>
                 `;
                 list.appendChild(el);
-                
-                if (typeof lottie !== 'undefined') {
-                    lottie.loadAnimation({ container: document.getElementById(lottieId), renderer: 'svg', loop: true, autoplay: true, path: lottiePath });
-                }
             });
         }
 
@@ -417,7 +412,6 @@
             }
         }
 
-        // --- Настройки шансов ---
         function openSettingsModal() {
             if (isSpinning) return;
             const list = document.getElementById('settingsList');
@@ -628,7 +622,7 @@
                     
                     let prizePrice = betAmount * 10;
                     balance += prizePrice;
-                    inventory.push({ id: '#68', name: 'Liberty Figure', price: prizePrice });
+                    inventory.push({ id: '#68', name: 'Liberty Figure', price: prizePrice, img: 'https://cdn-icons-png.flaticon.com/512/284/284409.png' });
                     
                     if (upgradeItem) {
                         inventory = inventory.filter(item => item !== upgradeItem);
@@ -645,11 +639,11 @@
                     balance += winAmount;
                     
                     if (upgradeItem && wishItem) {
-                        inventory.push({ id: '#UPG', name: wishItem.name, price: wishItem.price });
+                        inventory.push({ id: '#UPG', name: wishItem.name, price: wishItem.price, img: 'https://cdn-icons-png.flaticon.com/512/284/284409.png' });
                         inventory = inventory.filter(item => item !== upgradeItem);
                         cancelUpgrade();
                     } else {
-                        inventory.push({ id: '#WIN', name: currentBetName, price: winAmount });
+                        inventory.push({ id: '#WIN', name: currentBetName, price: winAmount, img: 'https://cdn-icons-png.flaticon.com/512/10691/10691802.png' });
                     }
                     
                 } else {

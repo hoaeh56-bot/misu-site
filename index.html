@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gift Boost - Update</title>
+    <title>Gift Boost - Final</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -83,9 +83,9 @@
         .gift-price.blue { background: #007bff; }
         
         .gift-image-wrapper { width: 70px; height: 70px; margin: 20px 0 10px; display: flex; justify-content: center; align-items: center; position: relative; }
-        .gift-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); }
         
-        .lottie-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+        /* Lottie */
+        .lottie-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 2;}
 
         .gift-name { font-size: 13px; font-weight: 700; text-align: center; }
         .gift-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
@@ -104,18 +104,12 @@
         .chances-grid { display: flex; justify-content: center; gap: 6px; margin-top: 5px; }
         .chance-btn { flex: 1; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; }
         .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
-        .chance-btn.custom-val { font-size: 12px; }
 
         /* Настройки */
         .settings-panel { background: #111116; border: 1px solid #22222a; border-radius: 12px; padding: 15px; margin-top: 5px; display: none; }
         .settings-panel.active { display: block; }
         .settings-panel label { font-size: 12px; color: #888; display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
         .settings-panel input[type=range] { width: 100%; accent-color: #ffd700; margin-bottom: 15px; }
-
-        /* Кнопка Вывод */
-        .withdraw-row { padding: 0 20px 15px; }
-        .btn-withdraw { width: 100%; background: #ffd700; color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 15px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); }
-        .btn-withdraw:active { transform: scale(0.98); }
 
         /* Табы и Инвентарь */
         .tabs-container { padding: 0 20px 20px; }
@@ -129,11 +123,17 @@
         .grid-item.westside { background: linear-gradient(180deg, #1a2a5a 0%, #0a1030 100%); }
         .grid-item.selected { border-color: #4cd964; box-shadow: 0 0 10px rgba(76,217,100,0.3); }
         .grid-item .gift-price { top: 6px; right: 6px; font-size: 10px; padding: 2px 6px; }
+        
         .grid-item .gift-image-wrapper { width: 50px; height: 50px; margin: 15px 0 5px; }
+        
         .grid-item .gift-name { font-size: 12px; font-weight: 600; }
-        .btn-upgrade { background: #ffd700; color: #000; border: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; width: 100%; cursor: pointer;}
+        
+        .action-btns { display: flex; gap: 5px; width: 100%; margin-top: 8px; }
+        .btn-action { flex: 1; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: 800; cursor: pointer; text-align: center; border: none; }
+        .btn-upgrade { background: #ffd700; color: #000; }
+        .btn-withdraw { background: #4cd964; color: #000; }
 
-        /* Модалка для ввода шанса */
+        /* Модалка */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.show { display: flex; }
         .modal-content { background: #1c1c28; padding: 20px; border-radius: 16px; width: 80%; max-width: 300px; text-align: center; border: 1px solid #2a2a35; }
@@ -182,9 +182,10 @@
         <div class="gift-card westside active" onclick="selectBetGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <!-- Сюда загружаем Lottie (пока заглушка, если нет ссылки) -->
+                <!-- Сюда загрузится Lottie из catbox -->
                 <div class="lottie-container" id="lottie-main"></div>
-                <img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" id="fallback-main-img" style="display:none;">
+                <!-- Заглушка, если Lottie не найден -->
+                <img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" id="fallback-main" style="display: block; width: 100%; height: 100%; object-fit: contain;">
             </div>
             <div class="gift-name">Westside Ring</div>
             <div class="gift-sub">#136</div>
@@ -202,19 +203,16 @@
 
     <div class="controls">
         <div class="action-row">
-            <!-- Кнопка настроек шанса -->
             <div class="btn-icon" onclick="toggleSettings()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
             
             <button class="btn-boost" id="spinBtn" onclick="spin()">Забустить</button>
             
-            <!-- Кнопка быстрой крутки (Молния) -->
             <div class="btn-icon" id="fastSpinBtn" onclick="toggleFastSpin()">
                 <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
             </div>
         </div>
         
         <div class="chances-grid" id="chancesGrid">
-            <!-- Кнопки шансов (теперь можно редактировать) -->
             <div class="chance-btn" onclick="openChanceModal(this)" data-chance="50">x2</div>
             <div class="chance-btn" onclick="openChanceModal(this)" data-chance="25">x4</div>
             <div class="chance-btn active" onclick="openChanceModal(this)" data-chance="10">x10</div>
@@ -225,10 +223,6 @@
             <label><span>Точный шанс</span> <span id="sliderVal">10%</span></label>
             <input type="range" id="chanceSlider" min="1" max="90" value="10" oninput="updateChanceFromSlider(this.value)">
         </div>
-    </div>
-
-    <div class="withdraw-row">
-        <button class="btn-withdraw" onclick="showToast('Вывод пока недоступен')">Вывести предметы</button>
     </div>
 
     <div class="tabs-container">
@@ -261,17 +255,16 @@
         </div>
     </div>
 
-    <!-- Модалка ввода шанса -->
     <div class="modal-overlay" id="chanceModal">
         <div class="modal-content">
-            <h3>Настройка кнопки</h3>
+            <h3>Настройка шанса</h3>
             <input type="number" class="modal-input" id="modalChanceInput" min="1" max="90" value="10">
             <button class="modal-btn" onclick="saveChance()">Сохранить</button>
             <button class="modal-btn cancel" onclick="closeChanceModal()">Отмена</button>
         </div>
     </div>
 
-    <!-- Lottie Library -->
+    <!-- Подключаем Lottie -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
     <script>
         // --- Утилиты ---
@@ -290,10 +283,10 @@
 
         // --- Состояние ---
         let balance = 800.00;
-        let baseChance = 0; // По умолчанию 0
+        let baseChance = 0;
         let rotation = 0;
         let isSpinning = false;
-        let isFastSpin = false; // Переключатель быстрой крутки
+        let isFastSpin = false;
         
         let betAmount = 100;
         let currentBetName = 'Westside Ring';
@@ -305,26 +298,31 @@
         let wishItem = null; 
 
         let inventory = [
-            { id: '#136', name: 'Westside Ring', price: 100, isLottie: true }
+            { id: '#136', name: 'Westside Ring', price: 100, type: 'lottie' }
         ];
 
-        // --- Инициализация Lottie ---
-        // (Здесь мог бы быть твой код lottieData, но он слишком большой для чата. 
-        // Если у тебя есть прямая ссылка на JSON файл, раскомментируй код ниже)
-        
+        // --- LOTTIE ЗАГРУЗКА ---
         const lottieContainer = document.getElementById('lottie-main');
-        // Если ты загрузил файл sticker.json на Vercel, путь будет таким:
-        /*
-        lottie.loadAnimation({
-            container: lottieContainer, 
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: 'sticker.json' // Ссылка на твой файл
-        });
-        */
-        // Показываем заглушку, пока нет Lottie
-        document.getElementById('fallback-main-img').style.display = 'block';
+        const fallbackImg = document.getElementById('fallback-main');
+        const LOTTIE_URL = 'https://files.catbox.moe/6plnk8.json'; // Ссылка на твою анимацию
+        
+        try {
+            if (typeof lottie !== 'undefined') {
+                let anim = lottie.loadAnimation({
+                    container: lottieContainer, 
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    path: LOTTIE_URL
+                });
+                
+                anim.addEventListener('DOMLoaded', () => {
+                    fallbackImg.style.display = 'none';
+                });
+            }
+        } catch(e) {
+            console.log("Lottie не загружен", e);
+        }
 
         // --- UI ---
         function updateUI() {
@@ -364,18 +362,33 @@
                 el.innerHTML = `
                     <div class="gift-price">⭐ ${item.price}</div>
                     <div class="gift-image-wrapper">
-                        ${item.isLottie ? '<div class="lottie-container" id="inv-lottie-'+index+'"></div><img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" style="display:block;">' : '<img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img">'}
+                        ${item.type === 'lottie' 
+                            ? `<div class="lottie-container" id="inv-lottie-${index}"></div><img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" style="display:block; position:absolute; width:100%; height:100%; z-index:1;">` 
+                            : `<img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img" style="position:relative; z-index:1;">`}
                     </div>
                     <div class="gift-name">${item.name}</div>
                     <div class="gift-sub">${item.id}</div>
-                    <button class="btn-upgrade" onclick="startUpgrade(${index})">Апгрейд</button>
+                    <div class="action-btns">
+                        <button class="btn-action btn-upgrade" onclick="startUpgrade(${index})">Апгрейд</button>
+                        <button class="btn-action btn-withdraw" onclick="withdrawItem(${index})">Вывод</button>
+                    </div>
                 `;
                 list.appendChild(el);
-                // Если Lottie - грузим
-                if(item.isLottie && typeof lottie !== 'undefined') {
-                    // lottie.loadAnimation({ container: document.getElementById('inv-lottie-'+index), renderer: 'svg', loop: true, autoplay: true, path: 'sticker.json' });
+                
+                if(item.type === 'lottie' && typeof lottie !== 'undefined') {
+                    lottie.loadAnimation({ 
+                        container: document.getElementById('inv-lottie-'+index), 
+                        renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_URL 
+                    });
                 }
             });
+        }
+
+        function withdrawItem(index) {
+            let item = inventory[index];
+            showToast(`Заявка на вывод: ${item.name} (${item.price} ⭐) отправлена!`);
+            // inventory.splice(index, 1);
+            // updateUI();
         }
 
         function switchTab(tab, el) {
@@ -427,7 +440,7 @@
             }
         }
 
-        // --- Модалка шанса для кнопок ---
+        // --- Модалка шанса ---
         let editingChanceBtn = null;
 
         function openChanceModal(btnEl) {
@@ -450,28 +463,18 @@
 
             if (editingChanceBtn) {
                 editingChanceBtn.setAttribute('data-chance', val);
-                editingChanceBtn.innerText = "x" + (100/val).toFixed(0); // Меняем текст на x2, x4 и т.д.
                 
-                // Если это активная кнопка, обновляем шанс
-                if (editingChanceBtn.classList.contains('active')) {
-                    baseChance = val;
-                    updateUI();
-                }
+                let multiplier = Math.floor(100 / val);
+                if (multiplier < 2) multiplier = 2;
+                editingChanceBtn.innerText = "x" + multiplier;
+                
+                document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
+                editingChanceBtn.classList.add('active');
+                baseChance = val;
+                updateUI();
             }
             closeChanceModal();
         }
-
-        // Обработка клика по кнопке шанса (чтобы активировать)
-        document.querySelectorAll('.chance-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                // Если нужно просто выбрать, а не редактировать, ловим двойной клик или долгий тап
-                // В данном случае мы вызываем модалку через onclick, 
-                // а при сохранении она станет активной.
-                // Но если нужно просто выбрать, давай сделаем так:
-                // Если кнопка уже активна - открываем редактирование, иначе - активируем.
-                // Пока оставим логику: клик открывает модалку, сохранение активирует.
-            });
-        });
 
         // --- Апгрейд ---
         function startUpgrade(index) {
@@ -568,18 +571,20 @@
                 }
             }
 
+            // МАТЕМАТИКА УГЛОВ
             let targetDeg = 0;
             
+            const startAngle = 180;
+            const endAngle = 180 + (baseChance / 100) * 360;
+
             if (isTopDrop) {
-                targetDeg = 180 + (Math.random() * 10 - 5); 
+                targetDeg = 170; 
             } else if (isWin) {
-                const startAngle = 180;
-                const endAngle = 180 + (baseChance / 100) * 360;
                 targetDeg = startAngle + Math.random() * (endAngle - startAngle);
             } else {
                 do {
                     targetDeg = Math.random() * 360;
-                } while (targetDeg > 180 && targetDeg < 180 + (baseChance / 100) * 360);
+                } while (targetDeg > startAngle && targetDeg < endAngle);
             }
 
             let currentMod = rotation % 360;
@@ -613,7 +618,7 @@
                     `;
                     let prizePrice = betAmount * 10;
                     balance += prizePrice;
-                    inventory.push({ id: '#TOP', name: 'TOP ' + currentBetName, price: prizePrice });
+                    inventory.push({ id: '#TOP', name: 'TOP ' + currentBetName, price: prizePrice, type: 'png' });
                     
                     if (upgradeItem) {
                         inventory = inventory.filter(item => item !== upgradeItem);
@@ -631,11 +636,11 @@
                     balance += winAmount;
                     
                     if (upgradeItem && wishItem) {
-                        inventory.push({ id: '#UPG', name: wishItem.name, price: wishItem.price });
+                        inventory.push({ id: '#UPG', name: wishItem.name, price: wishItem.price, type: 'png' });
                         inventory = inventory.filter(item => item !== upgradeItem);
                         cancelUpgrade();
                     } else {
-                        inventory.push({ id: '#WIN', name: currentBetName, price: winAmount });
+                        inventory.push({ id: '#WIN', name: currentBetName, price: winAmount, type: 'png' });
                     }
                     
                 } else {

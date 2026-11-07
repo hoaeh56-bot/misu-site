@@ -37,14 +37,17 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        /* ОРАНЖЕВАЯ ПОЛОСА (SVG) */
-        .wheel-progress-svg {
+        /* ОРАНЖЕВАЯ ПОЛОСА (conic-gradient, строго снизу) */
+        .wheel-progress {
             position: absolute;
             width: 100%;
             height: 100%;
+            border-radius: 50%;
+            /* 180deg = начинаем снизу */
+            background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 25%), #14141e var(--progress, 25%), #14141e 100%);
+            -webkit-mask: radial-gradient(transparent 122px, #000 123px);
+            mask: radial-gradient(transparent 122px, #000 123px);
             z-index: 1;
-            /* Разворачиваем на 90 градусов, чтобы 0 был внизу (6 часов) */
-            transform: rotate(90deg); 
         }
 
         .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
@@ -67,7 +70,7 @@
 
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
-        /* Стрелка (Начинается снизу) */
+        /* Стрелка (Смотрит вниз) */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); transform: rotate(0deg); }
         .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
 
@@ -173,12 +176,7 @@
     <div class="wheel-zone">
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
-            
-            <!-- ОРАНЖЕВАЯ ПОЛОСА (SVG) -->
-            <svg class="wheel-progress-svg" viewBox="0 0 260 260">
-                <!-- r=122, начало с 0 градусов (справа), крутим на 90 градусов (вниз) -->
-                <circle id="progressCircle" cx="130" cy="130" r="122" fill="none" stroke="#ff8c00" stroke-width="16" stroke-dasharray="0 1000" stroke-linecap="round"/>
-            </svg>
+            <div class="wheel-progress" id="wheelProgress" style="--progress: 25%;"></div>
             
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
@@ -291,20 +289,13 @@
         let currentGiftId = '#136';
         let currentGiftImg = 'https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png';
 
-        const circle = document.getElementById('progressCircle');
-        const circumference = 2 * Math.PI * 122;
-
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
             let visualProgress = chance < 5 ? 5 : chance;
-            let strokeLength = (visualProgress / 100) * circumference;
-            
-            // Устанавливаем длину и поворот на 90 градусов (чтобы начиналось снизу)
-            circle.style.strokeDasharray = `${strokeLength} ${circumference}`;
-            circle.style.transform = 'rotate(90deg)';
-            circle.style.transformOrigin = 'center';
+            const progressEl = document.getElementById('wheelProgress');
+            progressEl.style.setProperty('--progress', visualProgress + '%');
         }
 
         function setChance(val, el) {
@@ -392,7 +383,6 @@
             let targetDeg = 0;
             
             if (isWin) {
-                // Выигрышный сектор начинается снизу (180 градусов) и идет по часовой
                 const startAngle = 180;
                 const endAngle = 180 + (chance / 100) * 360;
                 targetDeg = Math.floor(Math.random() * (endAngle - startAngle) + startAngle);

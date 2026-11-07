@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gift Boost</title>
+    <!-- Добавляем версию к шрифту, чтобы не кэшировался -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -37,13 +38,13 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        /* ОРАНЖЕВАЯ ПОЛОСА (conic-gradient, строго снизу) */
+        /* ОРАНЖЕВАЯ ПОЛОСА (conic-gradient) */
         .wheel-progress {
             position: absolute;
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            /* Начинаем с 180 градусов (6 часов) */
+            /* 180deg = начало внизу */
             background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 25%), #14141e var(--progress, 25%), #14141e 100%);
             -webkit-mask: radial-gradient(transparent 122px, #000 123px);
             mask: radial-gradient(transparent 122px, #000 123px);

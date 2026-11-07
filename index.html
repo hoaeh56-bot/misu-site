@@ -43,10 +43,11 @@
             width: 100%;
             height: 100%;
             z-index: 1;
-            transform: rotate(90deg); /* Поворачиваем, чтобы 0 был внизу */
+            /* Поворот на 90 градусов, чтобы начало (0) было внизу (6 часов) */
+            transform: rotate(90deg);
         }
         
-        /* Внутренний круг для маски */
+        /* Маска для внутренней части */
         .wheel-mask {
             position: absolute;
             width: 160px;
@@ -183,13 +184,11 @@
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
             
-            <!-- ОРАНЖЕВАЯ ПОЛОСА (SVG) -->
+            <!-- ОРАНЖЕВАЯ ПОЛОСА -->
             <svg class="wheel-progress-svg" viewBox="0 0 260 260">
-                <!-- Круг рисуется в SVG, поворачиваем слой на 90 град, чтобы начало было внизу (6 часов) -->
-                <circle id="progressCircle" cx="130" cy="130" r="122" fill="none" stroke="#ff8c00" stroke-width="16" stroke-dasharray="0 1000" stroke-linecap="round"/>
+                <circle id="progressCircle" cx="130" cy="130" r="122" fill="none" stroke="#ff8c00" stroke-width="16" stroke-linecap="round"/>
             </svg>
             
-            <!-- Маска, чтобы закрыть внутреннюю часть -->
             <div class="wheel-mask"></div>
             
             <div class="wheel-inner">
@@ -310,15 +309,11 @@
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
-            // Для видимости, если шанс меньше 5%, рисуем хотя бы 5%
             let visualProgress = chance < 5 ? 5 : chance;
-            
-            // Длина закрашенной части
             let strokeLength = (visualProgress / 100) * circumference;
             
-            // Сдвигаем, чтобы начало было внизу (90 град) и закрашивалось по часовой
-            circle.style.strokeDasharray = `0 ${circumference}`;
-            circle.style.strokeDashoffset = `${circumference - strokeLength}`;
+            // Устанавливаем длину дуги (сколько закрашено) и длину всего круга
+            circle.style.strokeDasharray = `${strokeLength} ${circumference}`;
             
             // Меняем текст при 1%
             if (chance === 1) {

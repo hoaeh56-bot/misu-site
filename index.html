@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gift Boost - Top Drop</title>
+    <title>Gift Boost - Final</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -55,17 +55,11 @@
         .result-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; text-align: center; }
         .result-container.show { opacity: 1; }
         
-        .result-icon { width: 40px; height: 40px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; }
-        .result-container.show .result-icon { animation: draw 0.5s cubic-bezier(0.1, 0.7, 0.1, 1) forwards; }
-        
         .result-text { font-size: 12px; font-weight: 800; line-height: 1.1; padding: 0 10px; }
-        .result-text.win { color: #4cd964; }
+        .result-text.win { color: #4cd964; font-size: 14px;}
         .result-text.top { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.8); font-size: 14px; }
         .result-text.lose { color: #ff4444; font-size: 14px; }
-        .result-gift-name { font-size: 10px; font-weight: 700; color: #fff; margin-top: 4px; }
         
-        @keyframes draw { to { stroke-dashoffset: 0; } }
-
         .percent-num { font-size: 32px; font-weight: 800; color: #fff; transition: opacity 0.3s; }
         .percent-lbl { font-size: 11px; color: #ff4444; margin-top: 2px; font-weight: 700; letter-spacing: 1px; transition: opacity 0.3s; }
 
@@ -121,12 +115,6 @@
         .chance-btn { flex: 1; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; }
         .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
 
-        /* Настройки */
-        .settings-panel { background: #111116; border: 1px solid #22222a; border-radius: 12px; padding: 15px; margin-top: 5px; display: none; }
-        .settings-panel.active { display: block; }
-        .settings-panel label { font-size: 12px; color: #888; display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
-        .settings-panel input[type=range] { width: 100%; accent-color: #ffd700; margin-bottom: 15px; }
-
         /* Табы и Инвентарь */
         .tabs-container { padding: 0 20px 20px; }
         .tabs { display: flex; background: #0a0a0f; border-radius: 14px; padding: 5px; border: 1px solid #1a1a25; }
@@ -149,7 +137,7 @@
         .btn-upgrade { background: #ffd700; color: #000; }
         .btn-withdraw { background: #4cd964; color: #000; }
 
-        /* Модалка */
+        /* Модалка для ввода */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.show { display: flex; }
         .modal-content { background: #1c1c28; padding: 20px; border-radius: 16px; width: 80%; max-width: 300px; text-align: center; border: 1px solid #2a2a35; }
@@ -157,6 +145,12 @@
         .modal-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #0d0d12; color: #fff; font-size: 16px; text-align: center; margin-bottom: 15px; outline: none; }
         .modal-btn { width: 100%; background: #ffd700; color: #000; border: none; padding: 10px; border-radius: 8px; font-weight: 800; cursor: pointer; }
         .modal-btn.cancel { background: #333; color: #fff; margin-top: 8px; }
+
+        /* Панель настроек */
+        .settings-modal { width: 90%; max-width: 350px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; background: #0d0d12; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #222; }
+        .setting-row span { font-weight: 700; }
+        .btn-edit-chance { background: #ffd700; color: #000; border: none; padding: 5px 10px; border-radius: 5px; font-weight: 700; cursor: pointer; }
 
         .hidden { display: none !important; }
     </style>
@@ -217,7 +211,7 @@
 
     <div class="controls">
         <div class="action-row">
-            <div class="btn-icon" onclick="toggleSettings()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+            <div class="btn-icon" onclick="openSettingsModal()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
             
             <button class="btn-boost" id="spinBtn" onclick="spin()">Забустить</button>
             
@@ -227,15 +221,11 @@
         </div>
         
         <div class="chances-grid" id="chancesGrid">
-            <div class="chance-btn" onclick="openChanceModal(this)" data-chance="50">x2</div>
-            <div class="chance-btn" onclick="openChanceModal(this)" data-chance="25">x4</div>
-            <div class="chance-btn active" onclick="openChanceModal(this)" data-chance="10">x10</div>
-            <div class="chance-btn" onclick="openChanceModal(this)" data-chance="5">x20</div>
-        </div>
-
-        <div class="settings-panel" id="settingsPanel">
-            <label><span>Точный шанс</span> <span id="sliderVal">10%</span></label>
-            <input type="range" id="chanceSlider" min="1" max="90" value="10" oninput="updateChanceFromSlider(this.value)">
+            <!-- Кнопки шансов -->
+            <div class="chance-btn" onclick="setChance(50, this)" data-chance="50">x2</div>
+            <div class="chance-btn" onclick="setChance(25, this)" data-chance="25">x4</div>
+            <div class="chance-btn active" onclick="setChance(10, this)" data-chance="10">x10</div>
+            <div class="chance-btn" onclick="setChance(5, this)" data-chance="5">x20</div>
         </div>
     </div>
 
@@ -263,7 +253,8 @@
             <div class="grid-item" onclick="selectWishItem(this, 15000, 'Liberty Figure')">
                 <div class="gift-price">⭐ 15000</div>
                 <div class="gift-image-wrapper">
-                    <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" class="gift-img">
+                    <div class="lottie-container" id="lottie-wish-liberty"></div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" class="gift-img" style="position:relative; z-index:1;">
                 </div>
                 <div class="gift-name">Liberty Figure</div>
                 <div class="gift-sub">#68</div>
@@ -271,9 +262,21 @@
         </div>
     </div>
 
+    <!-- Модалка настройки шансов -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-content settings-modal">
+            <h3>Настройка кнопок</h3>
+            <div id="settingsList">
+                <!-- Заполняется через JS -->
+            </div>
+            <button class="modal-btn cancel" onclick="closeSettingsModal()">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Модалка ввода процента -->
     <div class="modal-overlay" id="chanceModal">
         <div class="modal-content">
-            <h3>Настройка шанса</h3>
+            <h3>Введите шанс (%)</h3>
             <input type="number" class="modal-input" id="modalChanceInput" min="1" max="90" value="10">
             <button class="modal-btn" onclick="saveChance()">Сохранить</button>
             <button class="modal-btn cancel" onclick="closeChanceModal()">Отмена</button>
@@ -299,7 +302,7 @@
 
         // --- Состояние ---
         let balance = 800.00;
-        let baseChance = 0;
+        let baseChance = 10;
         let rotation = 0;
         let isSpinning = false;
         let isFastSpin = false;
@@ -317,29 +320,27 @@
             { id: '#136', name: 'Westside Ring', price: 100, type: 'lottie' }
         ];
 
-        // --- LOTTIE ЗАГРУЗКА (Westside Ring) ---
-        const lottieContainer = document.getElementById('lottie-main');
-        const fallbackImg = document.getElementById('fallback-main');
-        const LOTTIE_WESTSIDE = 'https://files.catbox.moe/6plnk8.json'; // Твоя рука
-        
+        // --- LOTTIE ЗАГРУЗКА ---
+        const LOTTIE_WESTSIDE = 'https://files.catbox.moe/6plnk8.json'; 
+        const LOTTIE_LIBERTY = 'https://files.catbox.moe/nfcvgh.json';
+
+        // Основная карточка
+        const lottieMain = document.getElementById('lottie-main');
+        const fallbackMain = document.getElementById('fallback-main');
         try {
             if (typeof lottie !== 'undefined') {
-                let anim = lottie.loadAnimation({
-                    container: lottieContainer, 
-                    renderer: 'svg',
-                    loop: true,
-                    autoplay: true,
-                    path: LOTTIE_WESTSIDE
-                });
-                
-                anim.addEventListener('DOMLoaded', () => {
-                    fallbackImg.style.display = 'none';
-                });
+                let anim = lottie.loadAnimation({ container: lottieMain, renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE });
+                anim.addEventListener('DOMLoaded', () => { fallbackMain.style.display = 'none'; });
             }
-        } catch(e) { console.log("Lottie 1 error", e); }
+        } catch(e) {}
 
-        // --- LOTTIE ЗАГРУЗКА (Статуя Свободы для ТОП-ДРОПА) ---
-        const LOTTIE_LIBERTY = 'https://files.catbox.moe/nfcvgh.json';
+        // Желаемые (Либерти)
+        const lottieWish = document.getElementById('lottie-wish-liberty');
+        try {
+            if (typeof lottie !== 'undefined' && lottieWish) {
+                lottie.loadAnimation({ container: lottieWish, renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_LIBERTY });
+            }
+        } catch(e) {}
 
         // --- UI ---
         function updateUI() {
@@ -349,9 +350,6 @@
             let visualProgress = baseChance < 2 && baseChance > 0 ? 2 : baseChance; 
             document.getElementById('progressRing').style.setProperty('--progress', visualProgress + '%');
             
-            document.getElementById('sliderVal').innerText = baseChance + '%';
-            document.getElementById('chanceSlider').value = baseChance;
-
             if (baseChance === 0) {
                 document.getElementById('chanceLabel').innerText = 'ВЫБЕРИТЕ ЦЕЛЬ';
                 document.getElementById('chanceLabel').style.color = '#666';
@@ -376,12 +374,22 @@
             inventory.forEach((item, index) => {
                 const el = document.createElement('div');
                 el.className = 'grid-item westside';
+                
+                let imgHtml = '';
+                if(item.type === 'lottie') {
+                    imgHtml = `<div class="lottie-container" id="inv-lottie-${index}"></div><img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" style="display:block; position:absolute; width:100%; height:100%; z-index:1;">`;
+                } else if (item.name.includes('Liberty')) {
+                    imgHtml = `<div class="lottie-container" id="inv-lottie-liberty-${index}"></div><img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" class="gift-img" style="display:block; position:absolute; width:100%; height:100%; z-index:1;">`;
+                } else if (item.name.includes('Xmas')) {
+                    imgHtml = `<img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img">`;
+                } else {
+                    imgHtml = `<img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img">`;
+                }
+
                 el.innerHTML = `
                     <div class="gift-price">⭐ ${item.price}</div>
                     <div class="gift-image-wrapper">
-                        ${item.type === 'lottie' 
-                            ? `<div class="lottie-container" id="inv-lottie-${index}"></div><img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" style="display:block; position:absolute; width:100%; height:100%; z-index:1;">` 
-                            : `<img src="${item.img || 'https://cdn-icons-png.flaticon.com/512/4213/4213230.png'}" class="gift-img" style="position:relative; z-index:1;">`}
+                        ${imgHtml}
                     </div>
                     <div class="gift-name">${item.name}</div>
                     <div class="gift-sub">${item.id}</div>
@@ -393,10 +401,9 @@
                 list.appendChild(el);
                 
                 if(item.type === 'lottie' && typeof lottie !== 'undefined') {
-                    lottie.loadAnimation({ 
-                        container: document.getElementById('inv-lottie-'+index), 
-                        renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE 
-                    });
+                    lottie.loadAnimation({ container: document.getElementById('inv-lottie-'+index), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE });
+                } else if (item.name.includes('Liberty') && typeof lottie !== 'undefined') {
+                    lottie.loadAnimation({ container: document.getElementById('inv-lottie-liberty-'+index), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_LIBERTY });
                 }
             });
         }
@@ -427,21 +434,6 @@
             cancelUpgrade(); 
         }
 
-        // --- Настройки ---
-        function toggleSettings() {
-            document.getElementById('settingsPanel').classList.toggle('active');
-        }
-
-        function updateChanceFromSlider(val) {
-            if (upgradeItem) {
-                showToast("Нельзя менять шанс во время апгрейда!");
-                return;
-            }
-            baseChance = Number(val);
-            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
-            updateUI();
-        }
-
         // --- Быстрая крутка ---
         function toggleFastSpin() {
             isFastSpin = !isFastSpin;
@@ -455,13 +447,42 @@
             }
         }
 
-        // --- Модалка шанса ---
+        // --- Настройки шансов ---
+        function openSettingsModal() {
+            if (isSpinning) return;
+            const list = document.getElementById('settingsList');
+            list.innerHTML = '';
+            
+            // Берем кнопки с главного экрана
+            const btns = document.querySelectorAll('.chances-grid .chance-btn');
+            btns.forEach((btn, i) => {
+                let val = btn.getAttribute('data-chance');
+                let row = document.createElement('div');
+                row.className = 'setting-row';
+                row.innerHTML = `
+                    <span>Кнопка ${i+1} (${val}%)</span>
+                    <button class="btn-edit-chance" onclick="editChanceFromSettings(${i})">Изменить</button>
+                `;
+                list.appendChild(row);
+            });
+
+            document.getElementById('settingsModal').classList.add('show');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        let editingBtnIndex = null;
         let editingChanceBtn = null;
 
-        function openChanceModal(btnEl) {
-            if (isSpinning || upgradeItem) return;
-            editingChanceBtn = btnEl;
-            const currentVal = btnEl.getAttribute('data-chance') || 10;
+        function editChanceFromSettings(index) {
+            closeSettingsModal();
+            editingBtnIndex = index;
+            const btns = document.querySelectorAll('.chances-grid .chance-btn');
+            editingChanceBtn = btns[index];
+            let currentVal = editingChanceBtn.getAttribute('data-chance');
+            
             document.getElementById('modalChanceInput').value = currentVal;
             document.getElementById('chanceModal').classList.add('show');
         }
@@ -469,6 +490,7 @@
         function closeChanceModal() {
             document.getElementById('chanceModal').classList.remove('show');
             editingChanceBtn = null;
+            editingBtnIndex = null;
         }
 
         function saveChance() {
@@ -478,17 +500,26 @@
 
             if (editingChanceBtn) {
                 editingChanceBtn.setAttribute('data-chance', val);
-                
                 let multiplier = Math.floor(100 / val);
                 if (multiplier < 2) multiplier = 2;
                 editingChanceBtn.innerText = "x" + multiplier;
                 
-                document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
-                editingChanceBtn.classList.add('active');
-                baseChance = val;
-                updateUI();
+                // Если это была активная кнопка, обновляем шанс
+                if (editingChanceBtn.classList.contains('active')) {
+                    baseChance = val;
+                    updateUI();
+                }
+                showToast(`Сохранено: ${val}% на кнопке`);
             }
             closeChanceModal();
+        }
+
+        function setChance(val, el) {
+            if (isSpinning || upgradeItem) return;
+            baseChance = val;
+            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            updateUI();
         }
 
         // --- Апгрейд ---
@@ -525,8 +556,11 @@
             wishItem = null;
             document.getElementById('upgradeBar').classList.remove('active');
             
-            baseChance = 0;
-            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
+            baseChance = 10;
+            const btns = document.querySelectorAll('.chances-grid .chance-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            if(btns[2]) btns[2].classList.add('active'); // По умолчанию x10
+            
             document.querySelectorAll('#wish-list .grid-item').forEach(c => c.classList.remove('selected'));
             
             updateUI();
@@ -586,9 +620,7 @@
                 }
             }
 
-            // МАТЕМАТИКА УГЛОВ
             let targetDeg = 0;
-            
             const startAngle = 180;
             const endAngle = 180 + (baseChance / 100) * 360;
 
@@ -606,7 +638,6 @@
             let diff = targetDeg - currentMod;
             if (diff < 0) diff += 360;
 
-            // Скорость
             const spins = isFastSpin ? 2 : 5;
             const duration = isFastSpin ? 1.5 : 3;
             
@@ -615,7 +646,6 @@
             rotation += (spins * 360) + diff;
             arrow.style.transform = `rotate(${rotation}deg)`;
 
-            // Финал
             setTimeout(() => {
                 arrow.style.transition = 'none';
                 rotation = rotation % 360;
@@ -626,12 +656,11 @@
                 if (isTopDrop && navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
 
                 if (isTopDrop) {
-                    // ТОП ДРОП С ТВОЕЙ АНИМАЦИЕЙ СТАТУИ
+                    // ТОП ДРОП (Либерти)
                     resultContainer.innerHTML = `
                         <div class="lottie-container" id="lottie-topdrop-result"></div>
-                        <div class="result-text top" style="margin-top: 5px;">ТОП ДРОП</div>
+                        <div class="result-text top" style="margin-top: 10px;">ТОП ДРОП</div>
                     `;
-                    // Загружаем статус свободы в результат
                     if (typeof lottie !== 'undefined') {
                         lottie.loadAnimation({
                             container: document.getElementById('lottie-topdrop-result'),
@@ -641,7 +670,7 @@
                     
                     let prizePrice = betAmount * 10;
                     balance += prizePrice;
-                    inventory.push({ id: '#68', name: 'Liberty Figure', price: prizePrice, type: 'png', img: 'https://cdn-icons-png.flaticon.com/512/284/284409.png' }); // Заглушка для инвентаря
+                    inventory.push({ id: '#68', name: 'Liberty Figure', price: prizePrice, type: 'lottie-liberty' });
                     
                     if (upgradeItem) {
                         inventory = inventory.filter(item => item !== upgradeItem);
@@ -688,12 +717,11 @@
                     btn.disabled = false;
                     btn.innerText = "Забустить";
                     
-                }, 2500); // Чуть дольше показываем топ-дроп
+                }, 2500);
 
             }, (duration * 1000) + 100);
         }
 
-        // Запуск
         updateUI();
     </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gift Boost - Fix</title>
+    <title>Gift Boost - Math Fix</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -15,7 +15,7 @@
             display: flex; flex-direction: column; min-height: 100vh; overflow-y: auto;
         }
 
-        /* Уведомления (только 1 штука за раз) */
+        /* Уведомления */
         .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px; }
         .toast { background: #1c1c28; border: 1px solid #ffd700; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.5); opacity: 0; transform: translateY(-20px); transition: 0.3s; }
         .toast.show { opacity: 1; transform: translateY(0); }
@@ -37,6 +37,7 @@
         
         .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: #111116; box-shadow: inset 0 0 20px rgba(0,0,0,1); z-index: 1; }
         
+        /* Оранжевая полоса (начинается с 180deg - это 6 часов) */
         .progress-ring {
             position: absolute; width: 100%; height: 100%; border-radius: 50%; z-index: 2;
             background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 0%), transparent var(--progress, 0%), transparent 100%);
@@ -73,6 +74,7 @@
         .percent-num { font-size: 32px; font-weight: 800; color: #fff; transition: opacity 0.3s; }
         .percent-lbl { font-size: 11px; color: #ff4444; margin-top: 2px; font-weight: 700; letter-spacing: 1px; transition: opacity 0.3s; }
 
+        /* Стрелка (смотрит вниз, в 6 часов) */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 2.5s cubic-bezier(0.1, 0.7, 0.1, 1); }
         .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 1)); }
 
@@ -258,6 +260,8 @@
                 <div class="gift-price">⭐ 15000</div>
                 <div class="gift-image-wrapper">
                     <div class="lottie-container" id="lottie-wish-liberty"></div>
+                    <!-- Заглушка для статуи -->
+                    <div id="fallback-liberty" style="width: 100%; height: 100%; background: #ffd700; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: #000; font-weight: bold; font-size: 10px; position: absolute; top:0; left:0; z-index:1;">СТАТУЯ</div>
                 </div>
                 <div class="gift-name">Liberty Figure</div>
                 <div class="gift-sub">#68</div>
@@ -319,8 +323,14 @@
 
         try {
             if (typeof lottie !== 'undefined') {
-                lottie.loadAnimation({ container: document.getElementById('lottie-main'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE });
-                lottie.loadAnimation({ container: document.getElementById('lottie-wish-liberty'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_LIBERTY });
+                // Главная рука
+                let mainAnim = lottie.loadAnimation({ container: document.getElementById('lottie-main'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE });
+                
+                // Статуя в желаемых
+                let libertyAnim = lottie.loadAnimation({ container: document.getElementById('lottie-wish-liberty'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_LIBERTY });
+                libertyAnim.addEventListener('DOMLoaded', () => {
+                    document.getElementById('fallback-liberty').style.display = 'none';
+                });
             }
         } catch(e) { console.log(e); }
 
@@ -585,30 +595,41 @@
                 }
             }
 
+            // --- МАТЕМАТИКА УГЛОВ (ИСПРАВЛЕНО) ---
+            // Стрелка стоит на 0 градусов (смотрит вниз). 
+            // Оранжевая полоса начинается от 180 градусов и идет по часовой.
+            // Нам нужно повернуть стрелку так, чтобы она указывала на нужный сектор.
+            
             let targetDeg = 0;
-            const startAngle = 180;
-            const endAngle = 180 + (baseChance / 100) * 360;
+            
+            // Переводим проценты в градусы (0-360)
+            let chanceDeg = (baseChance / 100) * 360;
+            let startAngle = 180; // Низ
+            let endAngle = startAngle + chanceDeg;
 
             if (isTopDrop) {
-                targetDeg = 170; 
+                targetDeg = 170; // Чуть левее низа (золотая зона)
             } else if (isWin) {
-                targetDeg = startAngle + Math.random() * (endAngle - startAngle);
+                // Попадаем в оранжевую зону
+                targetDeg = startAngle + Math.random() * chanceDeg;
             } else {
+                // Попадаем вне оранжевой зоны
                 do {
                     targetDeg = Math.random() * 360;
                 } while (targetDeg > startAngle && targetDeg < endAngle);
             }
 
+            // Вычисляем, на сколько градусов нужно повернуть стрелку от текущего положения
             let currentMod = rotation % 360;
             let diff = targetDeg - currentMod;
+            
+            // Чтобы крутилось только по часовой стрелке
             if (diff < 0) diff += 360;
 
-            const spins = isFastSpin ? 2 : 5;
-            const duration = isFastSpin ? 1.5 : 3;
+            // Крутим 5 полных оборотов + нужный угол
+            rotation += (5 * 360) + diff;
             
             arrow.style.transition = `transform ${duration}s cubic-bezier(0.1, 0.7, 0.1, 1)`;
-            
-            rotation += (spins * 360) + diff;
             arrow.style.transform = `rotate(${rotation}deg)`;
 
             setTimeout(() => {

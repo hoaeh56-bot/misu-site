@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gift Boost - Final Fix</title>
+    <title>Gift Boost - Final</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -198,8 +198,7 @@
         <div class="gift-card westside active" onclick="selectBetGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <!-- Только картинка, без Lottie (Lottie только при выигрыше) -->
-                <img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" style="width: 100%; height: 100%; object-fit: contain;">
+                <div class="lottie-container" id="lottie-main"></div>
             </div>
             <div class="gift-name">Westside Ring</div>
             <div class="gift-sub">#136</div>
@@ -208,7 +207,7 @@
         <div class="gift-card xmas" onclick="selectBetGift(this, 3.19, 'Xmas Stocking', '#200912')">
             <div class="gift-price blue">🌍 3.19</div>
             <div class="gift-image-wrapper">
-                <img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img" style="width: 100%; height: 100%; object-fit: contain;">
+                <div style="width: 100%; height: 100%; background: #3a1a4a; border-radius: 8px;"></div>
             </div>
             <div class="gift-name">Xmas Stocking</div>
             <div class="gift-sub">#200912</div>
@@ -250,8 +249,7 @@
             <div class="grid-item" onclick="selectWishItem(this, 1000, 'Redo')">
                 <div class="gift-price">⭐ 1000</div>
                 <div class="gift-image-wrapper">
-                    <!-- Пока заглушка, но уже без Lottie -->
-                    <img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img" style="width: 100%; height: 100%; object-fit: contain;">
+                    <div style="width: 100%; height: 100%; background: #2a2a35; border-radius: 8px;"></div>
                 </div>
                 <div class="gift-name">Redo</div>
                 <div class="gift-sub">#99999</div>
@@ -259,7 +257,6 @@
             <div class="grid-item" onclick="selectWishItem(this, 15000, 'Liberty Figure')">
                 <div class="gift-price">⭐ 15000</div>
                 <div class="gift-image-wrapper">
-                    <!-- Тут статуя -->
                     <div class="lottie-container" id="lottie-wish-liberty"></div>
                 </div>
                 <div class="gift-name">Liberty Figure</div>
@@ -313,15 +310,15 @@
         let wishItem = null; 
 
         let inventory = [
-            { id: '#136', name: 'Westside Ring', price: 2500, img: 'https://cdn-icons-png.flaticon.com/512/10691/10691802.png' }
+            { id: '#136', name: 'Westside Ring', price: 2500, type: 'lottie' }
         ];
 
         const LOTTIE_WESTSIDE = 'https://files.catbox.moe/6plnk8.json'; 
         const LOTTIE_LIBERTY = 'https://files.catbox.moe/nfcvgh.json';
 
-        // Загрузка статуи в желаемые
         try {
             if (typeof lottie !== 'undefined') {
+                lottie.loadAnimation({ container: document.getElementById('lottie-main'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE });
                 lottie.loadAnimation({ container: document.getElementById('lottie-wish-liberty'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_LIBERTY });
             }
         } catch(e) {}
@@ -358,10 +355,17 @@
                 const el = document.createElement('div');
                 el.className = 'grid-item westside';
                 
+                let content = '';
+                if (item.type === 'lottie') {
+                    content = `<div class="lottie-container" id="inv-lottie-${index}"></div>`;
+                } else {
+                    content = `<div style="width: 100%; height: 100%; background: #2a2a35; border-radius: 8px;"></div>`;
+                }
+
                 el.innerHTML = `
                     <div class="gift-price">⭐ ${item.price}</div>
                     <div class="gift-image-wrapper">
-                        <img src="${item.img}" class="gift-img" style="width: 100%; height: 100%; object-fit: contain;">
+                        ${content}
                     </div>
                     <div class="gift-name">${item.name}</div>
                     <div class="gift-sub">${item.id}</div>
@@ -371,6 +375,10 @@
                     </div>
                 `;
                 list.appendChild(el);
+                
+                if(item.type === 'lottie' && typeof lottie !== 'undefined') {
+                    lottie.loadAnimation({ container: document.getElementById('inv-lottie-'+index), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE });
+                }
             });
         }
 
@@ -622,7 +630,7 @@
                     
                     let prizePrice = betAmount * 10;
                     balance += prizePrice;
-                    inventory.push({ id: '#68', name: 'Liberty Figure', price: prizePrice, img: 'https://cdn-icons-png.flaticon.com/512/284/284409.png' });
+                    inventory.push({ id: '#68', name: 'Liberty Figure', price: prizePrice, type: 'lottie-liberty' });
                     
                     if (upgradeItem) {
                         inventory = inventory.filter(item => item !== upgradeItem);
@@ -639,11 +647,11 @@
                     balance += winAmount;
                     
                     if (upgradeItem && wishItem) {
-                        inventory.push({ id: '#UPG', name: wishItem.name, price: wishItem.price, img: 'https://cdn-icons-png.flaticon.com/512/284/284409.png' });
+                        inventory.push({ id: '#UPG', name: wishItem.name, price: wishItem.price, type: 'lottie-liberty' });
                         inventory = inventory.filter(item => item !== upgradeItem);
                         cancelUpgrade();
                     } else {
-                        inventory.push({ id: '#WIN', name: currentBetName, price: winAmount, img: 'https://cdn-icons-png.flaticon.com/512/10691/10691802.png' });
+                        inventory.push({ id: '#WIN', name: currentBetName, price: winAmount, type: 'lottie' });
                     }
                     
                 } else {

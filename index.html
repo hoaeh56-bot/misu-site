@@ -37,24 +37,30 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        /* ОРАНЖЕВАЯ ПОЛОСА (SVG, правильный старт снизу) */
-        .progress-svg {
+        /* ОРАНЖЕВАЯ ПОЛОСА (Через маску картинки) */
+        .progress-wrapper {
             position: absolute;
             width: 100%;
             height: 100%;
+            border-radius: 50%;
             z-index: 1;
-            /* Поворот на 90 градусов, чтобы 0 был снизу (6 часов) */
-            transform: rotate(90deg);
+            overflow: hidden;
+            /* Поворачиваем контейнер на 180, чтобы низ стал верхом (для обрезки) */
+            transform: rotate(180deg); 
         }
-        
-        .progress-circle {
-            fill: none;
-            stroke: #ff8c00;
-            stroke-width: 16;
-            stroke-linecap: round;
-            /* По умолчанию пусто, задается через JS */
-            stroke-dasharray: 0 1000;
-            transition: stroke-dasharray 0.3s ease;
+
+        .progress-img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            /* Используем картинку дуги, которую я нарисовал */
+            background-image: url('https://i.imgur.com/8XjZ5qO.png'); 
+            background-size: cover;
+            background-position: center;
+            /* Обрезаем сверху, оставляя только нужный процент */
+            /* 0% - ничего не видно, 100% - весь круг */
+            clip-path: inset(calc(100% - var(--progress, 25%)) 0 0 0);
+            transition: clip-path 0.3s;
         }
 
         .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
@@ -184,10 +190,10 @@
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
             
-            <!-- ОРАНЖЕВАЯ ПОЛОСА (SVG) -->
-            <svg class="progress-svg" viewBox="0 0 260 260">
-                <circle class="progress-circle" id="progressCircle" cx="130" cy="130" r="122" />
-            </svg>
+            <!-- ОРАНЖЕВАЯ ПОЛОСА (Через картинку-маску) -->
+            <div class="progress-wrapper">
+                <div class="progress-img" id="progressImg" style="--progress: 25%;"></div>
+            </div>
             
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
@@ -300,19 +306,17 @@
         let currentGiftId = '#136';
         let currentGiftImg = 'https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png';
 
-        const circle = document.getElementById('progressCircle');
-        const circumference = 2 * Math.PI * 122;
-
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
             // Визуальный минимум 5% для полосы
             let visualProgress = chance < 5 ? 5 : chance;
-            let strokeLength = (visualProgress / 100) * circumference;
+            const img = document.getElementById('progressImg');
             
-            // Длина закрашенной части
-            circle.style.strokeDasharray = `${strokeLength} ${circumference}`;
+            // Обновляем CSS-переменную для clip-path
+            // Мы обрезаем сверху, поэтому инвертируем значение (100% - наш процент)
+            img.style.setProperty('--progress', visualProgress + '%');
             
             // Меняем текст при 1%
             if (chance === 1) {

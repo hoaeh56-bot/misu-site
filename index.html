@@ -37,30 +37,49 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        /* ОРАНЖЕВАЯ ПОЛОСА (Через clip-path) */
-        .progress-svg {
+        /* ОРАНЖЕВАЯ ПОЛОСА */
+        .progress-container {
             position: absolute;
             width: 100%;
             height: 100%;
             z-index: 1;
-        }
-        
-        .progress-circle {
-            fill: none;
-            stroke: #ff8c00;
-            stroke-width: 16;
-            stroke-linecap: round;
-            /* Длина окружности (2 * pi * 122 = 766.5) */
-            stroke-dasharray: 766.5; 
-            /* Сдвигаем на всю длину, чтобы скрыть */
-            stroke-dashoffset: 766.5; 
-            transition: stroke-dashoffset 0.3s ease;
-            /* Поворачиваем на 90 градусов, чтобы старт был внизу (6 часов) */
-            transform: rotate(90deg);
-            transform-origin: center center;
+            border-radius: 50%;
+            overflow: hidden;
         }
 
-        .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
+        .progress-half {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background: #ff8c00;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .progress-half.left {
+            left: 0;
+            transform-origin: right center;
+        }
+
+        .progress-half.right {
+            right: 0;
+            transform-origin: left center;
+        }
+
+        /* Маска для внутренней части */
+        .progress-mask {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: #000;
+            z-index: 2;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: transparent; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
         
         .percent-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; color: #fff; }
         .percent-lbl { font-size: 10px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
@@ -187,10 +206,12 @@
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
             
-            <!-- ОРАНЖЕВАЯ ПОЛОСА (SVG) -->
-            <svg class="progress-svg" viewBox="0 0 260 260">
-                <circle class="progress-circle" id="progressCircle" cx="130" cy="130" r="122" />
-            </svg>
+            <!-- ОРАНЖЕВАЯ ПОЛОСА -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-half left" id="progressLeft"></div>
+                <div class="progress-half right" id="progressRight"></div>
+                <div class="progress-mask"></div>
+            </div>
             
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
@@ -303,25 +324,27 @@
         let currentGiftId = '#136';
         let currentGiftImg = 'https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png';
 
-        const circle = document.getElementById('progressCircle');
-        const circumference = 2 * Math.PI * 122; // 766.5
-
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
-            // Визуальный минимум 5% для полосы
-            let visualProgress = chance < 5 ? 5 : chance;
+            const progressContainer = document.getElementById('progressContainer');
+            // Поворачиваем контейнер на 180 градусов, чтобы старт был снизу
+            progressContainer.style.transform = 'rotate(180deg)';
+            // Делаем визуальный прогресс, если шанс меньше 2, показываем чуть-чуть
+            let visualProgress = chance < 2 ? 2 : chance; 
             
-            // Считаем длину дуги
-            let strokeLength = (visualProgress / 100) * circumference;
+            const leftHalf = document.getElementById('progressLeft');
+            const rightHalf = document.getElementById('progressRight');
             
-            // Устанавливаем длину закрашенной части
-            circle.style.strokeDasharray = `${strokeLength} ${circumference}`;
-            
-            // Сдвигаем, чтобы полоса начиналась с 6 часов (снизу)
-            // Сдвиг = длина окружности - длина дуги (чтобы скрыть лишнее)
-            circle.style.strokeDashoffset = circumference - strokeLength;
+            // Рассчитываем дугу прогресса (в процентах от 100)
+            if (visualProgress <= 50) {
+                rightHalf.style.transform = `scaleX(${visualProgress / 50})`;
+                leftHalf.style.transform = `scaleX(0)`;
+            } else {
+                rightHalf.style.transform = `scaleX(1)`;
+                leftHalf.style.transform = `scaleX(${(visualProgress - 50) / 50})`;
+            }
             
             if (chance === 1) {
                 document.getElementById('chanceLabel').innerText = 'ВЫСОКИЙ РИСК';

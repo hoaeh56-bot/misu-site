@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gift Boost - Top Drop</title>
+    <title>Gift Boost - Upgrade</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background: radial-gradient(circle at 50% 20%, #1a1a24 0%, #000000 70%); 
+            background: radial-gradient(circle at 50% 20%, #15151e 0%, #000000 70%); 
             color: #fff; 
             display: flex; flex-direction: column; min-height: 100vh; overflow-y: auto;
         }
+
+        /* Уведомления (вместо alert) */
+        .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px; }
+        .toast { background: #1c1c28; border: 1px solid #ffd700; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.5); opacity: 0; transform: translateY(-20px); transition: 0.3s; }
+        .toast.show { opacity: 1; transform: translateY(0); }
 
         /* Шапка */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
@@ -21,7 +26,7 @@
         .btn-topup { background: #ffd700; color: #000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 13px; cursor: pointer; }
 
         /* Колесо */
-        .wheel-zone { display: flex; justify-content: center; padding: 20px 0 30px; }
+        .wheel-zone { display: flex; justify-content: center; padding: 20px 0 30px; position: relative; }
         .wheel-outer { position: relative; width: 260px; height: 260px; }
         
         .wheel-bg { 
@@ -29,22 +34,13 @@
             background: #111116; box-shadow: inset 0 0 20px rgba(0,0,0,1); z-index: 1;
         }
         
-        /* Тонкая полоса шанса */
+        /* Полоса шанса (тонкая) */
         .progress-ring {
             position: absolute; width: 100%; height: 100%; border-radius: 50%; z-index: 2;
             background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 0%), transparent var(--progress, 0%), transparent 100%);
             -webkit-mask: radial-gradient(transparent 86px, black 87px);
             mask: radial-gradient(transparent 86px, black 87px);
             transition: background 0.3s ease;
-        }
-
-        /* Золотая секция (Топ Дроп) - всегда в конце (от 342 до 360 градусов) */
-        .top-drop-ring {
-            position: absolute; width: 100%; height: 100%; border-radius: 50%; z-index: 2;
-            background: conic-gradient(from 180deg, transparent 0%, transparent 95%, #ffd700 95%, #ffd700 100%);
-            -webkit-mask: radial-gradient(transparent 86px, black 87px);
-            mask: radial-gradient(transparent 86px, black 87px);
-            filter: drop-shadow(0 0 5px #ffd700);
         }
 
         /* Центр */
@@ -55,41 +51,31 @@
             overflow: hidden; border: 1px solid #222;
         }
         
-        /* Топ дроп приз */
-        .top-drop-prize {
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            width: 100%; height: 100%; background: radial-gradient(circle, #3a2e00 0%, #000 80%);
-        }
-        .top-drop-prize.active { display: flex; }
-        .crown-img { width: 60px; height: 60px; margin-bottom: 5px; filter: drop-shadow(0 0 10px #ffd700); animation: float 2s infinite ease-in-out; }
-        
-        .percent-num { font-size: 32px; font-weight: 800; color: #fff; transition: opacity 0.3s; }
-        .percent-lbl { font-size: 11px; color: #ff4444; margin-top: 2px; font-weight: 700; letter-spacing: 1px; transition: opacity 0.3s; }
-
-        /* Анимация результата */
+        /* Экран результата (Внутри колеса) */
         .result-container { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; 
+            opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; text-align: center;
         }
         .result-container.show { opacity: 1; }
         
         .result-icon { width: 40px; height: 40px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; }
-        .result-container.show .result-icon { animation: draw 0.6s ease forwards; }
+        .result-container.show .result-icon { animation: draw 0.5s cubic-bezier(0.1, 0.7, 0.1, 1) forwards; }
         
-        .result-text { font-size: 13px; font-weight: 800; text-align: center; padding: 0 10px; line-height: 1.2; }
-        .result-text.win { color: #4cd964; text-shadow: 0 0 10px rgba(76,217,100,0.5); }
-        .result-text.top { color: #ffd700; text-shadow: 0 0 15px rgba(255,215,0,0.8); font-size: 14px; }
-        .result-text.lose { color: #ff4444; font-size: 15px; text-shadow: 0 0 10px rgba(255,68,68,0.5); }
+        .result-text { font-size: 12px; font-weight: 800; line-height: 1.1; padding: 0 10px; }
+        .result-text.win { color: #4cd964; }
+        .result-text.top { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.8); font-size: 14px; }
+        .result-text.lose { color: #ff4444; font-size: 14px; }
         
-        .result-gift-info { text-align: center; margin-top: 5px; }
-        .result-gift-name { font-size: 11px; font-weight: 700; color: #fff; }
+        .result-gift-name { font-size: 10px; font-weight: 700; color: #fff; margin-top: 4px; }
         
         @keyframes draw { to { stroke-dashoffset: 0; } }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+
+        .percent-num { font-size: 32px; font-weight: 800; color: #fff; transition: opacity 0.3s; }
+        .percent-lbl { font-size: 11px; color: #ff4444; margin-top: 2px; font-weight: 700; letter-spacing: 1px; transition: opacity 0.3s; }
 
         /* Стрелка */
-        .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); }
+        .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 2.5s cubic-bezier(0.1, 0.7, 0.1, 1); }
         .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 1)); }
 
         /* Карточки */
@@ -113,20 +99,22 @@
         /* Управление */
         .controls { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
         .action-row { display: flex; gap: 8px; }
-        .btn-icon { width: 45px; height: 45px; background: #111116; border: 1px solid #22222a; border-radius: 12px; display: flex; justify-content: center; align-items: center; }
+        .btn-icon { width: 45px; height: 45px; background: #111116; border: 1px solid #22222a; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
         .btn-icon svg { width: 20px; height: 20px; stroke: #888; fill: none; stroke-width: 2; }
         .btn-boost { flex-grow: 1; background: #ffd700; color: #000; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
         .btn-boost:active { transform: scale(0.98); }
         .btn-boost:disabled { background: #1a1a24; color: #444; }
         
-        .chances-grid { display: flex; justify-content: center; gap: 6px; }
-        .chance-btn { flex: 1; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; transition: 0.2s; }
-        .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
+        /* Слайдер шансов */
+        .settings-panel { background: #111116; border: 1px solid #22222a; border-radius: 12px; padding: 15px; margin-top: 5px; display: none; }
+        .settings-panel.active { display: block; }
+        .settings-panel label { font-size: 12px; color: #888; display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .settings-panel input[type=range] { width: 100%; accent-color: #ffd700; }
 
         /* Табы и Инвентарь */
         .tabs-container { padding: 0 20px 20px; }
         .tabs { display: flex; background: #0a0a0f; border-radius: 14px; padding: 5px; border: 1px solid #1a1a25; }
-        .tab { flex: 1; text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #555; border-radius: 10px; transition: 0.2s; }
+        .tab { flex: 1; text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #555; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         .tab.active { background: #1c1c28; color: #fff; border: 1px solid #2a2a35; }
 
         .list-container { padding: 0 20px 30px; }
@@ -137,45 +125,35 @@
         .grid-item .gift-price { top: 6px; right: 6px; font-size: 10px; padding: 2px 6px; }
         .grid-item .gift-img { width: 50px; height: 50px; margin: 15px 0 5px; }
         .grid-item .gift-name { font-size: 12px; font-weight: 600; }
-        .btn-upgrade { background: #ffd700; color: #000; border: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; width: 100%; }
-        .btn-select { background: #4cd964; color: #000; border: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; width: 100%; }
+        .btn-upgrade { background: #ffd700; color: #000; border: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; width: 100%; cursor: pointer;}
 
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="header">
         <div class="balance-pill"><span>⭐</span> <span id="balanceDisplay">800.00</span></div>
-        <button class="btn-topup" onclick="alert('Пополнение временно недоступно')">+ Пополнить</button>
+        <button class="btn-topup" onclick="showToast('Пополнение временно недоступно')">+ Пополнить</button>
     </div>
 
     <div class="wheel-zone">
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
             
-            <!-- Полоса шанса -->
+            <!-- Тонкая полоса шанса -->
             <div class="progress-ring" id="progressRing"></div>
-            <!-- Золотая секция (Топ Дроп) -->
-            <div class="top-drop-ring"></div>
             
             <div class="wheel-inner">
-                <!-- Обычный текст (шанс) -->
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
                     <div class="percent-num" id="chanceDisplay">10.00%</div>
                     <div class="percent-lbl" id="chanceLabel">ШАНС</div>
                 </div>
 
-                <!-- Экран Топ Дропа (Корона) -->
-                <div class="top-drop-prize" id="topDropContainer">
-                    <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" class="crown-img" alt="Crown">
-                    <div style="color: #ffd700; font-weight: 800; font-size: 12px; text-align: center;">ТОП ДРОП</div>
-                </div>
-
                 <!-- Результат -->
-                <div class="result-container" id="resultContainer">
-                    <!-- Сюда вставляется HTML результата -->
-                </div>
+                <div class="result-container" id="resultContainer"></div>
             </div>
             
             <div class="arrow-container" id="arrowContainer">
@@ -204,16 +182,17 @@
 
     <div class="controls">
         <div class="action-row">
-            <div class="btn-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+            <div class="btn-icon" onclick="toggleSettings()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+            
             <button class="btn-boost" id="spinBtn" onclick="spin()">Забустить</button>
-            <div class="btn-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+            
+            <div class="btn-icon" onclick="showToast('Настройки профиля')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
         </div>
         
-        <div class="chances-grid" id="chancesGrid">
-            <div class="chance-btn" onclick="setChance(50, this)">x2</div>
-            <div class="chance-btn" onclick="setChance(25, this)">x4</div>
-            <div class="chance-btn active" onclick="setChance(10, this)">x10</div>
-            <div class="chance-btn" onclick="setChance(5, this)">x20</div>
+        <!-- Скрытая панель настроек шанса -->
+        <div class="settings-panel" id="settingsPanel">
+            <label><span>Настройка шанса</span> <span id="sliderVal">10%</span></label>
+            <input type="range" id="chanceSlider" min="1" max="90" value="10" oninput="updateChanceFromSlider(this.value)">
         </div>
     </div>
 
@@ -224,14 +203,10 @@
         </div>
     </div>
 
-    <!-- Инвентарь -->
     <div class="list-container" id="inv-section">
-        <div class="grid-list" id="inv-list">
-            <!-- Заполняется через JS -->
-        </div>
+        <div class="grid-list" id="inv-list"></div>
     </div>
 
-    <!-- Желаемые (для апгрейда) -->
     <div class="list-container hidden" id="wish-section">
         <div class="grid-list" id="wish-list">
             <div class="grid-item" onclick="selectWishItem(this, 1000, 'Redo', 'https://cdn-icons-png.flaticon.com/512/4213/4213230.png')">
@@ -250,9 +225,22 @@
     </div>
 
     <script>
-        // Убираем зависимость от Telegram WebApp
-        // Используем обычный вибро-отклик
+        // --- Утилиты ---
+        function showToast(msg) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = msg;
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
+        // --- Состояние ---
         let balance = 800.00;
         let baseChance = 10; 
         let rotation = 0;
@@ -262,19 +250,17 @@
         let currentBetName = 'Westside Ring';
         let currentBetImg = 'https://cdn-icons-png.flaticon.com/512/10691/10691802.png';
 
-        // Пити-система
         let spinsSinceTopDrop = 0;
         const PITY_LIMIT = 10;
 
-        // Апгрейд
         let upgradeItem = null; 
         let wishItem = null; 
 
-        // Инвентарь
         let inventory = [
             { id: '#136', name: 'Westside Ring', price: 100, img: 'https://cdn-icons-png.flaticon.com/512/10691/10691802.png' }
         ];
 
+        // --- UI ---
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = baseChance.toFixed(2) + "%";
@@ -322,39 +308,49 @@
             betAmount = price;
             currentBetName = name;
             currentBetImg = imgUrl;
-            upgradeItem = null; // Сбрасываем апгрейд, если играем на баланс
+            upgradeItem = null; 
         }
 
-        function setChance(val, el) {
-            if (isSpinning) return;
-            baseChance = val;
-            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
+        // --- Настройки шанса ---
+        function toggleSettings() {
+            if (upgradeItem) {
+                showToast("Нельзя менять шанс во время апгрейда!");
+                return;
+            }
+            const panel = document.getElementById('settingsPanel');
+            panel.classList.toggle('active');
+        }
+
+        function updateChanceFromSlider(val) {
+            baseChance = Number(val);
+            document.getElementById('sliderVal').innerText = val + '%';
             updateUI();
         }
 
+        // --- Апгрейд ---
         function startUpgrade(index) {
             upgradeItem = inventory[index];
             if (!wishItem) {
-                alert("Сначала выберите желаемый предмет во вкладке 'Желаемые'!");
+                showToast("Сначала выберите желаемый предмет!");
                 return;
             }
             
-            // Считаем шанс
             let newChance = (upgradeItem.price / wishItem.price) * 100;
             if (newChance > 90) newChance = 90;
             if (newChance < 1) newChance = 1;
             
             baseChance = Number(newChance.toFixed(2));
             
-            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('settingsPanel').classList.remove('active');
+            document.getElementById('chanceSlider').value = baseChance;
+            document.getElementById('sliderVal').innerText = baseChance + '%';
             
             betAmount = upgradeItem.price;
             currentBetName = upgradeItem.name;
             currentBetImg = upgradeItem.img;
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            alert(`Апгрейд: ${upgradeItem.name} -> ${wishItem.name}\nШанс: ${baseChance}%`);
+            showToast(`Апгрейд: ${upgradeItem.name} -> ${wishItem.name}\nШанс: ${baseChance}%`);
             updateUI();
         }
 
@@ -363,13 +359,14 @@
             el.classList.add('selected');
             
             wishItem = { price, name, img: imgUrl };
-            alert(`Выбран желаемый: ${name}`);
+            showToast(`Выбран желаемый: ${name}`);
         }
 
+        // --- Крутка ---
         function spin() {
             if (isSpinning) return;
             if (balance < betAmount && !upgradeItem) {
-                alert("Недостаточно средств!");
+                showToast("Недостаточно средств!");
                 return;
             }
 
@@ -377,12 +374,10 @@
             const btn = document.getElementById('spinBtn');
             const arrow = document.getElementById('arrowContainer');
             const percentContainer = document.getElementById('percentContainer');
-            const topDropContainer = document.getElementById('topDropContainer');
             const resultContainer = document.getElementById('resultContainer');
             
             resultContainer.classList.remove('show');
             percentContainer.style.opacity = '1';
-            topDropContainer.classList.remove('active');
             
             btn.innerText = "Крутим...";
             btn.disabled = true;
@@ -392,17 +387,16 @@
                 updateUI();
             }
 
-            // --- ЛОГИКА ---
+            // Логика
             let isWin = false;
             let isTopDrop = false;
 
-            // Гарант на 10-й прокрут
             if (spinsSinceTopDrop >= PITY_LIMIT) {
                 isTopDrop = true;
                 spinsSinceTopDrop = 0;
             } else {
                 let roll = Math.random() * 100;
-                if (roll < 5) { 
+                if (roll < 2) { // Шанс на топ-дроп 2% (редко)
                     isTopDrop = true;
                     spinsSinceTopDrop = 0;
                 } else {
@@ -411,56 +405,47 @@
                 }
             }
 
-            // --- УГЛЫ ---
             let targetDeg = 0;
             
+            // Углы
             if (isTopDrop) {
-                targetDeg = 342 + Math.random() * 18; // В золотой сектор
+                // Топ дроп всегда попадает на верхнюю часть (180 градусов)
+                targetDeg = 180 + (Math.random() * 10 - 5); 
             } else if (isWin) {
                 const startAngle = 180;
                 const endAngle = 180 + (baseChance / 100) * 360;
                 targetDeg = startAngle + Math.random() * (endAngle - startAngle);
-                if (targetDeg > 342) targetDeg = 300; 
             } else {
                 do {
                     targetDeg = Math.random() * 360;
-                } while (
-                    (targetDeg > 180 && targetDeg < 180 + (baseChance / 100) * 360) || 
-                    (targetDeg > 342)
-                );
+                } while (targetDeg > 180 && targetDeg < 180 + (baseChance / 100) * 360);
             }
 
             let currentMod = rotation % 360;
             let diff = targetDeg - currentMod;
             if (diff < 0) diff += 360;
 
-            rotation += (5 * 360) + diff;
+            // Ускоренная анимация (3 оборота вместо 5, время 2.5с)
+            rotation += (3 * 360) + diff;
             arrow.style.transform = `rotate(${rotation}deg)`;
 
-            // --- ФИНАЛ ---
+            // Финал
             setTimeout(() => {
                 arrow.style.transition = 'none';
                 rotation = rotation % 360;
                 arrow.style.transform = `rotate(${rotation}deg)`;
-                setTimeout(() => { arrow.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)'; }, 50);
+                setTimeout(() => { arrow.style.transition = 'transform 2.5s cubic-bezier(0.1, 0.7, 0.1, 1)'; }, 50);
 
-                if (isTopDrop) {
-                    topDropContainer.classList.add('active');
-                    percentContainer.style.opacity = '0';
-                    // ВИБРАЦИЯ ДЛЯ БРАУЗЕРА
-                    if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
-                } else {
-                    percentContainer.style.opacity = '0';
-                }
+                percentContainer.style.opacity = '0';
 
-                // --- РЕЗУЛЬТАТ ---
+                // Вибрация при топ-дропе
+                if (isTopDrop && navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
+
                 if (isTopDrop) {
                     resultContainer.innerHTML = `
-                        <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" style="width: 50px; height: 50px; margin-bottom: 5px; filter: drop-shadow(0 0 10px #ffd700);">
-                        <div class="result-text top">ТОП ДРОП!</div>
-                        <div class="result-gift-info">
-                            <div class="result-gift-name" style="color:#ffd700">${currentBetName}</div>
-                        </div>
+                        <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" style="width: 45px; height: 45px; margin-bottom: 5px; filter: drop-shadow(0 0 10px #ffd700);">
+                        <div class="result-text top">ТОП ДРОП</div>
+                        <div class="result-gift-name">${currentBetName}</div>
                     `;
                     let prizePrice = betAmount * 10;
                     inventory.push({ id: '#TOP', name: 'TOP ' + currentBetName, price: prizePrice, img: currentBetImg });
@@ -469,15 +454,13 @@
                         inventory = inventory.filter(item => item !== upgradeItem);
                         upgradeItem = null;
                     }
-                    alert(`👑 ТОП ДРОП!\nВы выиграли ${currentBetName}!\nСтоимость: ${prizePrice} ⭐`);
+                    showToast(`👑 ТОП ДРОП!\nВы выиграли ${currentBetName}`);
                     
                 } else if (isWin) {
                     resultContainer.innerHTML = `
                         <svg class="result-icon" style="color: #4cd964; stroke-dashoffset: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         <div class="result-text win">Поздравляю!</div>
-                        <div class="result-gift-info">
-                            <div class="result-gift-name">${currentBetName}</div>
-                        </div>
+                        <div class="result-gift-name">${currentBetName}</div>
                     `;
                     let winAmount = Math.floor(betAmount * (100 / baseChance));
                     balance += winAmount;
@@ -511,12 +494,11 @@
                     isSpinning = false;
                     btn.disabled = false;
                     btn.innerText = "Забустить";
-                }, 3000);
+                }, 2000);
 
-            }, 4100);
+            }, 2600);
         }
 
-        // Запуск
         updateUI();
     </script>
 </body>

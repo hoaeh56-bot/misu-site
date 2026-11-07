@@ -44,7 +44,8 @@
             width: 100%;
             height: 100%;
             z-index: 2;
-            transform: rotate(180deg); /* Поворачиваем, чтобы старт был с 6 часов (где стрелка) */
+            /* Поворот на -90 градусов, чтобы старт был снизу (в SVG 0 градусов - это справа) */
+            transform: rotate(-90deg); 
         }
 
         .progress-circle {
@@ -52,7 +53,7 @@
             stroke: #ff8c00;
             stroke-width: 16px;
             stroke-linecap: butt;
-            transition: stroke-dasharray 0.3s ease;
+            transition: stroke-dashoffset 0.3s ease;
         }
 
         .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
@@ -187,7 +188,6 @@
             <!-- ОРАНЖЕВАЯ ПОЛОСА (SVG) -->
             <div class="progress-svg-container">
                 <svg width="100%" height="100%" viewBox="0 0 260 260">
-                    <!-- Окружность радиусом 114 (чтобы учесть толщину бордера) -->
                     <circle class="progress-circle" id="progressCircle" cx="130" cy="130" r="114"></circle>
                 </svg>
             </div>
@@ -307,7 +307,7 @@
         const radius = circle.r.baseVal.value;
         const circumference = 2 * Math.PI * radius;
 
-        // Инициализация окружности
+        // Убираем стандартное смещение
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
         circle.style.strokeDashoffset = circumference;
 
@@ -315,10 +315,11 @@
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
-            // Визуальный прогресс (если 1%, рисуем 2% чтобы было видно)
+            // Визуальный прогресс
             let visualProgress = chance < 2 ? 2 : chance; 
             
-            // Вычисляем длину дуги (offset)
+            // Вычисляем длину закрашенной части
+            // Мы отнимаем от общей длины долю прогресса
             const offset = circumference - (visualProgress / 100) * circumference;
             circle.style.strokeDashoffset = offset;
             

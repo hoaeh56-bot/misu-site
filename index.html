@@ -37,28 +37,21 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        /* ОРАНЖЕВАЯ ПОЛОСА (SVG) */
-        .progress-wrapper {
+        /* ОРАНЖЕВАЯ ПОЛОСА (SVG, без rotate) */
+        .progress-svg {
             position: absolute;
             width: 100%;
             height: 100%;
-            border-radius: 50%;
             z-index: 1;
-            /* Поворачиваем на 90 градусов, чтобы старт был внизу (6 часов) */
-            transform: rotate(90deg);
         }
-
-        .progress-svg {
-            width: 100%;
-            height: 100%;
-        }
-
+        
         .progress-circle {
             fill: none;
             stroke: #ff8c00;
             stroke-width: 16;
             stroke-linecap: round;
-            stroke-dasharray: 0 1000; /* Задается через JS */
+            /* Начинаем с 6 часов (снизу) и идем по часовой */
+            stroke-dasharray: 0 1000;
             transition: stroke-dasharray 0.3s ease;
         }
 
@@ -190,11 +183,9 @@
             <div class="wheel-bg"></div>
             
             <!-- ОРАНЖЕВАЯ ПОЛОСА (SVG) -->
-            <div class="progress-wrapper">
-                <svg class="progress-svg" viewBox="0 0 260 260">
-                    <circle class="progress-circle" id="progressCircle" cx="130" cy="130" r="122" />
-                </svg>
-            </div>
+            <svg class="progress-svg" viewBox="0 0 260 260">
+                <circle class="progress-circle" id="progressCircle" cx="130" cy="130" r="122" />
+            </svg>
             
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">

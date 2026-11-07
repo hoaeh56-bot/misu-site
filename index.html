@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gift Boost - New</title>
+    <title>Gift Boost - Top Drop</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -24,36 +24,49 @@
         .wheel-zone { display: flex; justify-content: center; padding: 20px 0 30px; }
         .wheel-outer { position: relative; width: 260px; height: 260px; }
         
-        /* Темный фон колеса */
         .wheel-bg { 
             position: absolute; width: 100%; height: 100%; border-radius: 50%; 
             background: #111116; box-shadow: inset 0 0 20px rgba(0,0,0,1); z-index: 1;
         }
         
-        /* Тонкая полоса (начинается снизу) */
+        /* Тонкая полоса шанса */
         .progress-ring {
             position: absolute; width: 100%; height: 100%; border-radius: 50%; z-index: 2;
-            /* from 180deg - старт снизу. var(--progress) - сколько закрасить */
             background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 0%), transparent var(--progress, 0%), transparent 100%);
-            /* Маска делает из круга тонкое кольцо (8px) */
             -webkit-mask: radial-gradient(transparent 86px, black 87px);
             mask: radial-gradient(transparent 86px, black 87px);
             transition: background 0.3s ease;
-            filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.6));
         }
 
-        /* Центр колеса */
+        /* Золотая секция (Топ Дроп) - всегда в конце (от 342 до 360 градусов) */
+        .top-drop-ring {
+            position: absolute; width: 100%; height: 100%; border-radius: 50%; z-index: 2;
+            background: conic-gradient(from 180deg, transparent 0%, transparent 95%, #ffd700 95%, #ffd700 100%);
+            -webkit-mask: radial-gradient(transparent 86px, black 87px);
+            mask: radial-gradient(transparent 86px, black 87px);
+            filter: drop-shadow(0 0 5px #ffd700);
+        }
+
+        /* Центр */
         .wheel-inner { 
             position: absolute; width: 172px; height: 172px; border-radius: 50%; 
             background: #000; top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            overflow: hidden; border: 1px solid #222;
         }
+        
+        /* Топ дроп приз */
+        .top-drop-prize {
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            width: 100%; height: 100%; background: radial-gradient(circle, #3a2e00 0%, #000 80%);
+        }
+        .top-drop-prize.active { display: flex; }
+        .crown-img { width: 60px; height: 60px; margin-bottom: 5px; filter: drop-shadow(0 0 10px #ffd700); animation: float 2s infinite ease-in-out; }
         
         .percent-num { font-size: 32px; font-weight: 800; color: #fff; transition: opacity 0.3s; }
         .percent-lbl { font-size: 11px; color: #ff4444; margin-top: 2px; font-weight: 700; letter-spacing: 1px; transition: opacity 0.3s; }
 
-        /* Анимация результата (всплывает поверх цифр) */
+        /* Анимация результата */
         .result-container { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -66,12 +79,14 @@
         
         .result-text { font-size: 13px; font-weight: 800; text-align: center; padding: 0 10px; line-height: 1.2; }
         .result-text.win { color: #4cd964; text-shadow: 0 0 10px rgba(76,217,100,0.5); }
+        .result-text.top { color: #ffd700; text-shadow: 0 0 15px rgba(255,215,0,0.8); font-size: 14px; }
         .result-text.lose { color: #ff4444; font-size: 15px; text-shadow: 0 0 10px rgba(255,68,68,0.5); }
         
         .result-gift-info { text-align: center; margin-top: 5px; }
-        .result-gift-name { font-size: 11px; font-weight: 700; color: #ffd700; }
+        .result-gift-name { font-size: 11px; font-weight: 700; color: #fff; }
         
         @keyframes draw { to { stroke-dashoffset: 0; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
 
         /* Стрелка */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); }
@@ -107,8 +122,6 @@
         .chances-grid { display: flex; justify-content: center; gap: 6px; }
         .chance-btn { flex: 1; background: #111116; border: 1px solid #22222a; color: #666; padding: 10px 0; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; transition: 0.2s; }
         .chance-btn.active { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
-        .chance-btn.red.active { border-color: #ff4444; color: #ff4444; }
-        .chance-btn.green.active { border-color: #44ff44; color: #44ff44; }
 
         /* Табы и Инвентарь */
         .tabs-container { padding: 0 20px 20px; }
@@ -120,10 +133,12 @@
         .grid-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .grid-item { background: #111116; border: 1px solid #22222a; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; position: relative; }
         .grid-item.westside { background: linear-gradient(180deg, #1a2a5a 0%, #0a1030 100%); }
+        .grid-item.selected { border-color: #4cd964; box-shadow: 0 0 10px rgba(76,217,100,0.3); }
         .grid-item .gift-price { top: 6px; right: 6px; font-size: 10px; padding: 2px 6px; }
         .grid-item .gift-img { width: 50px; height: 50px; margin: 15px 0 5px; }
         .grid-item .gift-name { font-size: 12px; font-weight: 600; }
         .btn-upgrade { background: #ffd700; color: #000; border: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; width: 100%; }
+        .btn-select { background: #4cd964; color: #000; border: none; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-top: 8px; width: 100%; }
 
         .hidden { display: none !important; }
     </style>
@@ -132,29 +147,34 @@
 
     <div class="header">
         <div class="balance-pill"><span>⭐</span> <span id="balanceDisplay">800.00</span></div>
-        <button class="btn-topup" onclick="tg.showAlert('Пополнение')">+ Пополнить</button>
+        <button class="btn-topup" onclick="alert('Пополнение временно недоступно')">+ Пополнить</button>
     </div>
 
     <div class="wheel-zone">
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
             
-            <!-- Наша новая тонкая полоса -->
+            <!-- Полоса шанса -->
             <div class="progress-ring" id="progressRing"></div>
+            <!-- Золотая секция (Топ Дроп) -->
+            <div class="top-drop-ring"></div>
             
             <div class="wheel-inner">
+                <!-- Обычный текст (шанс) -->
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
                     <div class="percent-num" id="chanceDisplay">10.00%</div>
-                    <div class="percent-lbl" id="chanceLabel">ВЫСОКИЙ РИСК</div>
+                    <div class="percent-lbl" id="chanceLabel">ШАНС</div>
                 </div>
 
+                <!-- Экран Топ Дропа (Корона) -->
+                <div class="top-drop-prize" id="topDropContainer">
+                    <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" class="crown-img" alt="Crown">
+                    <div style="color: #ffd700; font-weight: 800; font-size: 12px; text-align: center;">ТОП ДРОП</div>
+                </div>
+
+                <!-- Результат -->
                 <div class="result-container" id="resultContainer">
-                    <svg class="result-icon" id="resultIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></svg>
-                    <div class="result-text" id="resultText"></div>
-                    <div class="result-gift-info" id="resultGiftInfo">
-                        <div class="result-gift-name" id="resultGiftName"></div>
-                        <div class="result-gift-id" id="resultGiftId"></div>
-                    </div>
+                    <!-- Сюда вставляется HTML результата -->
                 </div>
             </div>
             
@@ -167,14 +187,14 @@
     </div>
 
     <div class="gift-cards">
-        <div class="gift-card westside active" onclick="selectGift(this, 100, 'Westside Ring', '#136')">
+        <div class="gift-card westside active" onclick="selectBetGift(this, 100, 'Westside Ring', '#136', 'https://cdn-icons-png.flaticon.com/512/10691/10691802.png')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper"><img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img"></div>
             <div class="gift-name">Westside Ring</div>
             <div class="gift-sub">#136</div>
         </div>
         
-        <div class="gift-card xmas" onclick="selectGift(this, 3.19, 'Xmas Stocking', '#200912')">
+        <div class="gift-card xmas" onclick="selectBetGift(this, 3.19, 'Xmas Stocking', '#200912', 'https://cdn-icons-png.flaticon.com/512/4213/4213230.png')">
             <div class="gift-price blue">🌍 3.19</div>
             <div class="gift-image-wrapper"><img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img"></div>
             <div class="gift-name">Xmas Stocking</div>
@@ -189,93 +209,98 @@
             <div class="btn-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
         </div>
         
-        <div class="chances-grid">
+        <div class="chances-grid" id="chancesGrid">
             <div class="chance-btn" onclick="setChance(50, this)">x2</div>
             <div class="chance-btn" onclick="setChance(25, this)">x4</div>
-            <div class="chance-btn active red" onclick="setChance(10, this)">x10</div>
+            <div class="chance-btn active" onclick="setChance(10, this)">x10</div>
             <div class="chance-btn" onclick="setChance(5, this)">x20</div>
-            <div class="chance-btn green" onclick="setChance(75, this)">75%</div>
         </div>
     </div>
 
     <div class="tabs-container">
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('inv', this)">Мои предметы</div>
+            <div class="tab active" onclick="switchTab('inv', this)">Инвентарь</div>
             <div class="tab" onclick="switchTab('wish', this)">Желаемые</div>
         </div>
     </div>
 
+    <!-- Инвентарь -->
     <div class="list-container" id="inv-section">
         <div class="grid-list" id="inv-list">
-            <div class="grid-item westside">
-                <div class="gift-price">⭐ 100</div>
-                <img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img">
-                <div class="gift-name">Westside Ring</div>
-                <div class="gift-sub">#136</div>
-            </div>
+            <!-- Заполняется через JS -->
         </div>
     </div>
 
+    <!-- Желаемые (для апгрейда) -->
     <div class="list-container hidden" id="wish-section">
-        <div class="grid-list">
-            <div class="grid-item">
-                <div class="gift-price">⭐ 100,000</div>
+        <div class="grid-list" id="wish-list">
+            <div class="grid-item" onclick="selectWishItem(this, 1000, 'Redo', 'https://cdn-icons-png.flaticon.com/512/4213/4213230.png')">
+                <div class="gift-price">⭐ 1000</div>
                 <img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img">
                 <div class="gift-name">Redo</div>
                 <div class="gift-sub">#99999</div>
             </div>
+            <div class="grid-item" onclick="selectWishItem(this, 5000, 'Epic Crown', 'https://cdn-icons-png.flaticon.com/512/284/284409.png')">
+                <div class="gift-price">⭐ 5000</div>
+                <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" class="gift-img">
+                <div class="gift-name">Epic Crown</div>
+                <div class="gift-sub">#777</div>
+            </div>
         </div>
     </div>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        let tg = window.Telegram?.WebApp;
-        if (tg) { tg.expand(); tg.setHeaderColor('#000000'); }
+        // Убираем зависимость от Telegram WebApp
+        // Используем обычный вибро-отклик
 
         let balance = 800.00;
-        let chance = 10;
+        let baseChance = 10; 
         let rotation = 0;
         let isSpinning = false;
+        
         let betAmount = 100;
-        let currentGiftName = 'Westside Ring';
-        let currentGiftId = '#136';
+        let currentBetName = 'Westside Ring';
+        let currentBetImg = 'https://cdn-icons-png.flaticon.com/512/10691/10691802.png';
+
+        // Пити-система
+        let spinsSinceTopDrop = 0;
+        const PITY_LIMIT = 10;
+
+        // Апгрейд
+        let upgradeItem = null; 
+        let wishItem = null; 
+
+        // Инвентарь
+        let inventory = [
+            { id: '#136', name: 'Westside Ring', price: 100, img: 'https://cdn-icons-png.flaticon.com/512/10691/10691802.png' }
+        ];
 
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
-            document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
+            document.getElementById('chanceDisplay').innerText = baseChance.toFixed(2) + "%";
             
-            // Устанавливаем переменную для CSS (минимум 2%, чтобы было видно)
-            let visualProgress = chance < 2 ? 2 : chance; 
+            let visualProgress = baseChance < 2 ? 2 : baseChance; 
             document.getElementById('progressRing').style.setProperty('--progress', visualProgress + '%');
             
-            let label = document.getElementById('chanceLabel');
-            if (chance >= 50) {
-                label.innerText = 'ВЫСОКИЙ ШАНС';
-                label.style.color = '#44ff44';
-            } else if (chance <= 10) {
-                label.innerText = 'ВЫСОКИЙ РИСК';
-                label.style.color = '#ff4444';
-            } else {
-                label.innerText = 'СРЕДНИЙ ШАНС';
-                label.style.color = '#666';
-            }
+            renderInventory();
         }
 
-        function setChance(val, el) {
-            if (isSpinning) return;
-            chance = val;
-            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            updateUI();
-        }
-
-        function selectGift(el, price, name, id) {
-            if (isSpinning) return;
-            document.querySelectorAll('.gift-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            betAmount = price;
-            currentGiftName = name;
-            currentGiftId = id;
+        function renderInventory() {
+            const list = document.getElementById('inv-list');
+            list.innerHTML = '';
+            
+            inventory.forEach((item, index) => {
+                const el = document.createElement('div');
+                el.className = 'grid-item westside';
+                el.innerHTML = `
+                    <div class="gift-price">⭐ ${item.price}</div>
+                    <img src="${item.img}" class="gift-img">
+                    <div class="gift-name">${item.name}</div>
+                    <div class="gift-sub">${item.id}</div>
+                    <button class="btn-upgrade" onclick="startUpgrade(${index})">Апгрейд</button>
+                `;
+                list.appendChild(el);
+            });
         }
 
         function switchTab(tab, el) {
@@ -290,10 +315,61 @@
             }
         }
 
+        function selectBetGift(el, price, name, id, imgUrl) {
+            if (isSpinning) return;
+            document.querySelectorAll('.gift-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            betAmount = price;
+            currentBetName = name;
+            currentBetImg = imgUrl;
+            upgradeItem = null; // Сбрасываем апгрейд, если играем на баланс
+        }
+
+        function setChance(val, el) {
+            if (isSpinning) return;
+            baseChance = val;
+            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            updateUI();
+        }
+
+        function startUpgrade(index) {
+            upgradeItem = inventory[index];
+            if (!wishItem) {
+                alert("Сначала выберите желаемый предмет во вкладке 'Желаемые'!");
+                return;
+            }
+            
+            // Считаем шанс
+            let newChance = (upgradeItem.price / wishItem.price) * 100;
+            if (newChance > 90) newChance = 90;
+            if (newChance < 1) newChance = 1;
+            
+            baseChance = Number(newChance.toFixed(2));
+            
+            document.querySelectorAll('.chance-btn').forEach(b => b.classList.remove('active'));
+            
+            betAmount = upgradeItem.price;
+            currentBetName = upgradeItem.name;
+            currentBetImg = upgradeItem.img;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            alert(`Апгрейд: ${upgradeItem.name} -> ${wishItem.name}\nШанс: ${baseChance}%`);
+            updateUI();
+        }
+
+        function selectWishItem(el, price, name, imgUrl) {
+            document.querySelectorAll('#wish-list .grid-item').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            
+            wishItem = { price, name, img: imgUrl };
+            alert(`Выбран желаемый: ${name}`);
+        }
+
         function spin() {
             if (isSpinning) return;
-            if (balance < betAmount) {
-                if (tg) tg.showAlert("Недостаточно средств!");
+            if (balance < betAmount && !upgradeItem) {
+                alert("Недостаточно средств!");
                 return;
             }
 
@@ -301,34 +377,57 @@
             const btn = document.getElementById('spinBtn');
             const arrow = document.getElementById('arrowContainer');
             const percentContainer = document.getElementById('percentContainer');
+            const topDropContainer = document.getElementById('topDropContainer');
             const resultContainer = document.getElementById('resultContainer');
-            const resultIcon = document.getElementById('resultIcon');
-            const resultText = document.getElementById('resultText');
-            const resultGiftInfo = document.getElementById('resultGiftInfo');
-            const resultGiftName = document.getElementById('resultGiftName');
-            const resultGiftId = document.getElementById('resultGiftId');
-
+            
             resultContainer.classList.remove('show');
             percentContainer.style.opacity = '1';
+            topDropContainer.classList.remove('active');
+            
             btn.innerText = "Крутим...";
             btn.disabled = true;
 
-            balance -= betAmount;
-            updateUI();
+            if (!upgradeItem) {
+                balance -= betAmount;
+                updateUI();
+            }
 
-            let isWin = (Math.random() * 100) <= chance;
+            // --- ЛОГИКА ---
+            let isWin = false;
+            let isTopDrop = false;
+
+            // Гарант на 10-й прокрут
+            if (spinsSinceTopDrop >= PITY_LIMIT) {
+                isTopDrop = true;
+                spinsSinceTopDrop = 0;
+            } else {
+                let roll = Math.random() * 100;
+                if (roll < 5) { 
+                    isTopDrop = true;
+                    spinsSinceTopDrop = 0;
+                } else {
+                    isWin = roll <= baseChance;
+                    spinsSinceTopDrop++;
+                }
+            }
+
+            // --- УГЛЫ ---
             let targetDeg = 0;
             
-            if (isWin) {
+            if (isTopDrop) {
+                targetDeg = 342 + Math.random() * 18; // В золотой сектор
+            } else if (isWin) {
                 const startAngle = 180;
-                const endAngle = 180 + (chance / 100) * 360;
-                targetDeg = Math.floor(Math.random() * (endAngle - startAngle) + startAngle);
+                const endAngle = 180 + (baseChance / 100) * 360;
+                targetDeg = startAngle + Math.random() * (endAngle - startAngle);
+                if (targetDeg > 342) targetDeg = 300; 
             } else {
-                const startAngle = 180;
-                const endAngle = 180 + (chance / 100) * 360;
                 do {
-                    targetDeg = Math.floor(Math.random() * 360);
-                } while (targetDeg > startAngle && targetDeg < endAngle);
+                    targetDeg = Math.random() * 360;
+                } while (
+                    (targetDeg > 180 && targetDeg < 180 + (baseChance / 100) * 360) || 
+                    (targetDeg > 342)
+                );
             }
 
             let currentMod = rotation % 360;
@@ -338,34 +437,69 @@
             rotation += (5 * 360) + diff;
             arrow.style.transform = `rotate(${rotation}deg)`;
 
+            // --- ФИНАЛ ---
             setTimeout(() => {
                 arrow.style.transition = 'none';
                 rotation = rotation % 360;
                 arrow.style.transform = `rotate(${rotation}deg)`;
-                
-                setTimeout(() => { 
-                    arrow.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)'; 
-                }, 50);
+                setTimeout(() => { arrow.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)'; }, 50);
 
-                percentContainer.style.opacity = '0';
-
-                if (isWin) {
-                    resultIcon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
-                    resultIcon.style.color = '#4cd964';
-                    resultText.innerText = 'Поздравляю!';
-                    resultText.className = 'result-text win';
-                    resultGiftInfo.style.display = 'block';
-                    resultGiftName.innerText = currentGiftName;
-                    resultGiftId.innerText = currentGiftId;
-                    
-                    let winAmount = Math.floor(betAmount * (100 / chance));
-                    balance += winAmount;
+                if (isTopDrop) {
+                    topDropContainer.classList.add('active');
+                    percentContainer.style.opacity = '0';
+                    // ВИБРАЦИЯ ДЛЯ БРАУЗЕРА
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
                 } else {
-                    resultIcon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
-                    resultIcon.style.color = '#ff4444';
-                    resultText.innerText = 'Неудача';
-                    resultText.className = 'result-text lose';
-                    resultGiftInfo.style.display = 'none';
+                    percentContainer.style.opacity = '0';
+                }
+
+                // --- РЕЗУЛЬТАТ ---
+                if (isTopDrop) {
+                    resultContainer.innerHTML = `
+                        <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" style="width: 50px; height: 50px; margin-bottom: 5px; filter: drop-shadow(0 0 10px #ffd700);">
+                        <div class="result-text top">ТОП ДРОП!</div>
+                        <div class="result-gift-info">
+                            <div class="result-gift-name" style="color:#ffd700">${currentBetName}</div>
+                        </div>
+                    `;
+                    let prizePrice = betAmount * 10;
+                    inventory.push({ id: '#TOP', name: 'TOP ' + currentBetName, price: prizePrice, img: currentBetImg });
+                    
+                    if (upgradeItem) {
+                        inventory = inventory.filter(item => item !== upgradeItem);
+                        upgradeItem = null;
+                    }
+                    alert(`👑 ТОП ДРОП!\nВы выиграли ${currentBetName}!\nСтоимость: ${prizePrice} ⭐`);
+                    
+                } else if (isWin) {
+                    resultContainer.innerHTML = `
+                        <svg class="result-icon" style="color: #4cd964; stroke-dashoffset: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <div class="result-text win">Поздравляю!</div>
+                        <div class="result-gift-info">
+                            <div class="result-gift-name">${currentBetName}</div>
+                        </div>
+                    `;
+                    let winAmount = Math.floor(betAmount * (100 / baseChance));
+                    balance += winAmount;
+                    
+                    if (upgradeItem && wishItem) {
+                        inventory.push({ id: '#UPG', name: wishItem.name, price: wishItem.price, img: wishItem.img });
+                        inventory = inventory.filter(item => item !== upgradeItem);
+                        upgradeItem = null;
+                    } else {
+                        inventory.push({ id: '#WIN', name: currentBetName, price: winAmount, img: currentBetImg });
+                    }
+                    
+                } else {
+                    resultContainer.innerHTML = `
+                        <svg class="result-icon" style="color: #ff4444; stroke-dashoffset: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <div class="result-text lose">Неудача</div>
+                    `;
+                    
+                    if (upgradeItem) {
+                        inventory = inventory.filter(item => item !== upgradeItem);
+                        upgradeItem = null;
+                    }
                 }
 
                 resultContainer.classList.add('show');
@@ -382,6 +516,7 @@
             }, 4100);
         }
 
+        // Запуск
         updateUI();
     </script>
 </body>

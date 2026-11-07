@@ -45,6 +45,7 @@
             z-index: 1;
             border-radius: 50%;
             overflow: hidden;
+            transform: rotate(180deg); /* Поворот, чтобы старт был снизу */
         }
 
         .progress-half {
@@ -88,12 +89,14 @@
         .result-container { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; opacity: 0; transition: opacity 0.3s ease; z-index: 10; pointer-events: none; background: #000; }
         .result-container.show { opacity: 1; }
         
-        .result-icon { width: 40px; height: 40px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.5s ease forwards; }
-        .result-text { font-size: 15px; font-weight: 800; text-align: center; }
-        .result-text.win { color: #4cd964; }
+        .result-icon { width: 40px; height: 40px; margin-bottom: 5px; stroke-dasharray: 100; stroke-dashoffset: 100; }
+        .result-container.show .result-icon { animation: draw 0.5s ease forwards; }
+        
+        .result-text { font-size: 13px; font-weight: 800; text-align: center; padding: 0 10px; }
+        .result-text.win { color: #4cd964; font-size: 14px; }
         .result-text.lose { color: #ff4444; font-size: 14px; }
         
-        .result-gift-info { text-align: center; margin-top: 2px; }
+        .result-gift-info { text-align: center; margin-top: 5px; }
         .result-gift-name { font-size: 11px; font-weight: 600; color: #fff; }
         .result-gift-id { font-size: 8px; color: #888; }
 
@@ -328,16 +331,11 @@
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
-            const progressContainer = document.getElementById('progressContainer');
-            // Поворачиваем контейнер на 180 градусов, чтобы старт был снизу
-            progressContainer.style.transform = 'rotate(180deg)';
-            // Делаем визуальный прогресс, если шанс меньше 2, показываем чуть-чуть
             let visualProgress = chance < 2 ? 2 : chance; 
             
             const leftHalf = document.getElementById('progressLeft');
             const rightHalf = document.getElementById('progressRight');
             
-            // Рассчитываем дугу прогресса (в процентах от 100)
             if (visualProgress <= 50) {
                 rightHalf.style.transform = `scaleX(${visualProgress / 50})`;
                 leftHalf.style.transform = `scaleX(0)`;
@@ -472,7 +470,7 @@
                 if (isWin) {
                     resultIcon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
                     resultIcon.style.color = '#4cd964';
-                    resultText.innerText = 'Удача!';
+                    resultText.innerText = 'Поздравляю, вы выиграли!';
                     resultText.className = 'result-text win';
                     resultGiftInfo.style.display = 'block';
                     resultGiftName.innerText = currentGiftName;
@@ -484,7 +482,7 @@
                     
                     addToInventory(currentGiftName, currentGiftId, currentGiftImg);
 
-                    if (tg) tg.showAlert(`🎉 ВЫИГРАЛ!\n+${winAmount} ⭐`);
+                    if (tg) tg.showAlert(`🎉 Поздравляю, вы выиграли!\n${currentGiftName}\n+${winAmount} ⭐`);
                 } else {
                     resultIcon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
                     resultIcon.style.color = '#ff4444';
@@ -492,7 +490,7 @@
                     resultText.className = 'result-text lose';
                     resultGiftInfo.style.display = 'none';
                     
-                    if (tg) tg.showAlert(`💀 ПРОИГРАЛ!\n-${betAmount} ⭐`);
+                    if (tg) tg.showAlert(`💀 Неудача!\n-${betAmount} ⭐`);
                 }
 
                 resultContainer.classList.add('show');

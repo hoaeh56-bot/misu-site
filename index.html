@@ -37,30 +37,17 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        /* ОРАНЖЕВАЯ ПОЛОСА (Через CSS-маску и поворот) */
-        .progress-wrapper {
+        /* ОРАНЖЕВАЯ ПОЛОСА (conic-gradient) */
+        .wheel-progress {
             position: absolute;
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            z-index: 1;
-            /* Поворачиваем на 90 градусов, чтобы 0 смотрел вниз (6 часов) */
-            transform: rotate(90deg); 
-            /* Фиксируем точку вращения */
-            transform-origin: center center;
-        }
-
-        .progress-circle {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            /* Рисуем круг и обрезаем маской */
-            background: conic-gradient(#ff8c00 var(--deg), transparent var(--deg));
+            /* Начинаем с 180 градусов (6 часов) */
+            background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 25%), #14141e var(--progress, 25%), #14141e 100%);
             -webkit-mask: radial-gradient(transparent 122px, #000 123px);
             mask: radial-gradient(transparent 122px, #000 123px);
+            z-index: 1;
         }
 
         .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
@@ -83,7 +70,7 @@
 
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
-        /* Стрелка (Смотрит вниз) */
+        /* Стрелка */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); transform: rotate(0deg); }
         .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
 
@@ -191,9 +178,7 @@
             <div class="wheel-bg"></div>
             
             <!-- ОРАНЖЕВАЯ ПОЛОСА (conic-gradient) -->
-            <div class="progress-wrapper">
-                <div class="progress-circle" id="progressCircle"></div>
-            </div>
+            <div class="wheel-progress" id="wheelProgress" style="--progress: 25%;"></div>
             
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
@@ -311,11 +296,8 @@
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
             let visualProgress = chance < 5 ? 5 : chance;
-            const progressEl = document.getElementById('progressCircle');
-            
-            // Устанавливаем CSS-переменную для conic-gradient
-            // Так как обертка повернута на 90 градусов, то 0deg смотрит вниз
-            progressEl.style.setProperty('--deg', visualProgress + '%');
+            const progressEl = document.getElementById('wheelProgress');
+            progressEl.style.setProperty('--progress', visualProgress + '%');
             
             if (chance === 1) {
                 document.getElementById('chanceLabel').innerText = 'ВЫСОКИЙ РИСК';

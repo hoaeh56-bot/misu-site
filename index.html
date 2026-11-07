@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gift Boost - Math Fix</title>
+    <title>Gift Boost - Final</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -37,7 +38,7 @@
         
         .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: #111116; box-shadow: inset 0 0 20px rgba(0,0,0,1); z-index: 1; }
         
-        /* Оранжевая полоса (начинается с 180deg - это 6 часов) */
+        /* Оранжевая полоса */
         .progress-ring {
             position: absolute; width: 100%; height: 100%; border-radius: 50%; z-index: 2;
             background: conic-gradient(from 180deg, #ff8c00 0%, #ff8c00 var(--progress, 0%), transparent var(--progress, 0%), transparent 100%);
@@ -74,8 +75,8 @@
         .percent-num { font-size: 32px; font-weight: 800; color: #fff; transition: opacity 0.3s; }
         .percent-lbl { font-size: 11px; color: #ff4444; margin-top: 2px; font-weight: 700; letter-spacing: 1px; transition: opacity 0.3s; }
 
-        /* Стрелка (смотрит вниз, в 6 часов) */
-        .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 2.5s cubic-bezier(0.1, 0.7, 0.1, 1); }
+        /* Стрелка */
+        .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; }
         .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 1)); }
 
         /* Карточки */
@@ -94,17 +95,8 @@
             position: relative; overflow: hidden; border-radius: 8px;
         }
         
-        /* Lottie Контейнер */
-        .lottie-container { 
-            width: 100%; height: 100%; 
-            position: absolute; top: 0; left: 0; 
-            z-index: 2; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .lottie-container svg {
-            width: 100% !important; height: 100% !important;
-            object-fit: contain; transform: scale(0.8);
-        }
+        /* Картинки (GIF/PNG) */
+        .gift-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); }
 
         .gift-name { font-size: 13px; font-weight: 700; text-align: center; }
         .gift-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
@@ -197,19 +189,20 @@
     </div>
 
     <div class="gift-cards">
-        <div class="gift-card westside active" onclick="selectBetGift(this, 100, 'Westside Ring', '#136')">
+        <!-- Используем GIF для руки -->
+        <div class="gift-card westside active" onclick="selectBetGift(this, 100, 'Westside Ring', '#136', 'https://media.tenor.com/2k4y2VqF9sAAAAAj/hand.gif')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <div class="lottie-container" id="lottie-main"></div>
+                <img src="https://media.tenor.com/2k4y2VqF9sAAAAAj/hand.gif" class="gift-img">
             </div>
             <div class="gift-name">Westside Ring</div>
             <div class="gift-sub">#136</div>
         </div>
         
-        <div class="gift-card xmas" onclick="selectBetGift(this, 3.19, 'Xmas Stocking', '#200912')">
+        <div class="gift-card xmas" onclick="selectBetGift(this, 3.19, 'Xmas Stocking', '#200912', 'https://cdn-icons-png.flaticon.com/512/4213/4213230.png')">
             <div class="gift-price blue">🌍 3.19</div>
             <div class="gift-image-wrapper">
-                <div style="width: 100%; height: 100%; background: #3a1a4a; border-radius: 8px;"></div>
+                <img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img">
             </div>
             <div class="gift-name">Xmas Stocking</div>
             <div class="gift-sub">#200912</div>
@@ -251,7 +244,7 @@
             <div class="grid-item" onclick="selectWishItem(this, 1000, 'Redo')">
                 <div class="gift-price">⭐ 1000</div>
                 <div class="gift-image-wrapper">
-                    <div style="width: 100%; height: 100%; background: #2a2a35; border-radius: 8px;"></div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img">
                 </div>
                 <div class="gift-name">Redo</div>
                 <div class="gift-sub">#99999</div>
@@ -259,9 +252,8 @@
             <div class="grid-item" onclick="selectWishItem(this, 15000, 'Liberty Figure')">
                 <div class="gift-price">⭐ 15000</div>
                 <div class="gift-image-wrapper">
-                    <div class="lottie-container" id="lottie-wish-liberty"></div>
-                    <!-- Заглушка для статуи -->
-                    <div id="fallback-liberty" style="width: 100%; height: 100%; background: #ffd700; border-radius: 8px; display: flex; justify-content: center; align-items: center; color: #000; font-weight: bold; font-size: 10px; position: absolute; top:0; left:0; z-index:1;">СТАТУЯ</div>
+                    <!-- Статуя Свободы как GIF/PNG -->
+                    <img src="https://media.tenor.com/9qXm4yVqF9sAAAAAj/statue.gif" class="gift-img">
                 </div>
                 <div class="gift-name">Liberty Figure</div>
                 <div class="gift-sub">#68</div>
@@ -286,14 +278,13 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
     <script>
         function showToast(msg) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.innerText = msg;
-            container.innerHTML = ''; // Очищаем старые
+            container.innerHTML = '';
             container.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 10);
             setTimeout(() => {
@@ -309,30 +300,15 @@
         let isFastSpin = false;
         let betAmount = 100;
         let currentBetName = 'Westside Ring';
+        let currentBetImg = '';
         let spinsSinceTopDrop = 0;
         const PITY_LIMIT = 10;
         let upgradeItem = null; 
         let wishItem = null; 
 
         let inventory = [
-            { id: '#136', name: 'Westside Ring', price: 2500, type: 'lottie' }
+            { id: '#136', name: 'Westside Ring', price: 2500, img: 'https://media.tenor.com/2k4y2VqF9sAAAAAj/hand.gif' }
         ];
-
-        const LOTTIE_WESTSIDE = 'https://files.catbox.moe/6plnk8.json'; 
-        const LOTTIE_LIBERTY = 'https://files.catbox.moe/nfcvgh.json';
-
-        try {
-            if (typeof lottie !== 'undefined') {
-                // Главная рука
-                let mainAnim = lottie.loadAnimation({ container: document.getElementById('lottie-main'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE });
-                
-                // Статуя в желаемых
-                let libertyAnim = lottie.loadAnimation({ container: document.getElementById('lottie-wish-liberty'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_LIBERTY });
-                libertyAnim.addEventListener('DOMLoaded', () => {
-                    document.getElementById('fallback-liberty').style.display = 'none';
-                });
-            }
-        } catch(e) { console.log(e); }
 
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
@@ -365,18 +341,11 @@
             inventory.forEach((item, index) => {
                 const el = document.createElement('div');
                 el.className = 'grid-item westside';
-                
-                let content = '';
-                if (item.type === 'lottie') {
-                    content = `<div class="lottie-container" id="inv-lottie-${index}"></div>`;
-                } else {
-                    content = `<div style="width: 100%; height: 100%; background: #2a2a35; border-radius: 8px;"></div>`;
-                }
 
                 el.innerHTML = `
                     <div class="gift-price">⭐ ${item.price}</div>
                     <div class="gift-image-wrapper">
-                        ${content}
+                        <img src="${item.img}" class="gift-img">
                     </div>
                     <div class="gift-name">${item.name}</div>
                     <div class="gift-sub">${item.id}</div>
@@ -386,10 +355,6 @@
                     </div>
                 `;
                 list.appendChild(el);
-                
-                if(item.type === 'lottie' && typeof lottie !== 'undefined') {
-                    lottie.loadAnimation({ container: document.getElementById('inv-lottie-'+index), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE });
-                }
             });
         }
 
@@ -410,12 +375,13 @@
             }
         }
 
-        function selectBetGift(el, price, name, id) {
+        function selectBetGift(el, price, name, id, imgUrl) {
             if (isSpinning) return;
             document.querySelectorAll('.gift-card').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             betAmount = price;
             currentBetName = name;
+            currentBetImg = imgUrl;
             cancelUpgrade(); 
         }
 
@@ -522,6 +488,7 @@
             
             betAmount = upgradeItem.price;
             currentBetName = upgradeItem.name;
+            currentBetImg = upgradeItem.img;
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
             updateUI();
@@ -595,44 +562,40 @@
                 }
             }
 
-            // --- МАТЕМАТИКА УГЛОВ (ИСПРАВЛЕНО) ---
-            // Стрелка стоит на 0 градусов (смотрит вниз). 
-            // Оранжевая полоса начинается от 180 градусов и идет по часовой.
-            // Нам нужно повернуть стрелку так, чтобы она указывала на нужный сектор.
+            // --- ИДЕАЛЬНАЯ МАТЕМАТИКА УГЛОВ ---
+            // Стрелка смотрит вниз (0 градусов).
+            // Оранжевая полоса начинается с 180 градусов (6 часов) и идет по часовой.
             
             let targetDeg = 0;
-            
-            // Переводим проценты в градусы (0-360)
             let chanceDeg = (baseChance / 100) * 360;
-            let startAngle = 180; // Низ
+            let startAngle = 180; 
             let endAngle = startAngle + chanceDeg;
 
             if (isTopDrop) {
-                targetDeg = 170; // Чуть левее низа (золотая зона)
+                targetDeg = 170; 
             } else if (isWin) {
-                // Попадаем в оранжевую зону
                 targetDeg = startAngle + Math.random() * chanceDeg;
             } else {
-                // Попадаем вне оранжевой зоны
                 do {
                     targetDeg = Math.random() * 360;
                 } while (targetDeg > startAngle && targetDeg < endAngle);
             }
 
-            // Вычисляем, на сколько градусов нужно повернуть стрелку от текущего положения
             let currentMod = rotation % 360;
             let diff = targetDeg - currentMod;
-            
-            // Чтобы крутилось только по часовой стрелке
             if (diff < 0) diff += 360;
 
-            // Крутим 5 полных оборотов + нужный угол
-            rotation += (5 * 360) + diff;
+            const spins = isFastSpin ? 3 : 6;
+            const duration = isFastSpin ? 1.5 : 3;
             
+            // Включаем анимацию CSS
             arrow.style.transition = `transform ${duration}s cubic-bezier(0.1, 0.7, 0.1, 1)`;
+            
+            rotation += (spins * 360) + diff;
             arrow.style.transform = `rotate(${rotation}deg)`;
 
             setTimeout(() => {
+                // Отключаем анимацию для сброса, чтобы не было рывков
                 arrow.style.transition = 'none';
                 rotation = rotation % 360;
                 arrow.style.transform = `rotate(${rotation}deg)`;
@@ -643,16 +606,12 @@
 
                 if (isTopDrop) {
                     resultContainer.innerHTML = `
-                        <div class="lottie-container" id="lottie-topdrop-result"></div>
+                        <img src="https://media.tenor.com/9qXm4yVqF9sAAAAAj/statue.gif" style="width: 50px; height: 50px; object-fit: contain;">
                         <div class="result-text top" style="margin-top: 5px;">ТОП ДРОП</div>
                     `;
-                    if (typeof lottie !== 'undefined') {
-                        lottie.loadAnimation({ container: document.getElementById('lottie-topdrop-result'), renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_LIBERTY });
-                    }
-                    
                     let prizePrice = betAmount * 10;
                     balance += prizePrice;
-                    inventory.push({ id: '#68', name: 'Liberty Figure', price: prizePrice, type: 'lottie-liberty' });
+                    inventory.push({ id: '#68', name: 'Liberty Figure', price: prizePrice, img: 'https://media.tenor.com/9qXm4yVqF9sAAAAAj/statue.gif' });
                     
                     if (upgradeItem) {
                         inventory = inventory.filter(item => item !== upgradeItem);
@@ -669,11 +628,11 @@
                     balance += winAmount;
                     
                     if (upgradeItem && wishItem) {
-                        inventory.push({ id: '#UPG', name: wishItem.name, price: wishItem.price, type: 'lottie-liberty' });
+                        inventory.push({ id: '#UPG', name: wishItem.name, price: wishItem.price, img: 'https://media.tenor.com/9qXm4yVqF9sAAAAAj/statue.gif' });
                         inventory = inventory.filter(item => item !== upgradeItem);
                         cancelUpgrade();
                     } else {
-                        inventory.push({ id: '#WIN', name: currentBetName, price: winAmount, type: 'lottie' });
+                        inventory.push({ id: '#WIN', name: currentBetName, price: winAmount, img: currentBetImg });
                     }
                     
                 } else {
@@ -697,6 +656,12 @@
                     isSpinning = false;
                     btn.disabled = false;
                     btn.innerText = "Забустить";
+                    
+                    // Восстанавливаем transition для следующей крутки
+                    setTimeout(() => {
+                        arrow.style.transition = `transform ${isFastSpin ? 1.5 : 3}s cubic-bezier(0.1, 0.7, 0.1, 1)`;
+                    }, 50);
+
                 }, 2000);
 
             }, (duration * 1000) + 100);

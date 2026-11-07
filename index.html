@@ -37,28 +37,26 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,1); 
         }
         
-        /* ОРАНЖЕВАЯ ПОЛОСА (Через два полукруга) */
-        .progress-wrapper {
+        /* ОРАНЖЕВАЯ ПОЛОСА */
+        .wheel-progress-svg {
             position: absolute;
             width: 100%;
             height: 100%;
             z-index: 1;
-            transform: rotate(180deg); /* Поворачиваем на 180, чтобы старт был внизу */
+            transform: rotate(90deg); /* Поворачиваем, чтобы 0 был внизу */
         }
-
-        .progress-circle {
+        
+        /* Внутренний круг для маски */
+        .wheel-mask {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 160px;
+            height: 160px;
+            background: #000;
             border-radius: 50%;
-            border: 16px solid transparent;
-            border-bottom-color: #ff8c00;
-            border-right-color: #ff8c00;
-            transform: rotate(-45deg);
-            transition: transform 0.3s ease;
+            z-index: 2;
         }
 
-        .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #000; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
+        .wheel-inner { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: transparent; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
         
         .percent-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; transition: opacity 0.3s; color: #fff; }
         .percent-lbl { font-size: 10px; color: #666; margin-top: 2px; transition: opacity 0.3s; }
@@ -78,7 +76,7 @@
 
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
-        /* Стрелка (Смотрит вниз) */
+        /* Стрелка */
         .arrow-container { position: absolute; width: 260px; height: 260px; pointer-events: none; z-index: 5; transition: transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1); transform: rotate(0deg); }
         .arrow-svg { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 32px; filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8)); }
 
@@ -185,10 +183,14 @@
         <div class="wheel-outer">
             <div class="wheel-bg"></div>
             
-            <!-- ОРАНЖЕВАЯ ПОЛОСА -->
-            <div class="progress-wrapper">
-                <div class="progress-circle" id="progressCircle"></div>
-            </div>
+            <!-- ОРАНЖЕВАЯ ПОЛОСА (SVG) -->
+            <svg class="wheel-progress-svg" viewBox="0 0 260 260">
+                <!-- Круг рисуется в SVG, поворачиваем слой на 90 град, чтобы начало было внизу (6 часов) -->
+                <circle id="progressCircle" cx="130" cy="130" r="122" fill="none" stroke="#ff8c00" stroke-width="16" stroke-dasharray="0 1000" stroke-linecap="round"/>
+            </svg>
+            
+            <!-- Маска, чтобы закрыть внутреннюю часть -->
+            <div class="wheel-mask"></div>
             
             <div class="wheel-inner">
                 <div id="percentContainer" style="display: flex; flex-direction: column; align-items: center;">
@@ -301,18 +303,22 @@
         let currentGiftId = '#136';
         let currentGiftImg = 'https://cdn3d.iconscout.com/3d/premium/thumb/hand-3d-icon-download-in-png-blend-fbx-gltf-file-formats--palm-five-fingers-gestures-pack-sign-symbols-5009693.png';
 
+        const circle = document.getElementById('progressCircle');
+        const circumference = 2 * Math.PI * 122;
+
         function updateUI() {
             document.getElementById('balanceDisplay').innerText = balance.toFixed(2);
             document.getElementById('chanceDisplay').innerText = chance.toFixed(2) + "%";
             
+            // Для видимости, если шанс меньше 5%, рисуем хотя бы 5%
             let visualProgress = chance < 5 ? 5 : chance;
-            const circle = document.getElementById('progressCircle');
             
-            // В CSS: border-bottom + border-right = полукруг.
-            // При 25% нам нужно повернуть на 90 градусов.
-            // При 50% на 180, при 75% на 270, при 100% на 360.
-            let deg = (visualProgress / 100) * 360;
-            circle.style.transform = `rotate(${deg - 45}deg)`; 
+            // Длина закрашенной части
+            let strokeLength = (visualProgress / 100) * circumference;
+            
+            // Сдвигаем, чтобы начало было внизу (90 град) и закрашивалось по часовой
+            circle.style.strokeDasharray = `0 ${circumference}`;
+            circle.style.strokeDashoffset = `${circumference - strokeLength}`;
             
             // Меняем текст при 1%
             if (chance === 1) {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gift Boost - Final</title>
+    <title>Gift Boost - Top Drop</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -82,10 +82,26 @@
         .gift-price { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; z-index: 2;}
         .gift-price.blue { background: #007bff; }
         
-        .gift-image-wrapper { width: 70px; height: 70px; margin: 20px 0 10px; display: flex; justify-content: center; align-items: center; position: relative; }
+        .gift-image-wrapper { 
+            width: 70px; height: 70px; margin: 20px 0 10px; 
+            display: flex; justify-content: center; align-items: center; 
+            position: relative; overflow: hidden; border-radius: 8px;
+        }
         
-        /* Lottie */
-        .lottie-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 2;}
+        /* Lottie Контейнер */
+        .lottie-container { 
+            width: 100%; height: 100%; 
+            position: absolute; top: 0; left: 0; 
+            z-index: 2;
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .lottie-container svg {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+            transform: scale(0.8);
+        }
 
         .gift-name { font-size: 13px; font-weight: 700; text-align: center; }
         .gift-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
@@ -182,9 +198,7 @@
         <div class="gift-card westside active" onclick="selectBetGift(this, 100, 'Westside Ring', '#136')">
             <div class="gift-price">⭐ 100</div>
             <div class="gift-image-wrapper">
-                <!-- Сюда загрузится Lottie из catbox -->
                 <div class="lottie-container" id="lottie-main"></div>
-                <!-- Заглушка, если Lottie не найден -->
                 <img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" id="fallback-main" style="display: block; width: 100%; height: 100%; object-fit: contain;">
             </div>
             <div class="gift-name">Westside Ring</div>
@@ -246,11 +260,13 @@
                 <div class="gift-name">Redo</div>
                 <div class="gift-sub">#99999</div>
             </div>
-            <div class="grid-item" onclick="selectWishItem(this, 5000, 'Epic Crown')">
-                <div class="gift-price">⭐ 5000</div>
-                <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" class="gift-img">
-                <div class="gift-name">Epic Crown</div>
-                <div class="gift-sub">#777</div>
+            <div class="grid-item" onclick="selectWishItem(this, 15000, 'Liberty Figure')">
+                <div class="gift-price">⭐ 15000</div>
+                <div class="gift-image-wrapper">
+                    <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" class="gift-img">
+                </div>
+                <div class="gift-name">Liberty Figure</div>
+                <div class="gift-sub">#68</div>
             </div>
         </div>
     </div>
@@ -301,10 +317,10 @@
             { id: '#136', name: 'Westside Ring', price: 100, type: 'lottie' }
         ];
 
-        // --- LOTTIE ЗАГРУЗКА ---
+        // --- LOTTIE ЗАГРУЗКА (Westside Ring) ---
         const lottieContainer = document.getElementById('lottie-main');
         const fallbackImg = document.getElementById('fallback-main');
-        const LOTTIE_URL = 'https://files.catbox.moe/6plnk8.json'; // Ссылка на твою анимацию
+        const LOTTIE_WESTSIDE = 'https://files.catbox.moe/6plnk8.json'; // Твоя рука
         
         try {
             if (typeof lottie !== 'undefined') {
@@ -313,16 +329,17 @@
                     renderer: 'svg',
                     loop: true,
                     autoplay: true,
-                    path: LOTTIE_URL
+                    path: LOTTIE_WESTSIDE
                 });
                 
                 anim.addEventListener('DOMLoaded', () => {
                     fallbackImg.style.display = 'none';
                 });
             }
-        } catch(e) {
-            console.log("Lottie не загружен", e);
-        }
+        } catch(e) { console.log("Lottie 1 error", e); }
+
+        // --- LOTTIE ЗАГРУЗКА (Статуя Свободы для ТОП-ДРОПА) ---
+        const LOTTIE_LIBERTY = 'https://files.catbox.moe/nfcvgh.json';
 
         // --- UI ---
         function updateUI() {
@@ -364,7 +381,7 @@
                     <div class="gift-image-wrapper">
                         ${item.type === 'lottie' 
                             ? `<div class="lottie-container" id="inv-lottie-${index}"></div><img src="https://cdn-icons-png.flaticon.com/512/10691/10691802.png" class="gift-img" style="display:block; position:absolute; width:100%; height:100%; z-index:1;">` 
-                            : `<img src="https://cdn-icons-png.flaticon.com/512/4213/4213230.png" class="gift-img" style="position:relative; z-index:1;">`}
+                            : `<img src="${item.img || 'https://cdn-icons-png.flaticon.com/512/4213/4213230.png'}" class="gift-img" style="position:relative; z-index:1;">`}
                     </div>
                     <div class="gift-name">${item.name}</div>
                     <div class="gift-sub">${item.id}</div>
@@ -378,7 +395,7 @@
                 if(item.type === 'lottie' && typeof lottie !== 'undefined') {
                     lottie.loadAnimation({ 
                         container: document.getElementById('inv-lottie-'+index), 
-                        renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_URL 
+                        renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_WESTSIDE 
                     });
                 }
             });
@@ -387,8 +404,6 @@
         function withdrawItem(index) {
             let item = inventory[index];
             showToast(`Заявка на вывод: ${item.name} (${item.price} ⭐) отправлена!`);
-            // inventory.splice(index, 1);
-            // updateUI();
         }
 
         function switchTab(tab, el) {
@@ -611,20 +626,28 @@
                 if (isTopDrop && navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
 
                 if (isTopDrop) {
+                    // ТОП ДРОП С ТВОЕЙ АНИМАЦИЕЙ СТАТУИ
                     resultContainer.innerHTML = `
-                        <img src="https://cdn-icons-png.flaticon.com/512/284/284409.png" style="width: 45px; height: 45px; margin-bottom: 5px; filter: drop-shadow(0 0 10px #ffd700);">
-                        <div class="result-text top">ТОП ДРОП</div>
-                        <div class="result-gift-name">${currentBetName}</div>
+                        <div class="lottie-container" id="lottie-topdrop-result"></div>
+                        <div class="result-text top" style="margin-top: 5px;">ТОП ДРОП</div>
                     `;
+                    // Загружаем статус свободы в результат
+                    if (typeof lottie !== 'undefined') {
+                        lottie.loadAnimation({
+                            container: document.getElementById('lottie-topdrop-result'),
+                            renderer: 'svg', loop: true, autoplay: true, path: LOTTIE_LIBERTY
+                        });
+                    }
+                    
                     let prizePrice = betAmount * 10;
                     balance += prizePrice;
-                    inventory.push({ id: '#TOP', name: 'TOP ' + currentBetName, price: prizePrice, type: 'png' });
+                    inventory.push({ id: '#68', name: 'Liberty Figure', price: prizePrice, type: 'png', img: 'https://cdn-icons-png.flaticon.com/512/284/284409.png' }); // Заглушка для инвентаря
                     
                     if (upgradeItem) {
                         inventory = inventory.filter(item => item !== upgradeItem);
                         cancelUpgrade();
                     }
-                    showToast(`👑 ТОП ДРОП!\nВы выиграли ${currentBetName}`);
+                    showToast(`👑 ТОП ДРОП!\nВы выиграли Liberty Figure!`);
                     
                 } else if (isWin) {
                     resultContainer.innerHTML = `
@@ -665,7 +688,7 @@
                     btn.disabled = false;
                     btn.innerText = "Забустить";
                     
-                }, 2000);
+                }, 2500); // Чуть дольше показываем топ-дроп
 
             }, (duration * 1000) + 100);
         }
